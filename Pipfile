@@ -10,6 +10,9 @@ pytest = "*"
 pydub = "*"
 yattag = "*"
 regex = "*"
+pyperclip = "*"
+pil = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
