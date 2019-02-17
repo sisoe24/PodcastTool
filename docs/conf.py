@@ -20,7 +20,8 @@ __location__ = os.path.join(os.getcwd(), os.path.dirname(
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.join(__location__, '../src'))
-
+sys.path.insert(0, os.path.abspath('..'))
+# print(os.path.abspath('..'))
 # -- Run sphinx-apidoc ------------------------------------------------------
 # This hack is necessary since RTD does not issue `sphinx-apidoc` before running
 # `sphinx-build -b html . _build/html`. See Issue:
@@ -35,7 +36,9 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../src/podcasttool")
+# module_dir = os.path.join(os.path.dirname(__file__), "..")
+module_dir = os.path.join(os.path.abspath('..'), "src")
+print(module_dir)
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:
@@ -81,7 +84,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'.PodcastTool'
+project = u'PodcastTool'
 copyright = u'2019, virgil_sisoe'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -235,7 +238,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'user_guide.tex', u'.PodcastTool Documentation',
+  ('index', 'user_guide.tex', u'PodcastTool Documentation',
    u'virgil_sisoe', 'manual'),
 ]
 
