@@ -5,14 +5,27 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pytest-cov = "*"
+autopep8 = "*"
+doc8 = "*"
+sphinx = "*"
+flake8 = "*"
+pyinstaller = "*"
+rope = "*"
+pylint = "*"
+pydocstyle = "*"
+pipenv-to-requirements = "*"
+v = {editable = true,version = "*"}
 
 [packages]
 pydub = "*"
 yattag = "*"
 regex = "*"
 pyperclip = "*"
-pil = "*"
 pillow = "*"
+gtts = "*"
+tinytag = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"

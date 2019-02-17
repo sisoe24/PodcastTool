@@ -10,11 +10,15 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-gtts
-pillow
-pydub
-pyperclip
-python-dotenv
-regex
-tinytag
-yattag
+autopep8
+doc8
+flake8
+pipenv-to-requirements
+pydocstyle
+pyinstaller
+pylint
+pytest
+pytest-cov
+rope
+sphinx
+v
