@@ -54,10 +54,15 @@ def get_path(directory: str) -> str:
     """
     file_path = pathlib.Path(os.path.dirname(__file__))
     for path in file_path.parents:
-        if path.parts[-1] == 'PodcastTool2':
+        if path.parts[-1] == 'PodcastTool':
             new_path = path.joinpath(directory)
             break
-    return new_path if os.path.exists(new_path) else exit("no path found")
+    if directory in ['archive', 'log'] and not os.path.exists(new_path):
+        os.mkdir(new_path)
+    elif not os.path.exists(new_path):
+        logger.critical('path not found')
+        exit()
+    return new_path
 
 
 def catalog_names() -> str:
@@ -78,5 +83,5 @@ def catalog_names() -> str:
 
 
 if __name__ == '__main__':
-    pass
-    # get_path('log')
+    # pass
+    get_path('archive')
