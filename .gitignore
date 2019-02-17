@@ -70,3 +70,4 @@ src/gui/main_gui2.py
 # only temporary
 src/podcasttool/create_audio_library.py
 send_separately
+
