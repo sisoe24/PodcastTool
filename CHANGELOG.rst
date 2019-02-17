@@ -2,9 +2,6 @@
 Changelog
 =========
 
-Version 0.1
-===========
+Version 2.0.0
+=============
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
