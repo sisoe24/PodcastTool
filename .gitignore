@@ -66,3 +66,6 @@ src/gui/.server_credentials.json
 src/gui/run_mytest.py
 src/gui/refractoring_gui.py
 src/gui/main_gui2.py
+
+# only temporary
+src/podcasttool/create_audio_library.py
