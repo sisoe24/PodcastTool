@@ -54,7 +54,7 @@ def get_path(directory: str) -> str:
     """
     file_path = pathlib.Path(os.path.dirname(__file__))
     for path in file_path.parents:
-        if path.parts[-1] == 'PodcastTool':
+        if path.parts[-1] == 'PodcastTool2':
             new_path = path.joinpath(directory)
             break
     return new_path if os.path.exists(new_path) else exit("no path found")
