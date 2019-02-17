@@ -48,6 +48,21 @@ MANIFEST
 # Per-project virtualenvs
 .venv*/
 
+# my folder
+# audio_library/
+# archive/
+src/.prototype
+.vscode/*
+
 # my files
+.DS_Store
+podcast.code*
+tests/SECD*
+TODO.txt
 .env
+fonderie_env.zsh
+
 src/gui/.server_credentials.json
+src/gui/run_mytest.py
+src/gui/refractoring_gui.py
+src/gui/main_gui2.py
