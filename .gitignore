@@ -52,7 +52,7 @@ MANIFEST
 # audio_library/
 # archive/
 src/.prototype
-.vscode/*
+.vscode/settings.json
 
 # my files
 .DS_Store
