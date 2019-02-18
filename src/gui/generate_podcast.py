@@ -463,8 +463,9 @@ class PodcastGenerator(PodcastParser):
     def _create_audiosegment(self):
         """Create pydub audio segment from all the mp3 files in tmp dir."""
         path = pathlib.Path(self.tmp_dir).glob('*mp3')
+        LOGGER.debug(f'combining audio files in folder: {self.tmp_dir}')
         for item in sorted(path):
-            LOGGER.debug(f'merging audio: {item}')
+            LOGGER.debug(f'merging audio: {os.path.basename(item)}')
             yield pydub.AudioSegment.from_file(str(item))
 
     # @profile
@@ -517,11 +518,11 @@ class PodcastGenerator(PodcastParser):
 
     def _move_and_delete(self, file_path: str) -> str:
         mp3_path = shutil.move(file_path, self._mp3_path())
-        LOGGER.debug(f'mp3_path: {self._mp3_path()}')
+        LOGGER.debug(f'moving file to mp3 folder')
         self.uploading_list.append(mp3_path)
 
         shutil.rmtree(pathlib.Path(file_path).parent)
-
+        LOGGER.debug(f'deleting .tmp folder')
         return mp3_path
 
 
@@ -563,7 +564,6 @@ class ServerUploader:
 
         self.uploading_list.append(
             "http://" + os.path.join(server_p, self.__str__()))
-        LOGGER.debug(f'logging server path: {server_p}')
 
         with ftplib.FTP(os.environ['FONDERIE_HOST'],
                         os.environ['FONDERIE_USER'],
@@ -593,7 +593,6 @@ class ServerUploader:
         file_path = pathlib.Path(self.uploading_file)
         root_folder = '/'.join(file_path.parent.parts[-3:-1])
         server_path = os.environ['FONDERIE_PODCAST'] + root_folder
-        LOGGER.debug(f'get server path from file directory {server_path}')
         # server_path = self._server_credentials()['podcast_path'] + root_folder
         return server_path
 
@@ -619,7 +618,7 @@ class HtmlGenerator:
 
         Css style file is located in the server ../../standard/style/
         """
-        LOGGER.debug(f'generating html page from {self.html_data}')
+        LOGGER.debug(f'generating html page info from dict {self.html_data}')
         doc, tag, text = yattag.Doc().tagtext()
         doc.stag('hr')
 
