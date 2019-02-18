@@ -48,10 +48,13 @@ LOGGER.addHandler(CRITICAL_LOG)
 
 LOG_PATH = utility.get_path('log')
 
-DEBUG_LOW = logging.FileHandler(f'{LOG_PATH}/DEBUG_LOW.log', 'w')
+DEBUG_LOW = logging.FileHandler(f'{LOG_PATH}/debug_low.log', 'w')
 DEBUG_LOW.setLevel(logging.DEBUG)
 DEBUG_LOW.setFormatter(FORMATTER)
 LOGGER.addHandler(DEBUG_LOW)
+
+COURSES_NAMES = utility.catalog_names()['corsi'].keys()
+TEACHERS_NAMES = utility.catalog_names()['docenti'].keys()
 
 
 def _match_lesson(podcast_file):
@@ -81,9 +84,8 @@ def check_folder(podcast_folder):
     path = os.path.dirname(podcast_folder)
     folder_name = os.path.split(path)[1][:3]
     LOGGER.debug(f'folder_name: {folder_name}')
-    course_name = utility.catalog_names()['corsi']
 
-    if folder_name not in course_name.keys():
+    if folder_name not in COURSES_NAMES:
         msg = f'Nome cartella sbagliato: {folder_name}.'
         messagebox.showerror(title='Fatal Error', message=msg)
         exit()
@@ -105,10 +107,10 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
 
     """
     if catalog == 'c':
-        check_list = utility.catalog_names()['corsi']
+        check_list = COURSES_NAMES
     elif catalog == 'd':
-        check_list = utility.catalog_names()['docenti']
-
+        check_list = TEACHERS_NAMES
+    
     similar_name = get_close_matches(wrong_name, check_list, cutoff=0.6)
     possibile_names = [i for i in similar_name]
     choice = f" - {wrong_name} -> {possibile_names}"
@@ -188,8 +190,8 @@ def last_archive_created():
 
 def delete_archive():
     """Delete all the html archive files."""
-    prompt = messagebox.askyesno(title='Conferma',
-                                 message='Hai scelto di cancellare tutto l\'archivio. Sei sicuro?')
+    prompt = messagebox.askyesno(
+        title='Conferma', message='Cancellare tutto l\'archivio. Sei sicuro?')
     if prompt:
         for i in archive_files():
             os.remove(i)
@@ -450,7 +452,7 @@ class MainCore(tk.Frame):
                 os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
         else:
             # initial_dir = os.path.join(
-                # os.environ['TEST_FILES_FAKE'], 'ALP/ABLO')
+            # os.environ['TEST_FILES_FAKE'], 'ALP/ABLO')
             initial_dir = os.path.join(
                 os.environ['TEST_FILES_REAL'], 'ALP/ABLO')
 
@@ -481,7 +483,6 @@ class MainCore(tk.Frame):
         # check and delete if any errors
         for widget in self._error_frame.winfo_children():
             if not regex.search(r'logo', str(widget)):
-                # print(f'--> DEBUG widget: {widget} <--')
                 widget.destroy()
 
         # self._podcast_lines = self._text_box.get('1.0', 'end').splitlines()
@@ -496,9 +497,8 @@ class MainCore(tk.Frame):
                 # CORSO
                 try:
                     corso = regex.search(r'^[A-Z]{3}', line[0], regex.I)
-                    corsi = utility.catalog_names()['corsi']
 
-                    if corso.group() not in corsi.keys():
+                    if corso.group() not in COURSES_NAMES:
                         index_c = corso.span()
                         self._text_box.tag_add(
                             f'c{track_number}',
@@ -554,8 +554,8 @@ class MainCore(tk.Frame):
                 # DOCENTE
                 try:
                     docente = regex.search(r'(?<=_)[A-Z]_[A-Za-z]+', line[0])
-                    docenti = utility.catalog_names()['docenti']
-                    if docente.group() not in docenti.keys():
+
+                    if docente.group() not in TEACHERS_NAMES:
                         index_n = docente.span()
                         self._text_box.tag_add(
                             f'c{track_number}',
