@@ -229,6 +229,8 @@ class PodcastGenerator(PodcastParser):
         """Parse and create the podcast file."""
         super().__init__(audio_file)
 
+        self.course = self.course_name
+        self.teacher = self.teacher_name
         self.audio_file = audio_file
         day, month, year = self.registration_date.split('/')
 
@@ -236,9 +238,9 @@ class PodcastGenerator(PodcastParser):
             'Fonderie_Sonore_Podcast',
             'Materiale_riservato_agli_studenti_della_scuola',
             'Corso:',
-            self.course_name,
+            self.course,
             'Docente:',
-            self.teacher_name,
+            self.teacher,
             'Podcast audio della:',
             self.lesson_number,
             'Del:',
@@ -267,7 +269,6 @@ class PodcastGenerator(PodcastParser):
     def _mp3_path(self) -> str:
         """Get the mp3 folder path."""
         mp3_path = pathlib.Path(self.audio_file).parent / 'mp3'
-        LOGGER.debug(f'mp3_path: {mp3_path}')
         return mp3_path
 
     def _check_already_created(self):
@@ -486,8 +487,8 @@ class PodcastGenerator(PodcastParser):
                                           bitrate=self.custom_bitrate,
                                           parameters=[
                                               "-ar", self.custom_sample_rate],
-                                          tags={"album": f"{self.course_name}",
-                                                "artist": f"{self.teacher_name}"},)
+                                          tags={"album": f"{self.course}",
+                                                "artist": f"{self.teacher}"})
         LOGGER.debug(f'Final Podcast File: {end_file.name}')
 
         self._move_and_delete(end_file.name)
@@ -516,6 +517,7 @@ class PodcastGenerator(PodcastParser):
 
     def _move_and_delete(self, file_path: str) -> str:
         mp3_path = shutil.move(file_path, self._mp3_path())
+        LOGGER.debug(f'mp3_path: {self._mp3_path()}')
         self.uploading_list.append(mp3_path)
 
         shutil.rmtree(pathlib.Path(file_path).parent)
