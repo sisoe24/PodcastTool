@@ -50,9 +50,10 @@ MANIFEST
 
 # my folder
 # audio_library/
-# archive/
+archive/
 src/.prototype
 .vscode/settings.json
+other/
 
 # my files
 .DS_Store
