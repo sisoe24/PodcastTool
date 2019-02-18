@@ -613,7 +613,10 @@ class HtmlGenerator:
         self.generate_page()
 
     def generate_page(self):
-        """Generate html page using yattag module."""
+        """Generate html page using yattag module.
+
+        Css style file is located in the server ../../standard/style/
+        """
         doc, tag, text = yattag.Doc().tagtext()
         doc.stag('hr')
 
@@ -641,7 +644,7 @@ class HtmlGenerator:
             with tag('div', klass='virgil_podcast_part'):
 
                 for part in sorted(self.html_data['audio_parts'].items()):
-                    with tag('h3'):
+                    with tag('p'):
                         text(f'{part[0]} | Durata {part[1][0]}')
 
                     with tag('object', id="audioplayer1",
