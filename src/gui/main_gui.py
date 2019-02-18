@@ -695,7 +695,8 @@ class MainCore(tk.Frame):
 
         [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
                                         ServerUploader.uploading_list)]
-        HtmlGenerator(html_data).podcast_file()
+        # HtmlGenerator(html_data).podcast_file()
+        HtmlGenerator(html_data)
         self.progress.stop()
 
         self.html._copy_btn['state'] = 'normal'
