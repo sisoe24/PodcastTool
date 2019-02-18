@@ -17,11 +17,10 @@ import tinytag
 
 import utility
 
-
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 
-class PodcastParser(object):
+class PodcastParser:
     """Take podcast file name ad extract indexes based string.
 
     Example indexes based on the code name:
