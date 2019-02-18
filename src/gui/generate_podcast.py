@@ -307,19 +307,19 @@ class PodcastGenerator(PodcastParser):
         total_float_seconds = nframe / rframe
         total_ms = math.ceil(total_float_seconds * 1000)
 
-        LOGGER.debug(f'total float duration in seconds: {total_float_seconds}')
-        LOGGER.debug(f'total integer duration in ms: {total_ms}')
-
         return total_ms
 
     @staticmethod
     def _calculate_cuts(ms_time: int) -> int:
         """Calculate the numbers of audio cuts based on the audio lenght.
 
+        If it has to add 3 watermarks then there should be 3 + 1 cuts
+        meaning that the return value is watermarks n + 1.
         Returns:
-            [int] -- how many watermark to put in the podcast.
+            [int] -- how many cuts to do in the podcast.
 
         """
+        LOGGER.debug('setting automatic watermarks')
         two_hours = 7_200_000
         one_hour = 3_600_000
 
@@ -343,16 +343,13 @@ class PodcastGenerator(PodcastParser):
         song = pydub.AudioSegment.from_file(self.audio_file)
         LOGGER.debug(f'initialize pydub AudioSegment: {song}')
 
-        LOGGER.debug(f'podcast ms duration: {self.__len__()}')
-        LOGGER.debug(f'podcast seconds duration: {self.__len__() / 1000}')
-        LOGGER.debug(f'adding watermarks n.: {self.watermark_number}')
+        LOGGER.debug(f'podcast duration in seconds: {self.__len__() / 1000}')
+        LOGGER.debug(f'adding watermarks n.: {self.watermark_number - 1}')
 
         cut_each = math.ceil(self.__len__() / self.watermark_number)
 
-        # for logging only
-        cuts_in_seconds = datetime.timedelta(milliseconds=cut_each).seconds
-        LOGGER.debug(f'cut every: {cuts_in_seconds} seconds | {cut_each} ms')
-
+        LOGGER.debug(
+            f'cut every: {datetime.timedelta(milliseconds=cut_each).seconds}s')
         song_parts = song[::cut_each]
 
         LOGGER.debug(f'lenght opening theme files: {len(self._opening_theme)}')
@@ -368,14 +365,14 @@ class PodcastGenerator(PodcastParser):
                         parameters=["-ar", self.custom_sample_rate],
                         format='mp3', bitrate=self.custom_bitrate)
 
-            LOGGER.debug(f'exporting podcast: {export_name}')
-            LOGGER.debug(f'adding watermark: {watermark}.mp3')
+            LOGGER.debug(f'splitting podcast: {export_name}')
 
             # I need to append 'podcast part' because I need
             # all the items  the list to be in cronological order
             # once I copy the files from the library
             self._opening_theme.append('podcast part')
             if watermark_n < self.watermark_number - 1:
+                LOGGER.debug(f'adding watermark: {watermark}.mp3')
                 self._opening_theme.append(watermark)
 
             watermark_n += 1
@@ -438,7 +435,7 @@ class PodcastGenerator(PodcastParser):
             self.get_filename.encode('utf-8')).hexdigest()
 
         new_name = f'{upload_name}_{secret_token}.mp3'
-        LOGGER.debug(f'uploading name: {new_name}')
+        LOGGER.debug(f'uploading name: {new_name} for {self.get_filename}')
 
         return new_name
 
@@ -564,13 +561,14 @@ class ServerUploader:
 
         self.uploading_list.append(
             "http://" + os.path.join(server_p, self.__str__()))
+        LOGGER.debug(f'logging server path: {server_p}')
 
         with ftplib.FTP(os.environ['FONDERIE_HOST'],
                         os.environ['FONDERIE_USER'],
                         os.environ['FONDERIE_PASSWORD']) as ftp:
-        # with ftplib.FTP(self._server_credentials()['host'],
-        #                 self._server_credentials()['user'],
-        #                 self._server_credentials()['password']) as ftp:
+            # with ftplib.FTP(self._server_credentials()['host'],
+            #                 self._server_credentials()['user'],
+            #                 self._server_credentials()['password']) as ftp:
             try:
                 ftp.cwd(server_p)
             except ftplib.error_perm:
@@ -583,8 +581,9 @@ class ServerUploader:
                 print('uploading_file:', self.uploading_file, 'in:', ftp.pwd())
 
                 # XXX COMMENT THIS LINE OUT FOR TESTING -> NO UPLOAD <-
-                status = ftp.storbinary(f'STOR {self.__str__()}', upload)
-                LOGGER.debug(f'status: {status}')
+                # status = ftp.storbinary(f'STOR {self.__str__()}', upload)
+                # LOGGER.debug(f'status: {status}')
+        LOGGER.debug(f'uploaded file to server: {self.uploading_list}')
 
     @property
     def server_path(self):
@@ -592,6 +591,7 @@ class ServerUploader:
         file_path = pathlib.Path(self.uploading_file)
         root_folder = '/'.join(file_path.parent.parts[-3:-1])
         server_path = os.environ['FONDERIE_PODCAST'] + root_folder
+        LOGGER.debug(f'get server path from file directory {server_path}')
         # server_path = self._server_credentials()['podcast_path'] + root_folder
         return server_path
 
@@ -617,6 +617,7 @@ class HtmlGenerator:
 
         Css style file is located in the server ../../standard/style/
         """
+        LOGGER.debug(f'generating html page from {self.html_data}')
         doc, tag, text = yattag.Doc().tagtext()
         doc.stag('hr')
 
@@ -665,9 +666,9 @@ class HtmlGenerator:
         """Create a html file archive for later use."""
         today = datetime.datetime.today().strftime('%m.%d.%Y_%H:%M_')
         podcast_name = self.html_data['archive_name']
-        print(f'--> DEBUG podcast_name: {podcast_name} <--')
         file_path = os.path.join(
             utility.get_path('archive'), today + podcast_name + '.html')
+        LOGGER.debug(f'creating html archive: {file_path}')
         return file_path
 
     def podcast_file(self):
@@ -676,29 +677,30 @@ class HtmlGenerator:
 
     def write_archive(self, text: str):
         """Write a html file with the podcast information."""
+        LOGGER.debug('writing html archive')
         with open(self.podcast_file(), 'w') as file:
             file.write(text)
 
 
-def run_gui1(podcast_list: list, *args, **audio_options) -> str:
-    """Run main app."""
-    print(audio_options)
-    for file in podcast_list:
-        podcast = PodcastGenerator(file, **audio_options)
+# def run_gui1(podcast_list: list, *args, **audio_options) -> str:
+#     """Run main app."""
+#     print(audio_options)
+#     for file in podcast_list:
+#         podcast = PodcastGenerator(file, **audio_options)
 
-    podcast_list = podcast.uploading_list
-    html_data = podcast.html_page_info
+#     podcast_list = podcast.uploading_list
+#     html_data = podcast.html_page_info
 
-    for file in podcast_list:
-        ServerUploader(file)
+#     for file in podcast_list:
+#         ServerUploader(file)
 
-    # virgil_test = [os.environ['TEST_LEZIONE_1'],
-        # os.environ['TEST_LEZIONE_2'],
-        # os.environ['TEST_LEZIONE_3']]
-    # adding the server path of the uploaded files to the html a href tag
-    [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
-                                    ServerUploader.uploading_list)]
-    return HtmlGenerator(html_data).podcast_file()
+#     # virgil_test = [os.environ['TEST_LEZIONE_1'],
+#         # os.environ['TEST_LEZIONE_2'],
+#         # os.environ['TEST_LEZIONE_3']]
+#     # adding the server path of the uploaded files to the html a href tag
+#     [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
+#                                     ServerUploader.uploading_list)]
+#     return HtmlGenerator(html_data).podcast_file()
 
 
 # def run_gui(podcast_list: list, *args, **audio_options) -> str:
