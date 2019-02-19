@@ -722,7 +722,7 @@ class MainCore(tk.Frame):
         """Rename the wrong typed podcast names."""
         for old, new in zip(self.valid_podcast, self.get_text_lines):
             if old != new:
-                LOGGER.debug(f'renaming from {old_name} to {new_name}')
+                LOGGER.debug(f'renaming from {old} to {new}')
                 old_name = os.path.join(self.path, old)
                 new_name = os.path.join(self.path, new)
                 os.rename(old_name, new_name)
