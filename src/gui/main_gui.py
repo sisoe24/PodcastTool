@@ -61,21 +61,26 @@ def _match_lesson(podcast_file):
     """Search for same podcast lesson in directory."""
     path = pathlib.Path(podcast_file)
     date_selected_file = get_file_date(path, lesson_check=True)
-
     lezione_search = "_".join(path.name.split('_')[4:6])
+
     try:
         _, num = regex.search(r'([L|l]\w+)_(\d)', lezione_search).groups()
+        LOGGER.debug(f'extracting lesson number: {lezione_search}')
     except AttributeError:
-        print('something went totally wrong ')
+        LOGGER.critical('something went totally wrong no match found')
         exit()
 
-    for file in sorted(path.parent.iterdir()):
+    for file in sorted(path.parent.glob('*wav')):
+    # for file in sorted(path.parent.iterdir()):
         lezione_check = "_".join(file.name.split('_')[4:6])
+
         valid_lesson = regex.search(r'[L|l]\w+_' + num, lezione_check)
         file_vecchio = regex.search(r'vecchio', file.name)
+
         date_file = get_file_date(file, lesson_check=True)
         if valid_lesson and not file_vecchio:
             if date_file == date_selected_file:
+                LOGGER.debug(f'file that match date of creation {file.name}')
                 yield str(file.name)
 
 
@@ -83,10 +88,11 @@ def check_folder(podcast_folder):
     """Check if the folder name is correct otherwise quit."""
     path = os.path.dirname(podcast_folder)
     folder_name = os.path.split(path)[1][:3]
-    LOGGER.debug(f'folder_name: {folder_name}')
+    LOGGER.debug(f'checking if folder name is valid: {folder_name}')
 
     if folder_name not in COURSES_NAMES:
         msg = f'Nome cartella sbagliato: {folder_name}.'
+        LOGGER.critical(f'wrong folder name {folder_name}')
         messagebox.showerror(title='Fatal Error', message=msg)
         exit()
 
@@ -110,7 +116,7 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
         check_list = COURSES_NAMES
     elif catalog == 'd':
         check_list = TEACHERS_NAMES
-    
+
     similar_name = get_close_matches(wrong_name, check_list, cutoff=0.6)
     possibile_names = [i for i in similar_name]
     choice = f" - {wrong_name} -> {possibile_names}"
@@ -714,6 +720,7 @@ class MainCore(tk.Frame):
         """Rename the wrong typed podcast names."""
         for old, new in zip(self.valid_podcast, self.get_text_lines):
             if old != new:
+                LOGGER.debug(f'renaming from {old_name} to {new_name}')
                 old_name = os.path.join(self.path, old)
                 new_name = os.path.join(self.path, new)
                 os.rename(old_name, new_name)
