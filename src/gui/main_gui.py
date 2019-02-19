@@ -71,7 +71,7 @@ def _match_lesson(podcast_file):
         exit()
 
     for file in sorted(path.parent.glob('*wav')):
-    # for file in sorted(path.parent.iterdir()):
+        # for file in sorted(path.parent.iterdir()):
         lezione_check = "_".join(file.name.split('_')[4:6])
 
         valid_lesson = regex.search(r'[L|l]\w+_' + num, lezione_check)
@@ -589,7 +589,8 @@ class MainCore(tk.Frame):
                         self._error_msg(track_number, l_msg, row_number)
                         row_number += 1
                 except AttributeError:
-                    self._message_box(f'Lezione incompleta in: {line[0]} ')
+                    self._message_box(f'Lezione incompleta in: {line[0]} ',
+                                      exit_script='yes')
 
                 # PARTE
                 try:
@@ -607,7 +608,8 @@ class MainCore(tk.Frame):
                         self._error_msg(track_number, p_msg, row_number)
                         row_number += 1
                 except AttributeError:
-                    self._message_box(f'Parte incompleta in: {line[0]} ')
+                    self._message_box(f'Parte incompleta in: {line[0]} ',
+                                      exit_script='yes')
 
                 self._text_box.tag_configure(
                     f'c{track_number}', background='red')
