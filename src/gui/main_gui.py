@@ -186,11 +186,9 @@ def last_archive_created():
         [str] -- file path of the last html page.
 
     """
-    mod_time = {}
-    for file in archive_files():
-        mod_time[file] = os.stat(file).st_mtime
-    for filepath, mtime in mod_time.items():
-        if mtime == max(mod_time.values()):
+    mod = {file: os.stat(file).st_mtime for file in archive_files()}
+    for filepath, mtime in mod.items():
+        if mtime == max(mod.values()):
             return filepath
 
 
