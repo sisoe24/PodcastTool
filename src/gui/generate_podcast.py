@@ -101,7 +101,7 @@ class PodcastParser:
 
         # for parsing pursoses I need to deattache the edition
         course_code, edition = regex.sub(
-            r'([A-Z]{3})([A-Z]{1,3})', r'\1 \2', code).split(' ')
+            r'([A-Z]{3})([A-Z]{1,3}|\d{1,3})', r'\1 \2', code).split(' ')
 
         LOGGER.debug(f'codice corso, edizione: {course_code, edition}')
 
