@@ -255,7 +255,6 @@ class PodcastGenerator(PodcastParser):
         if not self._check_already_created():
             self.custom_bitrate = bitrate
             self.custom_sample_rate = sample_rate
-            LOGGER.warning(f'sample_rate: {sample_rate}')
 
             if watermarks:
                 self.watermark_number = watermarks + 1
@@ -366,7 +365,7 @@ class PodcastGenerator(PodcastParser):
             export_name = f'{len(self._opening_theme)}_Ppart_{watermark_n}.wav'
 
             part.export(f'{self.tmp_dir}/{export_name}',
-                        parameters=["-ar", '22050'],
+                        parameters=["-ar", self.custom_sample_rate],
                         format='wav', bitrate=self.custom_bitrate)
 
             LOGGER.debug(f'splitting podcast: {export_name}')
@@ -387,7 +386,7 @@ class PodcastGenerator(PodcastParser):
         for item in enumerate(self._opening_theme):
 
             pad_fill = str(item[0]).zfill(2)
-            item_name = item[1].replace(' ', '_') + '.wav'
+            item_name = item[1].replace(' ', '_') + '.mp3'
 
             if item_name in library.keys():
                 src_file = os.path.join(library.get(item_name), item_name)
@@ -414,11 +413,11 @@ class PodcastGenerator(PodcastParser):
             [dict] -- dictionary with key as files names and values as paths
 
         """
-        library_path = utility.get_path('audio_library_wav')
+        library_path = utility.get_path('audio_library')
         library_dict = {}
         for dirpath, _, filenames in os.walk(library_path):
             for filename in filenames:
-                if filename.endswith('wav'):
+                if filename.endswith('mp3'):
                     library_dict[filename] = dirpath
         return library_dict
 
@@ -471,7 +470,7 @@ class PodcastGenerator(PodcastParser):
         for item in sorted(path):
             if regex.search(r'(.mp3|.wav)$', str(item)):
                 LOGGER.debug(f'merging audio: {os.path.basename(item)}')
-                yield pydub.AudioSegment.from_wav(str(item))
+                yield pydub.AudioSegment.from_file(str(item))
 
     @utility.profile
     def _merge_audio(self):
