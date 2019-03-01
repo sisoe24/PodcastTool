@@ -17,6 +17,8 @@ import tinytag
 
 import utility
 
+utility.delete_mp3()
+
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 
@@ -331,7 +333,7 @@ class PodcastGenerator(PodcastParser):
         if ms_time < one_hour:
             return 3
 
-    # @utility.profile
+    @utility.profile
     def _split_podcast(self):
         """Cut the podcast file into n number of segments.
 
@@ -468,7 +470,7 @@ class PodcastGenerator(PodcastParser):
             LOGGER.debug(f'merging audio: {os.path.basename(item)}')
             yield pydub.AudioSegment.from_file(str(item))
 
-    # @profile
+    @utility.profile
     def _merge_audio(self):
         """Merge all the mp3 files from tmp folder into the final podcast."""
         # see pydub documentation of what is empty()
