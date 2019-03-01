@@ -587,8 +587,8 @@ class ServerUploader:
                 print('uploading_file:', self.uploading_file, 'in:', ftp.pwd())
 
                 # XXX COMMENT THIS LINE OUT FOR TESTING -> NO UPLOAD <-
-                # status = ftp.storbinary(f'STOR {self.__str__()}', upload)
-                # LOGGER.debug(f'status: {status}')
+                status = ftp.storbinary(f'STOR {self.__str__()}', upload)
+                LOGGER.debug(f'status: {status}')
         LOGGER.debug(f'uploaded file to server: {self.uploading_list}')
 
     @property
