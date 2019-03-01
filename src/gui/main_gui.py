@@ -692,6 +692,7 @@ class MainCore(tk.Frame):
                                        bitrate=set_bitrate,
                                        sample_rate=set_sample,
                                        watermarks=watermark_n)
+            exit('exit main ->')
         podcast_list = podcast.uploading_list
         html_data = podcast.html_page_info
 
