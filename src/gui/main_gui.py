@@ -458,7 +458,7 @@ class MainCore(tk.Frame):
             # initial_dir = os.path.join(
             # os.environ['TEST_FILES_FAKE'], 'ALP/ABLO')
             initial_dir = os.path.join(
-                os.environ['TEST_FILES_REAL'], 'ALP/ABLO')
+                os.environ['TEST_FILES_REAL'], 'EMP/SCE4')
 
         open_file = filedialog.askopenfilename(initialdir=initial_dir)
         check_folder(open_file)
