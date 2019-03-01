@@ -525,7 +525,7 @@ class PodcastGenerator(PodcastParser):
         LOGGER.debug(f'moving file to mp3 folder')
         self.uploading_list.append(mp3_path)
 
-        # shutil.rmtree(pathlib.Path(file_path).parent)
+        shutil.rmtree(pathlib.Path(file_path).parent)
         LOGGER.debug(f'deleting .tmp folder')
         return mp3_path
 
