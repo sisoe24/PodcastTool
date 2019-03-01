@@ -439,10 +439,13 @@ class MainCore(tk.Frame):
         self.audio = AudioFrame(parent, width=300, height=100)
         self.audio.place(x=700, y=40)
 
-        progress_text = ttk.Label(parent, text='Progress',
+        progress_text = ttk.Label(parent, text='Progress:',
                                   style='label.TLabel')
         progress_text.place(x=700, y=320)
 
+        self.progress_var = tk.StringVar()
+        progress_status = ttk.Label(parent, textvariable=self.progress_var,)
+        progress_status.place(x=790, y=327)
         # TODO: need maximum number from podcast files
         self.progress = ttk.Progressbar(parent, maximum=4,
                                         orient=tk.HORIZONTAL,
@@ -686,19 +689,22 @@ class MainCore(tk.Frame):
                         for i in self.get_text_lines if i]
 
         self.progress.start()
-        for file in upload_files:
+        for file in enumerate(upload_files, 1):
+            self.progress_var.set(f'Creazione podcast n{file[0]} in corso..')
             self.update()
-            podcast = PodcastGenerator(file,
+            podcast = PodcastGenerator(file[1],
                                        bitrate=set_bitrate,
                                        sample_rate=set_sample,
                                        watermarks=watermark_n)
         podcast_list = podcast.uploading_list
         html_data = podcast.html_page_info
 
-        for file in podcast_list:
+        for file in enumerate(podcast_list, 1):
+            self.progress_var.set(f'Carico podcast n{file[0]} sul server..')
             self.update()
-            ServerUploader(file, self.test_value.get())
+            ServerUploader(file[1], self.test_value.get())
 
+        self.progress_var.set('')
         [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
                                         ServerUploader.uploading_list)]
         # HtmlGenerator(html_data).podcast_file()
