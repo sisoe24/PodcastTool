@@ -343,7 +343,7 @@ class PodcastGenerator(PodcastParser):
         divide by n. Thus is likely that the cuts are going to be in te middle
         of words. Want to be able to detect silence and cut only there.
         """
-        song = pydub.AudioSegment.from_file(self.audio_file)
+        song = pydub.AudioSegment.from_wav(self.audio_file)
         LOGGER.debug(f'initialize pydub AudioSegment: {song}')
 
         LOGGER.debug(f'podcast duration in seconds: {self.__len__() / 1000}')
@@ -362,11 +362,11 @@ class PodcastGenerator(PodcastParser):
         LOGGER.debug(f'watermark: {watermark}')
 
         for part in song_parts:
-            export_name = f'{len(self._opening_theme)}_Ppart_{watermark_n}.mp3'
+            export_name = f'{len(self._opening_theme)}_Ppart_{watermark_n}.wav'
 
             part.export(f'{self.tmp_dir}/{export_name}',
                         parameters=["-ar", self.custom_sample_rate],
-                        format='mp3', bitrate=self.custom_bitrate)
+                        format='wav', bitrate=self.custom_bitrate)
 
             LOGGER.debug(f'splitting podcast: {export_name}')
 
@@ -464,11 +464,13 @@ class PodcastGenerator(PodcastParser):
 
     def _create_audiosegment(self):
         """Create pydub audio segment from all the mp3 files in tmp dir."""
-        path = pathlib.Path(self.tmp_dir).glob('*mp3')
+        # path = pathlib.Path(self.tmp_dir).glob('*mp3')
+        path = pathlib.Path(self.tmp_dir).iterdir()
         LOGGER.debug(f'combining audio files in folder: {self.tmp_dir}')
         for item in sorted(path):
-            LOGGER.debug(f'merging audio: {os.path.basename(item)}')
-            yield pydub.AudioSegment.from_file(str(item))
+            if regex.search(r'(.mp3|.wav)$', str(item)):
+                LOGGER.debug(f'merging audio: {os.path.basename(item)}')
+                yield pydub.AudioSegment.from_file(str(item))
 
     @utility.profile
     def _merge_audio(self):
@@ -523,7 +525,7 @@ class PodcastGenerator(PodcastParser):
         LOGGER.debug(f'moving file to mp3 folder')
         self.uploading_list.append(mp3_path)
 
-        shutil.rmtree(pathlib.Path(file_path).parent)
+        # shutil.rmtree(pathlib.Path(file_path).parent)
         LOGGER.debug(f'deleting .tmp folder')
         return mp3_path
 
