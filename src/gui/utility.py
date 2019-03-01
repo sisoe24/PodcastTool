@@ -87,6 +87,8 @@ def delete_mp3():
     """Clean of mp3 files for testing."""
     if str(pathlib.Path().home()) == '/Users/virgilsisoe':
         subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
+    else:
+        pass
 
 
 if __name__ == '__main__':
