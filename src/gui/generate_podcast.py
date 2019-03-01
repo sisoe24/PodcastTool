@@ -583,8 +583,8 @@ class ServerUploader:
                 ftp.cwd(server_p)
 
             with open(self.uploading_file, 'rb') as upload:
-                print('<-uploading->', )
-                print('uploading_file:', self.uploading_file, 'in:', ftp.pwd())
+                # print('<-uploading->', )
+                # print('uploading_file:', self.uploading_file, 'in:', ftp.pwd())
 
                 # XXX COMMENT THIS LINE OUT FOR TESTING -> NO UPLOAD <-
                 status = ftp.storbinary(f'STOR {self.__str__()}', upload)
