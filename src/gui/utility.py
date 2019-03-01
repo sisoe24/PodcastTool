@@ -5,6 +5,7 @@ import time
 import pathlib
 import logging
 import datetime
+import subprocess
 
 
 logger = logging.getLogger('podcast_tool.utlity')
@@ -82,6 +83,11 @@ def catalog_names() -> str:
         exit()
 
 
+def delete_mp3():
+    """Clean of mp3 files for testing."""
+    if str(pathlib.Path().home()) == '/Users/virgilsisoe':
+        subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
+
+
 if __name__ == '__main__':
-    # pass
-    get_path('archive')
+    delete_mp3()
