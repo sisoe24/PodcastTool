@@ -385,7 +385,7 @@ class AudioFrame(tk.Frame):
                                           value=sample_frame_list,
                                           state='readonly')
         self._sample_frame.grid(column=1, row=3)
-        self._sample_frame.current(1)
+        self._sample_frame.current(0)
 
 
 class MainCore(tk.Frame):
