@@ -152,7 +152,7 @@ def get_file_date(file_path: str, date='', lesson_check='') -> str:
     # get last_mod_time
     mod_time = os.path.getmtime(file_path)
     if lesson_check:
-        human_date = str(datetime.datetime.fromtimestamp(mod_time))
+        human_date = str(datetime.datetime.fromtimestamp(create_time))
         date, _ = human_date.split(' ')
         return date
 
@@ -233,7 +233,7 @@ class HtmlFrame(tk.Frame):
 
     # HTML WIDGETS
     def _create_html_frame(self):
-        html_frame = ttk.Frame(self, width=300, height=210)
+        html_frame = ttk.Frame(self, width=300, height=90)
         # html_frame = tk.Frame(self, background='red', width=300, height=210)
         html_frame.grid(column=2, row=3, sticky=tk.N)
         html_frame.grid_propagate(False)
@@ -273,26 +273,26 @@ class HtmlFrame(tk.Frame):
         self._preview_btn.grid(column=1, row=2)
 
         #  ARCHIVE SECTION OF THE HTML FRAME
-        html_archive = [i.name for i in archive_files()]
+        # html_archive = [i.name for i in archive_files()]
 
-        archive_text = ttk.LabelFrame(html_frame, text='Archive: ')
-        archive_text.grid(column=0, columnspan=4, row=3, sticky=tk.W)
+        # archive_text = ttk.LabelFrame(html_frame, text='Archive: ')
+        # archive_text.grid(column=0, columnspan=4, row=3, sticky=tk.W)
 
-        combo_width = 30 if OS_SYSTEM == 'Mac' else 34
-        self._archive_combobox = ttk.Combobox(archive_text, value=html_archive,
-                                              width=combo_width)
-        self._archive_combobox.grid(column=0, columnspan=3, row=0, sticky=tk.W)
+        # combo_width = 30 if OS_SYSTEM == 'Mac' else 34
+        # self._archive_combobox = ttk.Combobox(archive_text, value=html_archive,
+        #                                       width=combo_width)
+        # self._archive_combobox.grid(column=0, columnspan=3, row=0, sticky=tk.W)
 
-        archive_copy = ttk.Button(archive_text, text='copia archivio',
-                                  command=self._copy_archive)
-        archive_copy.grid(column=2, row=1, pady=5, padx=5, sticky=tk.E)
+        # archive_copy = ttk.Button(archive_text, text='copia archivio',
+        #                           command=self._copy_archive)
+        # archive_copy.grid(column=2, row=1, pady=5, padx=5, sticky=tk.E)
 
-        del_archive_btn = ttk.Button(archive_text, text='cancella archivio',
-                                     command=delete_archive)
-        del_archive_btn.grid(column=0, row=1)
+        # del_archive_btn = ttk.Button(archive_text, text='cancella archivio',
+        #                              command=delete_archive)
+        # del_archive_btn.grid(column=0, row=1)
 
-        hr1 = ttk.Separator(html_frame, orient='horizontal')
-        hr1.grid(column=0, row=4, columnspan=4, pady=10, sticky=tk.EW)
+        # hr1 = ttk.Separator(html_frame, orient='horizontal')
+        # hr1.grid(column=0, row=4, columnspan=4, pady=10, sticky=tk.EW)
 
     def _html_status(self, status, color):
         """Show html status message."""
@@ -399,7 +399,7 @@ class MainCore(tk.Frame):
     valid_podcast = []
     path = ''
 
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent, audio, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.grid_propagate(False)
 
@@ -408,10 +408,10 @@ class MainCore(tk.Frame):
         self._text_box = tk.Text(parent, width=text_width, height=4,
                                  borderwidth=1, relief='sunken',
                                  font=('TkDefaultFont', text_font))
-        self._text_box.place(x=5, y=70)
+        self._text_box.place(x=5, y=90)
 
         self._error_frame = ttk.Frame(self, borderwidth=3, relief='sunken',
-                                      width=670, height=400)
+                                      width=670, height=360)
         self._error_frame.grid(column=0, row=2, rowspan=2, columnspan=2,
                                sticky=tk.N)
         self._error_frame.grid_propagate(False)
@@ -419,45 +419,41 @@ class MainCore(tk.Frame):
         self.test_value = tk.IntVar()
         test_btn = ttk.Checkbutton(parent, text='test mode',
                                    variable=self.test_value)
-        test_btn.place(x=10, y=10)
+        test_btn.place(x=7, y=40)
 
         self.select_btn = ttk.Button(parent, text='Seleziona file',
                                      command=self._get_podcast_files)
-        self.select_btn.place(x=575, y=37)
+        self.select_btn.focus_set()
+        self.select_btn.place(x=120, y=55)
 
         self._conferm_btn = ttk.Button(parent, text='Conferma e procedi',
                                        state='disabled', command=self._main)
-        self._conferm_btn.place(x=780, y=565)
+        self._conferm_btn.place(x=230, y=55)
 
         sign_img = ImageTk.PhotoImage(Image.open(get_image()[0]))
-        self._label_img = ttk.Label(parent, image=sign_img)
+        print(get_image()[0])
+        self._label_img = ttk.Label(
+            self._error_frame, image=sign_img, name='logo', width=500)
         self._label_img.image = sign_img
-        self._label_img.place(x=760, y=375)
-
-        my_logo = ImageTk.PhotoImage(Image.open(get_image()[3]))
-        self._logo_img = ttk.Label(self._error_frame,
-                                   name='logo', image=my_logo)
-        self._logo_img.image = my_logo
-        self._logo_img.place(x=129, y=10)
+        self._label_img.place(x=150, y=10)
 
         self.html = HtmlFrame(parent, width=300, height=100)
-        self.html.place(x=700, y=135)
+        self.html.place(x=390, y=0)
 
-        self.audio = AudioFrame(parent, width=300, height=100)
-        self.audio.place(x=700, y=40)
+        self.audio = audio
 
         progress_text = ttk.Label(parent, text='Progress:',
                                   style='label.TLabel')
-        progress_text.place(x=700, y=320)
+        progress_text.place(x=120, y=0)
 
         self.progress_var = tk.StringVar()
-        progress_status = ttk.Label(parent, textvariable=self.progress_var,)
-        progress_status.place(x=790, y=327)
+        # progress_status = ttk.Label(parent, textvariable=self.progress_var,)
+        # progress_status.place(x=150, y=20)
         # TODO: need maximum number from podcast files
         self.progress = ttk.Progressbar(parent, maximum=4,
                                         orient=tk.HORIZONTAL,
-                                        mode='indeterminate', length=300)
-        self.progress.place(x=700, y=350)
+                                        mode='indeterminate', length=200)
+        self.progress.place(x=120, y=25)
 
     def _get_podcast_files(self):
 
@@ -661,6 +657,7 @@ class MainCore(tk.Frame):
         if errors == 0 and self.valid_podcast:
             LOGGER.info('Nessun Errore!')
             self._conferm_btn['state'] = 'normal'
+            self._conferm_btn.focus_set()
             self._text_box['state'] = 'disabled'
             ok_img = ImageTk.PhotoImage(Image.open(get_image()[2]))
             self._label_img.configure(image=ok_img)
@@ -686,10 +683,14 @@ class MainCore(tk.Frame):
         set_bitrate = self.audio._bitrate.get()
         set_sample = self.audio._sample_frame.get().replace('Hz', '')
 
+        LOGGER.warning(f'set_bitrate: {set_bitrate}')
+        LOGGER.warning(f'set_sample: {set_sample}')
+
         if self.audio._watermark_toggle.get() == 0:
             watermark_n = int(self.audio._watermark.get())
         else:
             watermark_n = ''
+        LOGGER.warning(f'watermark_n: {watermark_n}')
 
         upload_files = [os.path.join(self.path, i)
                         for i in self.get_text_lines if i]
@@ -715,7 +716,6 @@ class MainCore(tk.Frame):
         self.progress_var.set('')
         [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
                                         ServerUploader.uploading_list)]
-        # HtmlGenerator(html_data).podcast_file()
         HtmlGenerator(html_data)
         self.progress.stop()
 
@@ -762,27 +762,55 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('Podcast Tools')
-        app_x = 1000
+        self.title('PodcastTool')
+        # app_x = 1000
+        app_x = 685
         app_y = 600
 
         style_1 = ttk.Style()
         style_1.theme_use('default')
         style_1.configure('label.TLabel', font=('TkDefaultFont', 19, 'bold'))
         # # position window in middle of the screen
-        # position_width = self.winfo_screenwidth() // 2 - (app_x // 2)
-        # position_height = self.winfo_screenheight() // 2 - (app_y // 2)
-        self.geometry(f'{app_x}x{app_y}-{0}+{500}')
+        position_width = self.winfo_screenwidth() // 2 - (app_x // 2)
+        position_height = self.winfo_screenheight() // 2 - (app_y // 2)
+        self.geometry(f'{app_x}x{app_y}-{position_width}+{position_height}')
         self.resizable(width=False, height=False)
 
-        self.main_frame = ttk.Frame(self, width=1000, height=600)
+        window = ttk.Notebook(self, width=1000, height=600)
+        # window.grid_propagate(False)
+
+        self.main_frame = ttk.Frame(window, width=1000, height=600)
         self.main_frame.grid(column=0, row=0)
         self.main_frame.grid_propagate(False)
+        window.add(self.main_frame, text='Main')
+        # window.pack()
 
+        self.audio_page = ttk.Frame(window, width=1000, height=600)
+        self.audio_page.grid(column=0, row=0)
+        self.audio_page.grid_propagate(False)
+        window.add(self.audio_page, text='Audio')
+
+        self.catalog_page = ttk.Frame(window, width=1000, height=600)
+        self.catalog_page.grid(column=0, row=0)
+        self.catalog_page.grid_propagate(False)
+        window.add(self.catalog_page, text='Catalogo Nomi')
+        catalogo_label = ttk.Label(
+            self.catalog_page, text='OPS :(\nWORK IN PROGRESS.',
+            font=('TkDefaultFont', 60, 'bold'))
+        catalogo_label.place(x=50, y=200)
+
+        audio = AudioFrame(self.audio_page)
+        audio.place(x=0, y=0)
+        audio_label = ttk.Label(
+            self.audio_page, text='OPS :(\nWORK IN PROGRESS.',
+            font=('TkDefaultFont', 60, 'bold'))
+        audio_label.place(x=50, y=200)
+
+        window.pack()
         self.labels()
-
-        self.error_frame = MainCore(self.main_frame, width=670, height=390)
-        self.error_frame.place(x=5, y=200)
+        self.error_frame = MainCore(
+            self.main_frame, audio, width=670, height=360)
+        self.error_frame.place(x=5, y=210)
 
     def labels(self):
         default_size = 30
@@ -791,7 +819,7 @@ class MainPage(tk.Tk):
         style.theme_use('default')
         style.configure('options.TLabel', font=('TkDefaultFont', os_size))
 
-        default_size1 = 19
+        default_size1 = 15
         os_size1 = default_size1 if OS_SYSTEM == 'Mac' else default_size1 - 6
         style_1 = ttk.Style()
         style_1.theme_use('default')
@@ -807,11 +835,8 @@ class MainPage(tk.Tk):
         ttk.Label(self.main_frame, text='Options',
                   style='options.TLabel').place(x=800, y=0)
 
-        # ttk.Label(self.main_frame, text='PodcastTool 2',
-        #           style='options.TLabel').place(x=250, y=0)
-
         ttk.Label(self.main_frame, text='Podcast files:',
-                  style='label.TLabel').place(x=5, y=39)
+                  style='label.TLabel').place(x=5, y=65)
 
 
 if __name__ == '__main__':
