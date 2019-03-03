@@ -8,30 +8,33 @@ import datetime
 import subprocess
 
 
-logger = logging.getLogger('podcast_tool.utlity')
+LOGGER = logging.getLogger('podcast_tool.utlity')
 
 
 def profile(func):
     """Write to log the profiling of a function."""
     # XXX SortKey not working on linux
-    import io
-    import pstats
-    import cProfile
-    from pstats import SortKey
+    try:
+        import io
+        import pstats
+        import cProfile
+        from pstats import SortKey
 
-    def inner(*args, **kwargs):
-        pr = cProfile.Profile()
-        pr.enable()
-        value = func(*args, **kwargs)
-        pr.disable()
-        s = io.StringIO()
-        sortby = SortKey.CUMULATIVE
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        with open(f'{get_path("log")}/profile.log', 'a') as f:
-            f.write(s.getvalue())
-        return value
-    return inner
+        def inner(*args, **kwargs):
+            pr = cProfile.Profile()
+            pr.enable()
+            value = func(*args, **kwargs)
+            pr.disable()
+            s = io.StringIO()
+            sortby = SortKey.CUMULATIVE
+            ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+            ps.print_stats()
+            with open(f'{get_path("log")}/profile.log', 'a') as f:
+                f.write(s.getvalue())
+            return value
+        return inner
+    except Exception as e:
+        LOGGER.info(f'no profiling: {e}')
 
 
 def total_time(func):
@@ -61,7 +64,7 @@ def get_path(directory: str) -> str:
     if directory in ['archive', 'log'] and not os.path.exists(new_path):
         os.mkdir(new_path)
     elif not os.path.exists(new_path):
-        logger.critical('path not found')
+        LOGGER.critical('path not found')
         exit()
     return new_path
 
@@ -74,22 +77,22 @@ def catalog_names() -> str:
         os.path.dirname(__file__), 'catalog_names.json')
     try:
         with open(json_file) as f:
-            logger.debug(f'parsing json file: {json_file}')
+            LOGGER.debug(f'parsing json file: {json_file}')
             json_data = json.load(f)
             return json_data
     except FileNotFoundError:
         print('no json file found!', json_file)
-        logger.warning(f'No json file found: {json_file}')
+        LOGGER.warning(f'No json file found: {json_file}')
         exit()
 
 
-def delete_mp3():
+def test_mode():
     """Clean of mp3 files for testing."""
     if str(pathlib.Path().home()) == '/Users/virgilsisoe':
         subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
-    else:
-        pass
+        return 'no_upload'
+    return None
 
 
 if __name__ == '__main__':
-    delete_mp3()
+    test_mode()
