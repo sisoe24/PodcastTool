@@ -417,10 +417,6 @@ class MainCore(tk.Frame):
         self._error_frame.grid_propagate(False)
 
         self.test_value = tk.IntVar()
-
-        # XXX test mode
-        self.test_value.set(1)
-
         test_btn = ttk.Checkbutton(parent, text='test mode',
                                    variable=self.test_value)
         test_btn.place(x=10, y=10)
