@@ -38,13 +38,20 @@ LOGGER.setLevel(logging.DEBUG)
 
 FORMATTER = logging.Formatter(
     '%(filename)-20s %(funcName)-25s %(levelname)-10s %(message)s')
+CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
 CH_FORMATTER = logging.Formatter(
     '[%(levelname)s] - %(module)s:%(lineno)d:%(funcName)s() - %(message)s')
+
+CONSOLE_LOG = logging.StreamHandler()
+CONSOLE_LOG.setLevel(logging.INFO)
+CONSOLE_LOG.setFormatter(CONSOLE)
+LOGGER.addHandler(CONSOLE_LOG)
 
 CRITICAL_LOG = logging.StreamHandler()
 CRITICAL_LOG.setLevel(logging.WARNING)
 CRITICAL_LOG.setFormatter(CH_FORMATTER)
 LOGGER.addHandler(CRITICAL_LOG)
+
 
 LOG_PATH = utility.get_path('log')
 
@@ -410,6 +417,10 @@ class MainCore(tk.Frame):
         self._error_frame.grid_propagate(False)
 
         self.test_value = tk.IntVar()
+
+        # XXX test mode
+        self.test_value.set(1)
+
         test_btn = ttk.Checkbutton(parent, text='test mode',
                                    variable=self.test_value)
         test_btn.place(x=10, y=10)
@@ -465,6 +476,7 @@ class MainCore(tk.Frame):
 
         open_file = filedialog.askopenfilename(initialdir=initial_dir)
         check_folder(open_file)
+        LOGGER.info('File Selezionati.')
 
         self.path = os.path.dirname(open_file)
 
@@ -651,6 +663,7 @@ class MainCore(tk.Frame):
                 errors += 1
 
         if errors == 0 and self.valid_podcast:
+            LOGGER.info('Nessun Errore!')
             self._conferm_btn['state'] = 'normal'
             self._text_box['state'] = 'disabled'
             ok_img = ImageTk.PhotoImage(Image.open(get_image()[2]))
@@ -662,9 +675,6 @@ class MainCore(tk.Frame):
             self._label_img.configure(image=x_img)
             self._label_img.image = x_img
             self._error_refresh()
-
-    def test_mode(self):
-        pass
 
     def _main(self):
         """Common audio birate.
@@ -690,6 +700,8 @@ class MainCore(tk.Frame):
 
         self.progress.start()
         for file in enumerate(upload_files, 1):
+            LOGGER.info(
+                f'Creazione podcast {os.path.basename(file[1])} in corso')
             self.progress_var.set(f'Creazione podcast n{file[0]} in corso..')
             self.update()
             podcast = PodcastGenerator(file[1],
@@ -807,5 +819,6 @@ class MainPage(tk.Tk):
 
 
 if __name__ == '__main__':
+    LOGGER.info('Applicazione Partita')
     APP_TOOL = MainPage()
     APP_TOOL.mainloop()
