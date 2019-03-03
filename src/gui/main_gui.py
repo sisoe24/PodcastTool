@@ -364,7 +364,6 @@ class AudioFrame(tk.Frame):
                              padx=25, row=1, sticky=tk.E)
 
         self._watermark_toggle = tk.StringVar()
-        self._watermark_toggle = tk.IntVar(value=1)
         self._watermark_auto = ttk.Checkbutton(audio,
                                                variable=self._watermark_toggle,
                                                command=self._get_watermark_num)
@@ -457,6 +456,7 @@ class MainCore(tk.Frame):
         self.progress_var = tk.StringVar()
         progress_status = ttk.Label(parent, textvariable=self.progress_var,)
         progress_status.place(x=790, y=327)
+
         # TODO: need maximum number from podcast files
         self.progress = ttk.Progressbar(parent, maximum=4,
                                         orient=tk.HORIZONTAL,
