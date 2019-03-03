@@ -431,7 +431,6 @@ class MainCore(tk.Frame):
         self._conferm_btn.place(x=230, y=55)
 
         sign_img = ImageTk.PhotoImage(Image.open(get_image()[0]))
-        print(get_image()[0])
         self._label_img = ttk.Label(
             self._error_frame, image=sign_img, name='logo', width=500)
         self._label_img.image = sign_img
@@ -683,14 +682,10 @@ class MainCore(tk.Frame):
         set_bitrate = self.audio._bitrate.get()
         set_sample = self.audio._sample_frame.get().replace('Hz', '')
 
-        LOGGER.warning(f'set_bitrate: {set_bitrate}')
-        LOGGER.warning(f'set_sample: {set_sample}')
-
         if self.audio._watermark_toggle.get() == 0:
             watermark_n = int(self.audio._watermark.get())
         else:
             watermark_n = ''
-        LOGGER.warning(f'watermark_n: {watermark_n}')
 
         upload_files = [os.path.join(self.path, i)
                         for i in self.get_text_lines if i]
@@ -783,41 +778,53 @@ class MainPage(tk.Tk):
         self.main_frame.grid(column=0, row=0)
         self.main_frame.grid_propagate(False)
         window.add(self.main_frame, text='Main')
-        # window.pack()
+        self.labels()
 
         self.audio_page = ttk.Frame(window, width=1000, height=600)
         self.audio_page.grid(column=0, row=0)
         self.audio_page.grid_propagate(False)
         window.add(self.audio_page, text='Audio')
 
-        self.catalog_page = ttk.Frame(window, width=1000, height=600)
-        self.catalog_page.grid(column=0, row=0)
-        self.catalog_page.grid_propagate(False)
-        window.add(self.catalog_page, text='Catalogo Nomi')
-        catalogo_label = ttk.Label(
-            self.catalog_page, text='OPS :(\nWORK IN PROGRESS.',
-            font=('TkDefaultFont', 60, 'bold'))
-        catalogo_label.place(x=50, y=200)
+        self.ops_image(self.audio_page)
 
         audio = AudioFrame(self.audio_page)
         audio.place(x=0, y=0)
         audio_label = ttk.Label(
             self.audio_page, text='OPS :(\nWORK IN PROGRESS.',
-            font=('TkDefaultFont', 60, 'bold'))
-        audio_label.place(x=50, y=200)
+            style='options.TLabel')
+        audio_label.place(x=50, y=100)
+
+        self.catalog_page = ttk.Frame(window, width=1000, height=600)
+        self.catalog_page.grid(column=0, row=0)
+        self.catalog_page.grid_propagate(False)
+        window.add(self.catalog_page, text='Catalogo Nomi')
+
+        self.ops_image(self.catalog_page)
+
+        catalogo_label = ttk.Label(
+            self.catalog_page, text='OPS :(\nWORK IN PROGRESS.',
+            style='options.TLabel')
+        catalogo_label.place(x=50, y=100)
 
         window.pack()
-        self.labels()
         self.error_frame = MainCore(
             self.main_frame, audio, width=670, height=360)
         self.error_frame.place(x=5, y=210)
+
+    def ops_image(self, parent):
+        sorry_img = ImageTk.PhotoImage(Image.open(get_image()[5]))
+        self._label_img = ttk.Label(
+            parent, image=sorry_img, name='logo')
+        self._label_img.image = sorry_img
+        self._label_img.place(x=150, y=60)
 
     def labels(self):
         default_size = 30
         os_size = default_size if OS_SYSTEM == 'Mac' else default_size - 6
         style = ttk.Style()
         style.theme_use('default')
-        style.configure('options.TLabel', font=('TkDefaultFont', os_size))
+        style.configure('options.TLabel', font=(
+            'TkDefaultFont', os_size, 'bold'))
 
         default_size1 = 15
         os_size1 = default_size1 if OS_SYSTEM == 'Mac' else default_size1 - 6
