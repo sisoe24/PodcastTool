@@ -462,6 +462,32 @@ class MainCore(tk.Frame):
             initial_dir = os.path.join(pathlib.Path(
                 os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
         else:
+            initial_dir = os.path.join(
+                os.environ['TEST_FILES_REAL'], 'ALP/ABLO')
+            # initial_dir = os.path.join(
+            #     os.environ['TEST_FILES_REAL'], 'EMP/SCE4')
+
+        open_file = filedialog.askopenfilenames(initialdir=initial_dir)
+        check_folder(open_file[0])
+        LOGGER.info('File Selezionati.')
+
+        self.path = os.path.dirname(open_file[0])
+        if len(open_file) == 1:
+            self.valid_podcast = [i for i in _match_lesson(open_file[0])]
+        elif len(open_file) > 1:
+            self.valid_podcast = [os.path.basename(i) for i in open_file]
+
+        if not self.valid_podcast:
+            self._message_box('File invalido', exit_script='yes')
+        self.insert_text()
+        self._check_for_errors()
+
+    def _get_podcast_files1(self):
+
+        if OS_SYSTEM == 'Linux':
+            initial_dir = os.path.join(pathlib.Path(
+                os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
+        else:
             # initial_dir = os.path.join(
             # os.environ['TEST_FILES_FAKE'], 'ALP/ABLO')
             initial_dir = os.path.join(
