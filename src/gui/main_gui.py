@@ -93,7 +93,9 @@ def _match_lesson(podcast_file):
 
 def check_folder(podcast_folder):
     """Check if the folder name is correct otherwise quit."""
-    path = os.path.dirname(podcast_folder)
+    # on linux if podcast_folder is empty, it will return a tuple
+    # so need to convert in string before to catch the error
+    path = os.path.dirname(str(podcast_folder))
     folder_name = os.path.split(path)[1][:3]
     LOGGER.debug(f'checking if folder name is valid: {folder_name}')
 
