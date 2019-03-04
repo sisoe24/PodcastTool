@@ -2,6 +2,10 @@
 
 # desktop app will call this script to launch the gui
 
+#resize terminal window 
+printf '\e[8;30;65t'
+
+
 DIR="$( dirname ${BASH_SOURCE[0]} )"
 
 UPDATE=$( cd $DIR && git pull )
