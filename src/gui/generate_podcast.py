@@ -10,6 +10,8 @@ import pathlib
 import logging
 import datetime
 
+from tkinter import messagebox
+
 import pydub
 import regex
 import yattag
@@ -585,9 +587,18 @@ class ServerUploader:
             try:
                 ftp.cwd(server_p)
             except ftplib.error_perm:
-                LOGGER.debug(f'creating directory: {server_p}')
-                ftp.mkd(server_p)
-                ftp.cwd(server_p)
+                dir_name = os.path.basename(server_p)
+                user_prompt = messagebox.askyesno(
+                    title='PodcastTool',
+                    message=f'Cartella [{dir_name}] non esiste sul server.\nVuoi crearla?')
+                if user_prompt:
+                    LOGGER.debug(f'creating directory: {server_p}')
+                    ftp.mkd(server_p)
+                    ftp.cwd(server_p)
+                else:
+                    messagebox.showinfo(title='PodcastTool',
+                                        message='Impossibile procedere.\nCreare la cartella manualmente e riprovare')
+                    exit('Exit App')
 
             LOGGER.info('Carico podcast sul server in corso...')
             with open(self.uploading_file, 'rb') as upload:
