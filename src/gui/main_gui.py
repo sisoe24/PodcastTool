@@ -793,9 +793,10 @@ class MainPage(tk.Tk):
         style_1.theme_use('default')
         style_1.configure('label.TLabel', font=('TkDefaultFont', 19, 'bold'))
         # # position window in middle of the screen
-        position_width = self.winfo_screenwidth() // 2 - (app_x // 2)
-        position_height = self.winfo_screenheight() // 2 - (app_y // 2)
-        self.geometry(f'{app_x}x{app_y}-{position_width}+{position_height}')
+        position_width = self.winfo_screenwidth()
+        # position_height = self.winfo_screenheight() // 2 - (app_y // 2)
+        self.geometry(f'{app_x}x{app_y}-{position_width}+{0}')
+        # self.geometry(f'{app_x}x{app_y}-{position_width}+{position_height}')
         self.resizable(width=False, height=False)
 
         window = ttk.Notebook(self, width=1000, height=600)
