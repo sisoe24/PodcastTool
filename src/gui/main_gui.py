@@ -450,10 +450,10 @@ class MainCore(tk.Frame):
         # progress_status = ttk.Label(parent, textvariable=self.progress_var,)
         # progress_status.place(x=150, y=20)
         # TODO: need maximum number from podcast files
-        self.progress = ttk.Progressbar(parent, maximum=4,
-                                        orient=tk.HORIZONTAL,
-                                        mode='indeterminate', length=200)
-        self.progress.place(x=120, y=25)
+        # self.progress = ttk.Progressbar(parent, maximum=4,
+        #                                 orient=tk.HORIZONTAL,
+        #                                 mode='indeterminate', length=200)
+        # self.progress.place(x=120, y=25)
 
     def _get_podcast_files(self):
 
