@@ -1,4 +1,4 @@
-"""Need major refrectoring here."""
+"""GUI interface of PodcastTool."""
 import os
 import pathlib
 import logging
@@ -220,7 +220,7 @@ def get_image():
     logo =        index 3
 
     Returns:
-        [tuple] -- tuple with 4 elements
+        [tuple] -- tuple list of images absolute path
 
     """
     img_path = pathlib.Path(os.path.join(
