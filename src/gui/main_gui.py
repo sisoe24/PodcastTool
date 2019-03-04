@@ -236,7 +236,6 @@ class HtmlFrame(tk.Frame):
     # HTML WIDGETS
     def _create_html_frame(self):
         html_frame = ttk.Frame(self, width=300, height=90)
-        # html_frame = tk.Frame(self, background='red', width=300, height=210)
         html_frame.grid(column=2, row=3, sticky=tk.N)
         html_frame.grid_propagate(False)
 
@@ -342,7 +341,6 @@ class AudioFrame(tk.Frame):
             self._watermark['state'] = 'disabled'
 
     def _create_audio_frame(self):
-        # audio = tk.Frame(self, background='green', width=300, height=100)
         audio = ttk.Frame(self, width=300, height=100)
         audio.grid(column=2, row=2, rowspan=2, sticky=tk.N)
         audio.grid_propagate(False)
