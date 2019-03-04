@@ -301,13 +301,13 @@ class HtmlFrame(tk.Frame):
         self.status_var.set(status)
         self._status_display.configure(background=color)
 
-    def _copy_archive(self):
-        """Copy the current selected archive html page."""
-        selected_html = self._archive_combobox.get()
-        file_path = os.path.join(utility.get_path('archive'), selected_html)
-        with open(file_path) as file:
-            pyperclip.copy(file.read())
-        self.bell()
+    # def _copy_archive(self):
+    #     """Copy the current selected archive html page."""
+    #     selected_html = self._archive_combobox.get()
+    #     file_path = os.path.join(utility.get_path('archive'), selected_html)
+    #     with open(file_path) as file:
+    #         pyperclip.copy(file.read())
+    #     self.bell()
 
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
@@ -316,7 +316,8 @@ class HtmlFrame(tk.Frame):
         self._html_status('Copiato', 'RoyalBlue1')
         self.bell()
 
-    def _open_web(self, page: str):
+    @staticmethod
+    def _open_web(page: str):
         """Open website page directly."""
         if page == 'web':
             open_link = 'http://www.fonderiesonore.it/elearning/'
