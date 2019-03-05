@@ -1,5 +1,6 @@
 """Reusable utility functions."""
 import os
+import sys
 import json
 import time
 import pathlib
@@ -7,34 +8,36 @@ import logging
 import datetime
 import subprocess
 
+from main_gui import OS_SYSTEM
 
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
 
 def profile(func):
     """Write to log the profiling of a function."""
-    # XXX SortKey not working on linux
-    try:
-        import io
-        import pstats
-        import cProfile
-        from pstats import SortKey
+    # XXX SortKey class is not present on the pstats.py on linux
+    # so for now I am including it with the app and use this as a fallback
+    # need to find cleaner solution
+    if OS_SYSTEM == 'Linux':
+        sys.path.append(os.path.dirname(__file__))
+    import io
+    import pstats
+    import cProfile
+    from pstats import SortKey
 
-        def inner(*args, **kwargs):
-            pr = cProfile.Profile()
-            pr.enable()
-            value = func(*args, **kwargs)
-            pr.disable()
-            s = io.StringIO()
-            sortby = SortKey.CUMULATIVE
-            ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-            ps.print_stats()
-            with open(f'{get_path("log")}/profile.log', 'a') as f:
-                f.write(s.getvalue())
-            return value
-        return inner
-    except Exception as e:
-        LOGGER.info(f'no profiling: {e}')
+    def inner(*args, **kwargs):
+        pr = cProfile.Profile()
+        pr.enable()
+        value = func(*args, **kwargs)
+        pr.disable()
+        s = io.StringIO()
+        sortby = SortKey.CUMULATIVE
+        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps.print_stats()
+        with open(f'{get_path("log")}/profile.log', 'a') as f:
+            f.write(s.getvalue())
+        return value
+    return inner
 
 
 def total_time(func):
@@ -95,4 +98,5 @@ def test_mode():
 
 
 if __name__ == '__main__':
-    test_mode()
+    # test_mode()
+    get_path('PodcastTool')
