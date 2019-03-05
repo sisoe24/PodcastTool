@@ -18,4 +18,4 @@ fi
 APP=$DIR/src/gui/main_gui.py
 LAUNCH_APP=$( which python3.7 ) $APP
 
-echo $LAUNCH_APP >> FATAL_ERROR.txt
+echo "$LAUNCH_APP" >> FATAL_ERROR.txt
