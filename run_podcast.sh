@@ -24,7 +24,7 @@ APP=$DIR/src/gui/main_gui.py
 ERROR_LOG=$DIR/log/FATAL_ERROR.txt
 [ -f $ERROR_LOG ] && rm -f $ERROR_LOG
 
-$( which python3.7 ) $APP 2> $ERROR_LOG
+$( which python3.7 ) $APP 2>&1 $ERROR_LOG
 
 if [ -s $ERROR_LOG ]; then
   sed -i '1s/^/FATAL ERROR\n\n' $ERROR_LOG
