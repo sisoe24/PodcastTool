@@ -310,8 +310,8 @@ class HtmlFrame(tk.Frame):
 
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
-        with open(last_archive_created()) as file:
-            pyperclip.copy(file.read())
+        with open(last_archive_created()) as html_file:
+            pyperclip.copy(html_file.read())
         self._html_status('Copiato', 'RoyalBlue1')
         self.bell()
 
@@ -714,28 +714,29 @@ class MainCore(tk.Frame):
         else:
             watermark_n = ''
 
-        upload_files = [os.path.join(self.path, i)
-                        for i in self.get_text_lines if i]
+        valid_files = [os.path.join(self.path, i)
+                       for i in self.get_text_lines if i]
 
         self.progress.start()
-        for file in enumerate(upload_files, 1):
-            LOGGER.info(
-                f'Creazione podcast {os.path.basename(file[1])} in corso')
-            self.progress_var.set(f'Creazione podcast n{file[0]} in corso..')
+        for valid_file in enumerate(valid_files, 1):
+            LOGGER.info(f'Creazione podcast {os.path.basename(valid_file[1])}')
+            # self.progress_var.set(
+            #     f'Creazione podcast n{valid_file[0]} in corso..')
             self.update()
-            podcast = PodcastGenerator(file[1],
+            podcast = PodcastGenerator(valid_file[1],
                                        bitrate=set_bitrate,
                                        sample_rate=set_sample,
                                        watermarks=watermark_n)
         podcast_list = podcast.uploading_list
         html_data = podcast.html_page_info
 
-        for file in enumerate(podcast_list, 1):
-            self.progress_var.set(f'Carico podcast n{file[0]} sul server..')
+        for podcast_file in enumerate(podcast_list, 1):
+            # self.progress_var.set(
+            #     f'Carico podcast n{podcast_file[0]} sul server..')
             self.update()
-            ServerUploader(file[1], self.test_value.get())
+            ServerUploader(podcast_file[1], self.test_value.get())
 
-        self.progress_var.set('')
+        # self.progress_var.set('')
         [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
                                         ServerUploader.uploading_list)]
         HtmlGenerator(html_data)
