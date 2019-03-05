@@ -16,4 +16,11 @@ else
 fi
 
 APP=$DIR/src/gui/main_gui.py
-$( which python3.7 ) $APP
+# catch fatal error that won't start the app
+ERROR_LOG=$DIR/log/FATAL_ERROR.txt
+$( which python3.7 ) $APP 2> $ERROR_LOG
+
+if [ -s $ERROR_LOG ]; then
+  sed -i '1s/^/FATAL ERROR\n\n' $ERROR_LOG
+  gedit $ERROR_LOG
+else
