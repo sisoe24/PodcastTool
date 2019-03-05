@@ -876,5 +876,9 @@ class MainPage(tk.Tk):
 
 if __name__ == '__main__':
     LOGGER.info('Applicazione Partita')
-    APP_TOOL = MainPage()
-    APP_TOOL.mainloop()
+    try:
+        APP_TOOL = MainPage()
+        APP_TOOL.mainloop()
+    except Exception as e:
+        with open('fatal_error.txt', 'w') as file:
+            file.write(e)
