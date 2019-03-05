@@ -14,6 +14,8 @@ else
   echo "Update in progress.. this should take just a second"
   xdg-open $DIR/CHANGELOG.rst
 fi
-APP=$DIR/src/gui/main_gui.py
-$( which python3.7 ) $APP
 
+APP=$DIR/src/gui/main_gui.py
+LAUNCH_APP=$( which python3.7 ) $APP
+
+echo $LAUNCH_APP >> FATAL_ERROR.txt
