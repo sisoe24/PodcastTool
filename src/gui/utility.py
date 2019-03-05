@@ -8,18 +8,14 @@ import logging
 import datetime
 import subprocess
 
-from platform import system
-
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
 
 def profile(func):
     """Write to log the profiling of a function."""
     # XXX SortKey class is not present on the pstats.py on linux
-    # so for now I am including it with the app and use this as a fallback
+    # so for now I am including pstats.py with the app to use as a fallback
     # need to find cleaner solution
-    if system() == 'Linux':
-        sys.path.append(os.path.dirname(__file__))
     import io
     import pstats
     import cProfile
