@@ -1,5 +1,6 @@
 """GUI interface of PodcastTool."""
 import os
+import sys
 import pathlib
 import logging
 import datetime
@@ -34,6 +35,7 @@ load_dotenv(find_dotenv())
 
 # ================== LOGGING ================== #
 LOGGER = logging.getLogger('podcast_tool')
+
 LOGGER.setLevel(logging.DEBUG)
 
 FORMATTER = logging.Formatter(
@@ -42,12 +44,12 @@ CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
 CH_FORMATTER = logging.Formatter(
     '[%(levelname)s] - %(module)s:%(lineno)d:%(funcName)s() - %(message)s')
 
-CONSOLE_LOG = logging.StreamHandler()
+CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
 CONSOLE_LOG.setLevel(logging.INFO)
 CONSOLE_LOG.setFormatter(CONSOLE)
 LOGGER.addHandler(CONSOLE_LOG)
 
-CRITICAL_LOG = logging.StreamHandler()
+CRITICAL_LOG = logging.StreamHandler(stream=sys.stdout)
 CRITICAL_LOG.setLevel(logging.WARNING)
 CRITICAL_LOG.setFormatter(CH_FORMATTER)
 LOGGER.addHandler(CRITICAL_LOG)
