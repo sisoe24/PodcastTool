@@ -19,14 +19,14 @@ APP=$DIR/src/gui/main_gui.py
 # create log directory if doesnt already exists
 ! [ -d $DIR/log ] && mkdir $DIR/log
 
-# catch fatal error that won't start the app
-# if file exists already from last session then delete
 ERROR_LOG=$DIR/log/FATAL_ERROR.txt
+# if file exists already from last session then delete
 [ -f $ERROR_LOG ] && rm -f $ERROR_LOG
 
 $( which python3.7 ) $APP 2>&1 $ERROR_LOG
 
+# show fatal error that won't start the app
 if [ -s $ERROR_LOG ]; then
-  sed -i '1s/^/FATAL ERROR\n\n' $ERROR_LOG
+  sed -i '1s/^/FATAL ERROR\n\n/' $ERROR_LOG
   gedit $ERROR_LOG
 fi
