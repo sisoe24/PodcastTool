@@ -81,6 +81,7 @@ def _match_lesson(podcast_file):
         LOGGER.debug(f'extracting lesson number: {lezione_search}')
     except AttributeError:
         LOGGER.critical('something went totally wrong no match found')
+        INFO_LOGGER.critical('Controlla log/errors.log')
         exit()
 
     for file in sorted(path.parent.glob('*wav')):
@@ -108,6 +109,7 @@ def check_folder(podcast_folder):
     if folder_name not in COURSES_NAMES:
         msg = f'Nome cartella sbagliato: {folder_name}.'
         LOGGER.critical(f'wrong folder name {folder_name}')
+        INFO_LOGGER.critical('Controlla log/errors.log')
         messagebox.showerror(title='Fatal Error', message=msg)
         exit()
 
@@ -888,5 +890,5 @@ if __name__ == '__main__':
         APP_TOOL = MainPage()
         APP_TOOL.mainloop()
     except Exception as e:
-        INFO_LOGGER.error('Errore app compilation. controlla log/errors.log')
         LOGGER.critical(str(e))
+        INFO_LOGGER.error('Errore app compilation. controlla log/errors.log')
