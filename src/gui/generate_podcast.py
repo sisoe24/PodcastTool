@@ -22,6 +22,7 @@ import utility
 
 TEST_MODE = utility.test_mode()
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
+INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
 
 class PodcastParser:
@@ -232,7 +233,7 @@ class PodcastGenerator(PodcastParser):
                  bitrate='64k', sample_rate='22050', watermarks=''):
         """Parse and create the podcast file."""
         super().__init__(audio_file)
-        LOGGER.info('Estrago codici dal nome file...')
+        INFO_LOGGER.info('Estrago codici dal nome file...')
         self.course = self.course_name
         self.teacher = self.teacher_name
         self.audio_file = audio_file
@@ -283,10 +284,10 @@ class PodcastGenerator(PodcastParser):
         avoid going to the process of re-creating the podcast from scratch
         and instead directly jumping to the uploading process.
         """
-        LOGGER.info('Controllo se podcast esiste già...')
+        INFO_LOGGER.info('Controllo se podcast esiste già...')
         podcast_mp3 = os.path.join(self._mp3_path(), self.create_hash_name)
         if os.path.exists(podcast_mp3):
-            LOGGER.info('Podcast esiste gia! salto creazione.')
+            INFO_LOGGER.info('Podcast esiste gia! salto creazione.')
             self.uploading_list.append(podcast_mp3)
 
             # get lenght of mp3 file in milliseconds
@@ -308,6 +309,7 @@ class PodcastGenerator(PodcastParser):
                 rframe = wave_file.getframerate()
         except Exception as error:
             LOGGER.critical(f'{error} - probably not a wave file!')
+            INFO_LOGGER.critical('Controlla log/errors.log')
             exit()
 
         # amount in seconds
@@ -347,7 +349,7 @@ class PodcastGenerator(PodcastParser):
         divide by n. Thus is likely that the cuts are going to be in te middle
         of words. Want to be able to detect silence and cut only there.
         """
-        LOGGER.info('Suddivido podcast file in corso...')
+        INFO_LOGGER.info('Suddivido podcast file in corso...')
         song = pydub.AudioSegment.from_wav(self.audio_file)
         LOGGER.debug(f'initialize pydub AudioSegment: {song}')
 
@@ -480,9 +482,9 @@ class PodcastGenerator(PodcastParser):
     @utility.profile
     def _merge_audio(self):
         """Merge all the mp3 files from tmp folder into the final podcast."""
-        LOGGER.info(
+        INFO_LOGGER.info(
             'Unisco e converto i file audio per creare podcast finale...')
-        LOGGER.info('...ci puo volere un po (da 30 a 50 secondi)')
+        INFO_LOGGER.info('...ci puo volere un po (da 30 a 50 secondi)')
         # see pydub documentation of what is empty()
         podcast_segment = pydub.AudioSegment.empty()
         for sound in self._create_audiosegment():
@@ -555,6 +557,7 @@ class ServerUploader:
         except Exception as error:
             LOGGER.critical(
                 f'Problemi a caricare file: {error} {self.uploading_file}')
+            INFO_LOGGER.critical('Controlla log/errors.log')
 
     def __str__(self):
         return os.path.basename(self.uploading_file)
@@ -600,15 +603,16 @@ class ServerUploader:
                                         message='Impossibile procedere.\nCreare la cartella manualmente e riprovare')
                     exit('Exit App')
 
-            LOGGER.info('Carico podcast sul server in corso...')
+            INFO_LOGGER.info('Carico podcast sul server in corso...')
             with open(self.uploading_file, 'rb') as upload:
-                LOGGER.info('... ci puo volere un po...')
+                INFO_LOGGER.info('... ci puo volere un po...')
                 if not TEST_MODE:
                     status = ftp.storbinary(f'STOR {self.__str__()}', upload)
+                    INFO_LOGGER.info(status)
                     LOGGER.debug(f'status: {status}')
                 else:
                     print('<-test uploading->', )
-                    print('uploading_file:', self.uploading_file, 'in:', ftp.pwd())
+                    print('uploading file:', self.uploading_file, 'in:', ftp.pwd())
         LOGGER.debug(f'uploaded file to server: {self.uploading_list}')
 
     @property
@@ -643,7 +647,7 @@ class HtmlGenerator:
         Css style file is located in the server ../../standard/style/
         """
         LOGGER.debug(f'generating html page info from dict {self.html_data}')
-        LOGGER.info('Pagina html generata')
+        INFO_LOGGER.info('Pagina html generata')
         doc, tag, text = yattag.Doc().tagtext()
         doc.stag('hr')
 
