@@ -23,7 +23,7 @@ ERROR_LOG=$DIR/log/FATAL_ERROR.txt
 # if file exists already from last session then delete
 [ -f $ERROR_LOG ] && rm -f $ERROR_LOG
 
-$( which python3.7 ) $APP 2>&1 $ERROR_LOG
+$( which python3.7 ) $APP 2> $ERROR_LOG
 
 # show fatal error that won't start the app
 if [ -s $ERROR_LOG ]; then
