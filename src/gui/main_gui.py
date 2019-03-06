@@ -40,27 +40,31 @@ LOGGER.setLevel(logging.DEBUG)
 
 FORMATTER = logging.Formatter(
     '%(filename)-20s %(funcName)-25s %(levelname)-10s %(message)s')
-CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
 CH_FORMATTER = logging.Formatter(
     '[%(levelname)s] - %(module)s:%(lineno)d:%(funcName)s() - %(message)s')
 
-CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
-CONSOLE_LOG.setLevel(logging.INFO)
-CONSOLE_LOG.setFormatter(CONSOLE)
-LOGGER.addHandler(CONSOLE_LOG)
+LOG_PATH = utility.get_path('log')
 
-CRITICAL_LOG = logging.StreamHandler(stream=sys.stdout)
+CRITICAL_LOG = logging.FileHandler(f'{LOG_PATH}/errors.log', 'w')
 CRITICAL_LOG.setLevel(logging.WARNING)
 CRITICAL_LOG.setFormatter(CH_FORMATTER)
 LOGGER.addHandler(CRITICAL_LOG)
-
-
-LOG_PATH = utility.get_path('log')
 
 DEBUG_LOW = logging.FileHandler(f'{LOG_PATH}/debug_low.log', 'w')
 DEBUG_LOW.setLevel(logging.DEBUG)
 DEBUG_LOW.setFormatter(FORMATTER)
 LOGGER.addHandler(DEBUG_LOW)
+
+INFO_LOGGER = logging.getLogger('status_app')
+INFO_LOGGER.setLevel(logging.INFO)
+CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
+
+CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
+CONSOLE_LOG.setLevel(logging.INFO)
+CONSOLE_LOG.setFormatter(CONSOLE)
+
+INFO_LOGGER.addHandler(CONSOLE_LOG)
+
 
 COURSES_NAMES = utility.catalog_names()['corsi'].keys()
 TEACHERS_NAMES = utility.catalog_names()['docenti'].keys()
@@ -470,7 +474,7 @@ class MainCore(tk.Frame):
 
         open_file = filedialog.askopenfilenames(initialdir=initial_dir)
         check_folder(open_file[0])
-        LOGGER.info('File Selezionati.')
+        INFO_LOGGER.info('File Selezionati.')
 
         self.path = os.path.dirname(open_file[0])
         if len(open_file) == 1:
@@ -496,7 +500,7 @@ class MainCore(tk.Frame):
 
         open_file = filedialog.askopenfilename(initialdir=initial_dir)
         check_folder(open_file)
-        LOGGER.info('File Selezionati.')
+        INFO_LOGGER.info('File Selezionati.')
 
         self.path = os.path.dirname(open_file)
 
@@ -683,7 +687,7 @@ class MainCore(tk.Frame):
                 errors += 1
 
         if errors == 0 and self.valid_podcast:
-            LOGGER.info('Nessun Errore!')
+            INFO_LOGGER.info('Nessun Errore!')
             self._conferm_btn['state'] = 'normal'
             self._conferm_btn.focus_set()
             self._text_box['state'] = 'disabled'
@@ -721,9 +725,10 @@ class MainCore(tk.Frame):
 
         self.progress.start()
         for valid_file in enumerate(valid_files, 1):
-            LOGGER.info(f'Creazione podcast {os.path.basename(valid_file[1])}')
+            INFO_LOGGER.info(
+                f'Creazione podcast {os.path.basename(valid_file[1])}')
             # self.progress_var.set(
-            #     f'Creazione podcast n{valid_file[0]} in corso..')
+            #     f'Creazione podcast n{valid_file[0]} in corso.')
             self.update()
             podcast = PodcastGenerator(valid_file[1],
                                        bitrate=set_bitrate,
@@ -734,7 +739,7 @@ class MainCore(tk.Frame):
 
         for podcast_file in enumerate(podcast_list, 1):
             # self.progress_var.set(
-            #     f'Carico podcast n{podcast_file[0]} sul server..')
+            #     f'Carico podcast n{podcast_file[0]} sul server.')
             self.update()
             ServerUploader(podcast_file[1], self.test_value.get())
 
@@ -878,10 +883,10 @@ class MainPage(tk.Tk):
 
 
 if __name__ == '__main__':
-    LOGGER.info('Applicazione Partita')
+    INFO_LOGGER.info('Applicazione Partita')
     try:
         APP_TOOL = MainPage()
         APP_TOOL.mainloop()
     except Exception as e:
-        with open('fatal_error.txt', 'w') as file:
-            file.write(e)
+        INFO_LOGGER.error('Errore app compilation. controlla log/errors.log')
+        LOGGER.critical(str(e))
