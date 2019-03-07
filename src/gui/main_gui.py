@@ -691,6 +691,7 @@ class MainCore(tk.Frame):
         if errors == 0 and self.valid_podcast:
             INFO_LOGGER.info('Nessun Errore!')
             self._conferm_btn['state'] = 'normal'
+            self.select_btn['state'] = 'disabled'
             self._conferm_btn.focus_set()
             self._text_box['state'] = 'disabled'
             ok_img = ImageTk.PhotoImage(Image.open(get_image()[2]))
