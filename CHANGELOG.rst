@@ -15,6 +15,8 @@ Version 2.1.0
   can fallback manually.
 - App launcher can now be saved on the dock. For more info check new folder
   **make_shortcut**.
+- New Align window button that aligns the terminal window next to the app.
+  (requires ``wmctrl``)
 
 [other] :
 
