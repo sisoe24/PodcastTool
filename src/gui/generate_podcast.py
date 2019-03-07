@@ -608,8 +608,11 @@ class ServerUploader:
                 INFO_LOGGER.info('... ci puo volere un po...')
                 if not TEST_MODE:
                     status = ftp.storbinary(f'STOR {self.__str__()}', upload)
-                    INFO_LOGGER.info(status)
-                    LOGGER.debug(f'status: {status}')
+                    # clean status messages
+                    status_sub = regex.sub(
+                        r'226|-|\(measured here\)|\n', '', str(status))
+                    INFO_LOGGER.info(status_sub)
+                    LOGGER.debug(f'status: {status_sub}')
                 else:
                     print('<-test uploading->', )
                     print('uploading file:', self.uploading_file, 'in:', ftp.pwd())
