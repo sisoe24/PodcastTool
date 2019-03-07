@@ -856,6 +856,7 @@ class MainPage(tk.Tk):
 
     @staticmethod
     def align_windows():
+        """Align terminal window on linux with wmctrl."""
         try:
             subprocess.run(
                 ['wmctrl', '-r', 'Terminale', '-e', '0,800,0,600,600'])
