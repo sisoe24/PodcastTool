@@ -849,6 +849,18 @@ class MainPage(tk.Tk):
             self.main_frame, audio, width=670, height=360)
         self.error_frame.place(x=5, y=210)
 
+        align_btn = ttk.Button(self.main_frame, text='Alinea finestre',
+                               command=self.align_windows)
+        align_btn.place(x=5, y=5)
+
+    @staticmethod
+    def align_windows():
+        try:
+            subprocess.run(
+                ['wmctrl', '-r', 'Terminale', '-e', '0,800,0,600,600'])
+        except FileNotFoundError:
+            INFO_LOGGER.error('you are probably on mac and this doesnt work')
+
     def ops_image(self, parent):
         sorry_img = ImageTk.PhotoImage(Image.open(get_image()[5]))
         self._label_img = ttk.Label(
