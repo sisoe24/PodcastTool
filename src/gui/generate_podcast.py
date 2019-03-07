@@ -1,7 +1,6 @@
 """Podcast generator for Fonderie Sonore."""
 import os
 import math
-import json
 import wave
 import ftplib
 import shutil
@@ -48,7 +47,6 @@ class PodcastParser:
         """
         LOGGER.debug('Initialize PodcastParser class ->')
 
-        # extract name from full path
         filename, _ = os.path.splitext(os.path.basename(podcast_path))
         self._podcast_file = filename
 
@@ -61,11 +59,9 @@ class PodcastParser:
 
         LOGGER.debug(f'podcast name splitted: {self._podcast_splitted}')
 
-        # absolute path of the file
         self._podcast_abs_path = podcast_path
         LOGGER.debug(f'podcast file absolute path: {self._podcast_abs_path}')
 
-        # directory of the file
         self._podcast_directory = os.path.dirname(podcast_path)
         LOGGER.debug(f'podcast file directory: {self._podcast_directory}')
 
@@ -111,7 +107,6 @@ class PodcastParser:
         LOGGER.debug(f'codice corso, edizione: {course_code, edition}')
 
         course_catalog = utility.catalog_names()['corsi']
-        # course_catalog = self._catalog_names()['corsi']
 
         course_info = course_catalog[course_code]
 
@@ -160,7 +155,6 @@ class PodcastParser:
         LOGGER.debug(f'teacher name from file: {short_name}')
 
         teacher_catalog = utility.catalog_names()['docenti']
-        # teacher_catalog = self._catalog_names()['docenti']
         full_name = teacher_catalog[short_name]
         LOGGER.debug(f'teacher full name: {full_name}')
 
@@ -471,7 +465,6 @@ class PodcastGenerator(PodcastParser):
 
     def _create_audiosegment(self):
         """Create pydub audio segment from all the mp3 files in tmp dir."""
-        # path = pathlib.Path(self.tmp_dir).glob('*mp3')
         path = pathlib.Path(self.tmp_dir).iterdir()
         LOGGER.debug(f'combining audio files in folder: {self.tmp_dir}')
         for item in sorted(path):
@@ -508,7 +501,6 @@ class PodcastGenerator(PodcastParser):
 
         self._move_and_delete(end_file.name)
 
-    # @property
     def _audio_duration(self, file_lenght: int) -> str:
         """Get the formatted duration of an audio file.
 
@@ -573,7 +565,6 @@ class ServerUploader:
     @utility.profile
     def upload_to_server(self):
         """Upload podcast file to server."""
-        # virgil_test = self._server_credentials()['virgil_test']
         virgil_test = os.environ['FONDERIE_VIRGILTEST']
 
         server_p = self.server_path if not self.test_mode else virgil_test
@@ -584,9 +575,6 @@ class ServerUploader:
         with ftplib.FTP(os.environ['FONDERIE_HOST'],
                         os.environ['FONDERIE_USER'],
                         os.environ['FONDERIE_PASSWORD']) as ftp:
-            # with ftplib.FTP(self._server_credentials()['host'],
-            #                 self._server_credentials()['user'],
-            #                 self._server_credentials()['password']) as ftp:
             try:
                 ftp.cwd(server_p)
             except ftplib.error_perm:
@@ -624,18 +612,7 @@ class ServerUploader:
         file_path = pathlib.Path(self.uploading_file)
         root_folder = '/'.join(file_path.parent.parts[-3:-1])
         server_path = os.environ['FONDERIE_PODCAST'] + root_folder
-        # server_path = self._server_credentials()['podcast_path'] + root_folder
         return server_path
-
-    # @staticmethod
-    # def _server_credentials():
-    #     """Parse json file for server credentials."""
-    #     # TODO: need to check if on linux the .env file works
-    #     json_file = os.path.join(os.path.dirname(
-    #         __file__), '.server_credentials.json')
-    #     with open(json_file) as file:
-    #         server_dict = json.load(file)['fonderie']
-    #     return server_dict
 
 
 class HtmlGenerator:
@@ -713,50 +690,6 @@ class HtmlGenerator:
         LOGGER.debug('writing html archive')
         with open(self.podcast_file(), 'w') as file:
             file.write(text)
-
-
-# def run_gui1(podcast_list: list, *args, **audio_options) -> str:
-#     """Run main app."""
-#     print(audio_options)
-#     for file in podcast_list:
-#         podcast = PodcastGenerator(file, **audio_options)
-
-#     podcast_list = podcast.uploading_list
-#     html_data = podcast.html_page_info
-
-#     for file in podcast_list:
-#         ServerUploader(file)
-
-#     # virgil_test = [os.environ['TEST_LEZIONE_1'],
-#         # os.environ['TEST_LEZIONE_2'],
-#         # os.environ['TEST_LEZIONE_3']]
-#     # adding the server path of the uploaded files to the html a href tag
-#     [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
-#                                     ServerUploader.uploading_list)]
-#     return HtmlGenerator(html_data).podcast_file()
-
-
-# def run_gui(podcast_list: list, *args, **audio_options) -> str:
-#     """Run main app."""
-#     # for file in podcast_list:
-#     podcast = PodcastGenerator(podcast_list, **audio_options)
-
-#     podcast_list = podcast.uploading_list
-#     html_data = podcast.html_page_info
-#     LOGGER.warning(f'html_data: {html_data}')
-#     LOGGER.warning(f'podcast_list: {podcast_list}')
-
-#     exit('-> exit')
-#     for file in podcast_list:
-#         ServerUploader(file)
-
-#     # virgil_test = [os.environ['TEST_LEZIONE_1'],
-#         # os.environ['TEST_LEZIONE_2'],
-#         # os.environ['TEST_LEZIONE_3']]
-#     # adding the server path of the uploaded files to the html a href tag
-#     [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
-#                                     ServerUploader.uploading_list)]
-#     return HtmlGenerator(html_data).podcast_file()
 
 
 if __name__ == '__main__':
