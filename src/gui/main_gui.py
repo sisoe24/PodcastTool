@@ -5,6 +5,7 @@ import pathlib
 import logging
 import datetime
 import platform
+import webbrowser
 import subprocess
 
 from functools import partial
@@ -328,13 +329,15 @@ class HtmlFrame(tk.Frame):
         """Open website page directly."""
         if page == 'web':
             open_link = 'http://www.fonderiesonore.it/elearning/'
+            webbrowser.open(open_link)
+        # webbrowser.open on mac gives some error if open local file
         elif page == 'preview':
             open_link = last_archive_created()
+            if OS_SYSTEM == 'Mac':
+                subprocess.run(['open', open_link])
+            elif OS_SYSTEM == 'Linux':
+                subprocess.run(['xdg-open', open_link])
 
-        if OS_SYSTEM == 'Mac':
-            subprocess.run(['open', open_link])
-        elif OS_SYSTEM == 'Linux':
-            subprocess.run(['xdg-open', open_link])
 
 
 class AudioFrame(tk.Frame):
