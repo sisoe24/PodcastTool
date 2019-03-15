@@ -863,6 +863,8 @@ class MainPage(tk.Tk):
         try:
             subprocess.run(
                 ['wmctrl', '-r', 'Terminale', '-e', '0,800,0,600,600'])
+            subprocess.run(
+                ['wmctrl', '-r', 'PodcastTool', '-e', '0,50,0,0,0'])
         except FileNotFoundError:
             INFO_LOGGER.error('you are probably on mac and this doesnt work')
 
