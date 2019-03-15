@@ -853,7 +853,7 @@ class MainPage(tk.Tk):
             self.main_frame, audio, width=670, height=360)
         self.error_frame.place(x=5, y=210)
 
-        align_btn = ttk.Button(self.main_frame, text='Alinea finestre',
+        align_btn = ttk.Button(self.main_frame, text='Allinea finestre',
                                command=self.align_windows)
         align_btn.place(x=5, y=5)
 
