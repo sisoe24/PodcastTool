@@ -194,7 +194,7 @@ def archive_files():
     """Get all the html archives files."""
     path = pathlib.Path(utility.get_path('archive')).glob('*html')
     for file in sorted(path):
-        yield file
+        yield str(file)
 
 
 def last_archive_created():
