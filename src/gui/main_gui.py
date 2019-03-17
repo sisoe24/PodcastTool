@@ -798,7 +798,7 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('PodcastTool')
+        self.title('PodcastTool 2.1.1')
         # app_x = 1000
         app_x = 685
         app_y = 600
