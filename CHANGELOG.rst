@@ -2,6 +2,16 @@
 Changelog
 =========
 
+Version 2.1.1
+==============
+
+[bug fix] :
+
+- Firefox caused some errors if app was closed while Firefox was open.
+- Align window now should work properly and align both windows. (it does not
+  work if a the app is doing a job already.)
+
+
 Version 2.1.0
 ==============
 
@@ -34,12 +44,9 @@ Version 2.1.0
 Version 2.0.1
 ==============
 
-[New Feature] :
-
-- Added minor visual cue next to the progress bar for status script.
-
 [other] :
 
+- Added minor visual cue next to the progress bar for status script.
 - Reduced the podcast splitting process from 1 min to less than 5 seconds
 
 [bug fix] :
