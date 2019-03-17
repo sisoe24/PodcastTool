@@ -327,11 +327,12 @@ class PodcastGenerator(PodcastParser):
         one_hour = 3_600_000
 
         if ms_time > two_hours:
-            return 5
-        if ms_time < two_hours and ms_time > one_hour:
-            return 4
-        if ms_time < one_hour:
-            return 3
+            cuts = 5
+        elif two_hours > ms_time > one_hour:
+            cuts = 4
+        elif ms_time < one_hour:
+            cuts = 3
+        return cuts
 
     @utility.profile
     def _split_podcast(self):
