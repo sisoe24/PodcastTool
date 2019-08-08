@@ -1,1 +1,1 @@
-from src.gui import generate_podcast
+from src import generate_podcast

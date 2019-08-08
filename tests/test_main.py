@@ -3,7 +3,7 @@ import sys
 import json
 import regex
 import pathlib
-import src.gui.generate_podcast as cp
+import src.generate_podcast as cp
 
 dir_file = os.path.dirname(__file__)
 file_path = ''.join([str(i) for i in pathlib.Path(dir_file).glob('*wav')])
