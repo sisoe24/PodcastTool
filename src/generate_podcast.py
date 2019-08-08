@@ -25,7 +25,7 @@ LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
 
-class PodcastParser:
+class PodcastData:
     """Take podcast file name ad extract indexes based string.
 
     Example indexes based on the code name:
@@ -40,7 +40,7 @@ class PodcastParser:
     html_page_info = {}
 
     def __init__(self, podcast_path: str):
-        """Construct method for the PodcastParser class.
+        """Construct method for the PodcastData class.
 
         Arguments:
             podcast_path {string} -- full path like string of the podcast file.
@@ -48,7 +48,7 @@ class PodcastParser:
         TODO: should check if is valid podcast file if script is being called
         from command line.
         """
-        LOGGER.debug('Initialize PodcastParser class ->')
+        LOGGER.debug('Initialize PodcastData class ->')
 
         filename, _ = os.path.splitext(os.path.basename(podcast_path))
         self._podcast_file = filename
@@ -106,7 +106,7 @@ class PodcastParser:
 
     def __repr__(self):
         """Return creation podcast class."""
-        return f'PodcastParser("{self._podcast_abs_path}")'
+        return f'PodcastData("{self._podcast_abs_path}")'
 
     @property
     def course_name(self):
@@ -233,7 +233,7 @@ class PodcastParser:
         return month_dict
 
 
-class PodcastGenerator(PodcastParser):
+class PodcastGenerator(PodcastData):
     """Generate the podcast phisycal file.
 
     Create the podcast file that is going to be uploaded to the server
