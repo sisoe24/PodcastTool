@@ -30,7 +30,7 @@ def profile(func):
         sortby = SortKey.CUMULATIVE
         ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
         ps.print_stats()
-        with open(f'{get_path("log")}/profile.log', 'a') as f:
+        with open(f'{get_path("log")}/profile.log', 'w') as f:
             f.write(s.getvalue())
         return value
     return inner
