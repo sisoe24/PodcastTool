@@ -585,9 +585,9 @@ class ServerUploader:
     @utility.profile
     def upload_to_server(self):
         """Upload podcast file to server."""
-        virgil_test = os.environ['FONDERIE_VIRGILTEST']
+        server_test_path = os.environ['FONDERIE_VIRGILTEST']
 
-        server_p = self.server_path if not self.test_mode else virgil_test
+        server_p = self.server_path if not self.test_mode else server_test_path
 
         self.uploading_list.append(
             "http://" + os.path.join(server_p, self.__str__()))
