@@ -89,7 +89,7 @@ class PodcastData:
         Return:
             [list] - all elements of podcast file.
         """
-        all_elements = [
+        all_data = [
             self.get_filename,
             self.teacher_name,
             self.course_name,
@@ -98,7 +98,7 @@ class PodcastData:
             self.registration_date,
             self.file_directory
         ]
-        return iter(all_elements)
+        return iter(all_data)
 
     def __str__(self):
         """Return podcast file name."""
