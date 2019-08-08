@@ -86,7 +86,7 @@ def catalog_names() -> str:
 
 
 def test_mode():
-    """Clean of mp3 files for testing."""
+    """Clean of mp3 files for testing  only if user is virgilsisoe."""
     if str(pathlib.Path().home()) == '/Users/virgilsisoe':
         subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
         return 'no_upload'
