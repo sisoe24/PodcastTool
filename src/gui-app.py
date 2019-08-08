@@ -219,20 +219,21 @@ def delete_archive():
         messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
-def get_image():
+def get_image() -> tuple():
     """Get images from image directory.
 
-    warning_img = index 0
-    x_img =       index 1
-    ok_img =      index 2
-    logo =        index 3
+        warning image = index 0
+        x image       = index 1
+        ok image      = index 2
+        logo          = index 3
+        icon app      = index 4
+        sorry image   = index 5
 
     Returns:
         [tuple] -- tuple list of images absolute path
 
     """
-    img_path = pathlib.Path(os.path.join(
-        os.path.dirname(__file__), 'img')).glob('*png')
+    img_path = pathlib.Path(os.path.join('.', 'img')).glob('*png')
     return [i for i in sorted(img_path)]
 
 
@@ -730,8 +731,6 @@ class MainCore(tk.Frame):
         for valid_file in enumerate(valid_files, 1):
             INFO_LOGGER.info(
                 f'Creazione podcast {os.path.basename(valid_file[1])}')
-            # self.progress_var.set(
-            #     f'Creazione podcast n{valid_file[0]} in corso.')
             self.update()
             podcast = PodcastGenerator(valid_file[1],
                                        bitrate=set_bitrate,
@@ -741,8 +740,6 @@ class MainCore(tk.Frame):
         html_data = podcast.html_page_info
 
         for podcast_file in enumerate(podcast_list, 1):
-            # self.progress_var.set(
-            #     f'Carico podcast n{podcast_file[0]} sul server.')
             self.update()
             ServerUploader(podcast_file[1], self.test_value.get())
 
