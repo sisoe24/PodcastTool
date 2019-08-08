@@ -19,6 +19,7 @@ import tinytag
 import utility
 
 
+# check if user is virgilsisoe. if yes then app will NOT upload to server
 TEST_MODE = utility.test_mode()
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
@@ -44,6 +45,8 @@ class PodcastParser:
         Arguments:
             podcast_path {string} -- full path like string of the podcast file.
 
+        TODO: should check if is valid podcast file if script is being called
+        from command line.
         """
         LOGGER.debug('Initialize PodcastParser class ->')
 
@@ -79,6 +82,23 @@ class PodcastParser:
     def file_directory(self):
         """Return string representation of the directory of the file."""
         return str(self._podcast_directory)
+
+    def __iter__(self):
+        """Return all elements of the podcast file.
+
+        Return:
+            [list] - all elements of podcast file.
+        """
+        all_elements = [
+            self.get_filename,
+            self.teacher_name,
+            self.course_name,
+            self.lesson_number,
+            self.part_number,
+            self.registration_date,
+            self.file_directory
+        ]
+        return iter(all_elements)
 
     def __str__(self):
         """Return podcast file name."""
