@@ -427,7 +427,7 @@ class PodcastGenerator(PodcastData):
             exit()
 
     @staticmethod
-    def audio_library():
+    def _audio_library():
         """Create a dictionary with all the files from the library.
 
         Returns:
