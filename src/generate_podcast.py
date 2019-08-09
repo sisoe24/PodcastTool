@@ -403,7 +403,7 @@ class PodcastGenerator(PodcastData):
 
     def _create_theme(self):
         """Copy the opening theme files from the audio library."""
-        library = self.audio_library()
+        library = self._audio_library()
         for item in enumerate(self._opening_theme):
 
             pad_fill = str(item[0]).zfill(2)
