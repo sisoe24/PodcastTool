@@ -1,4 +1,13 @@
-"""Podcast generator for Fonderie Sonore."""
+"""Podcast generator for Fonderie Sonore.
+
+Generates an audio file to upload to a server, from a podcast registration.
+The audio file has audio cue at the beginning
+of the stream for the name of the teacher, the name of the course, the date,
+the lesson number, and the part number.
+
+The name of the file is always formatted like this:
+    SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav
+"""
 import os
 import math
 import wave
@@ -60,13 +69,13 @@ class PodcastData:
         self.html_page_info['archive_name'] = '_'.join(
             self._podcast_splitted[:-2])
 
-        LOGGER.debug(f'podcast name splitted: {self._podcast_splitted}')
+        LOGGER.debug('podcast name splitted: %s', self._podcast_splitted)
 
         self._podcast_abs_path = podcast_path
-        LOGGER.debug(f'podcast file absolute path: {self._podcast_abs_path}')
+        LOGGER.debug('podcast file absolute path: %s', self._podcast_abs_path)
 
         self._podcast_directory = os.path.dirname(podcast_path)
-        LOGGER.debug(f'podcast file directory: {self._podcast_directory}')
+        LOGGER.debug('podcast file directory: %s', self._podcast_directory)
 
     @property
     def get_filename(self):
@@ -118,20 +127,20 @@ class PodcastData:
         """
         # the code is always the first 3 strings in the name
         code = self._podcast_splitted[0]
-        LOGGER.debug(f'course code from file: {code}')
+        LOGGER.debug('course code from file: %s', code)
 
         # for parsing pursoses I need to deattache the edition
         course_code, edition = regex.sub(
             r'([A-Z]{3})([A-Z]{1,3}|\d{1,3})', r'\1 \2', code).split(' ')
 
-        LOGGER.debug(f'codice corso, edizione: {course_code, edition}')
+        LOGGER.debug('codice corso, edizione: %s, %s', course_code, edition)
 
         course_catalog = utility.catalog_names()['corsi']
 
         course_info = course_catalog[course_code]
 
         course = course_info['course_name']
-        LOGGER.debug(f'get complete course name: {course}')
+        LOGGER.debug('get complete course name: %s'. course)
 
         self.html_page_info['course_name'] = course
 
