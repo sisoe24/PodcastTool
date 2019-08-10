@@ -20,8 +20,8 @@ import pyperclip
 from PIL import Image, ImageTk
 from dotenv import load_dotenv, find_dotenv
 
-import utility
-from generate_podcast import PodcastGenerator, ServerUploader, HtmlGenerator
+import src.utility as utility
+from src.generate_podcast import PodcastGenerator, ServerUploader, HtmlGenerator
 
 if platform.system() == 'Darwin':
     OS_SYSTEM = 'Mac'
