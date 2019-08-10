@@ -140,7 +140,7 @@ class PodcastData:
         course_info = course_catalog[course_code]
 
         course = course_info['course_name']
-        LOGGER.debug('get complete course name: %s'. course)
+        LOGGER.debug('get complete course name: %s', course)
 
         self.html_page_info['course_name'] = course
 
@@ -155,18 +155,18 @@ class PodcastData:
 
         """
         date = self._podcast_splitted[1]
-        LOGGER.debug(f'registration date from file: {date}')
+        LOGGER.debug('registration date from file: %s', date)
 
         year, month, day = regex.sub(
             r'(\d{4})(\d{1,2})(\d{1,2})', r'\1 \2 \3', date).split(' ')
-        LOGGER.debug(f'year, month, day: {year, month, day}')
+        LOGGER.debug('year, month, day: %s %s %s', year, month, day)
 
         # date in numeric form 12.12.2012 (if needed)
         # numeric_date = f'{day}/{month}/{year}'
 
         month_name = self._convert_month_name()[month]
         complete_date = f'{day}/{month_name}/{year}'
-        LOGGER.debug(f'formatted registration date: {complete_date}')
+        LOGGER.debug('formatted registration date: %s', complete_date)
 
         self.html_page_info['registration_date'] = complete_date
 
@@ -181,11 +181,11 @@ class PodcastData:
 
         """
         short_name = '_'.join(self._podcast_splitted[2:4])
-        LOGGER.debug(f'teacher name from file: {short_name}')
+        LOGGER.debug('teacher name from file: %s', short_name)
 
         teacher_catalog = utility.catalog_names()['docenti']
         full_name = teacher_catalog[short_name]
-        LOGGER.debug(f'teacher full name: {full_name}')
+        LOGGER.debug('teacher full name: %s', full_name)
 
         self.html_page_info['teacher_name'] = full_name
         return full_name
@@ -199,12 +199,12 @@ class PodcastData:
 
         """
         lesson, number = self._podcast_splitted[4:6]
-        LOGGER.debug(f'lesson from file: {self._podcast_splitted[4:6]}')
+        LOGGER.debug('lesson from file: %s', self._podcast_splitted[4:6])
 
         self.html_page_info['lesson'] = 'N.' + number
 
         formatted_lesson = f'{number}ª {lesson}'
-        LOGGER.debug(f'formatted lesson: {formatted_lesson}')
+        LOGGER.debug('formatted lesson: %s', formatted_lesson)
 
         return formatted_lesson
 
@@ -217,9 +217,9 @@ class PodcastData:
 
         """
         part = ' '.join(self._podcast_splitted[6:])
-        LOGGER.debug(f'part from file: {part}')
+        LOGGER.debug('part from file: %s', part)
 
-        LOGGER.debug(f'formatted part: \"{part}ª\"')
+        LOGGER.debug('formatted part: \"%sª\"', part)
         return part + 'ª'
 
     @staticmethod
@@ -292,7 +292,7 @@ class PodcastGenerator(PodcastData):
             self._create_theme()
             self._merge_audio()
         else:
-            LOGGER.debug(f'podcast already created')
+            LOGGER.debug('podcast already created')
 
     def _mp3_path(self) -> str:
         """Get the mp3 folder path."""
@@ -331,7 +331,7 @@ class PodcastGenerator(PodcastData):
                 nframe = wave_file.getnframes()
                 rframe = wave_file.getframerate()
         except Exception as error:
-            LOGGER.critical(f'{error} - probably not a wave file!')
+            LOGGER.critical('%s - probably not a wave file!', error)
             INFO_LOGGER.critical('Controlla log/errors.log')
             exit()
 
@@ -374,7 +374,7 @@ class PodcastGenerator(PodcastData):
         """
         INFO_LOGGER.info('Suddivido podcast file in corso...')
         song = pydub.AudioSegment.from_wav(self.audio_file)
-        LOGGER.debug(f'initialize pydub AudioSegment: {song}')
+        LOGGER.debug('initialize pydub AudioSegment: %s', song)
 
         LOGGER.debug(f'podcast duration in seconds: {self.__len__() / 1000}')
         LOGGER.debug(f'adding watermarks n.: {self.watermark_number - 1}')
@@ -389,7 +389,7 @@ class PodcastGenerator(PodcastData):
 
         watermark = self._opening_theme[1]
         watermark_n = 0
-        LOGGER.debug(f'watermark: {watermark}')
+        LOGGER.debug('watermark: %s', watermark)
 
         for part in song_parts:
             export_name = f'{len(self._opening_theme)}_Ppart_{watermark_n}.wav'
@@ -398,14 +398,14 @@ class PodcastGenerator(PodcastData):
                         parameters=["-ar", self.custom_sample_rate],
                         format='wav', bitrate=self.custom_bitrate)
 
-            LOGGER.debug(f'splitting podcast: {export_name}')
+            LOGGER.debug('splitting podcast: %s', export_name)
 
             # I need to append 'podcast part' because I need
             # all the items  the list to be in cronological order
             # once I copy the files from the library
             self._opening_theme.append('podcast part')
             if watermark_n < self.watermark_number - 1:
-                LOGGER.debug(f'adding watermark: {watermark}.mp3')
+                LOGGER.debug('adding watermark: %s.mp3', watermark)
                 self._opening_theme.append(watermark)
 
             watermark_n += 1
@@ -426,13 +426,13 @@ class PodcastGenerator(PodcastData):
 
     def _check_files(self):
         """Check if all files have been copied. if not exit."""
-        LOGGER.debug(f'merging audio files in folder: {self._tmp_dir}')
+        LOGGER.debug('merging audio files in folder: %s', self._tmp_dir)
 
         list_dir = os.listdir(self.tmp_dir)
         if len(list_dir) < len(self._opening_theme):
             error = 'something went wrong. I found only', len(
                 list_dir), 'files instead of ', len(self._opening_theme)
-            LOGGER.warning(f'error: {error}')
+            LOGGER.warning('error: %s', error)
             exit()
 
     @staticmethod
@@ -468,7 +468,7 @@ class PodcastGenerator(PodcastData):
             self.get_filename.encode('utf-8')).hexdigest()
 
         new_name = f'{upload_name}_{secret_token}.mp3'
-        LOGGER.debug(f'uploading name: {new_name} for {self.get_filename}')
+        LOGGER.debug('uploading name: %s for %s', new_name, self.get_filename)
 
         return new_name
 
@@ -484,21 +484,21 @@ class PodcastGenerator(PodcastData):
         """
         # folder_name, file_ext = os.path.splitext(self._podcast_file)
         tmp_folder_path = f'{self.file_directory}/.tmp_{self.get_filename}'
-        LOGGER.debug(f'creating temporary folder: {tmp_folder_path}')
+        LOGGER.debug('creating temporary folder: %s', tmp_folder_path)
         try:
             os.mkdir(tmp_folder_path)
         except FileExistsError:
-            LOGGER.warning(f'tmp folder exists already ')
+            LOGGER.warning('tmp folder exists already ')
 
         return tmp_folder_path
 
     def _create_audiosegment(self):
         """Create pydub audio segment from all the mp3 files in tmp dir."""
         path = pathlib.Path(self.tmp_dir).iterdir()
-        LOGGER.debug(f'combining audio files in folder: {self.tmp_dir}')
+        LOGGER.debug('combining audio files in folder: %s', self.tmp_dir)
         for item in sorted(path):
             if regex.search(r'(.mp3|.wav)$', str(item)):
-                LOGGER.debug(f'merging audio: {os.path.basename(item)}')
+                LOGGER.debug('merging audio: %s', os.path.basename(item))
                 yield pydub.AudioSegment.from_file(str(item))
 
     @utility.profile
@@ -526,7 +526,7 @@ class PodcastGenerator(PodcastData):
                                               "-ar", self.custom_sample_rate],
                                           tags={"album": f"{self.course}",
                                                 "artist": f"{self.teacher}"})
-        LOGGER.debug(f'Final Podcast File: {end_file.name}')
+        LOGGER.debug('Final Podcast File: %s', end_file.name)
 
         self._move_and_delete(end_file.name)
 
@@ -548,16 +548,16 @@ class PodcastGenerator(PodcastData):
         self.html_durata_podcast[part] = [format_duration]
         self.html_page_info['audio_parts'] = self.html_durata_podcast
 
-        LOGGER.debug(f'lista durata podcast: {self.html_durata_podcast}')
+        LOGGER.debug('lista durata podcast: %s', self.html_durata_podcast)
         return format_duration
 
     def _move_and_delete(self, file_path: str) -> str:
         mp3_path = shutil.move(file_path, self._mp3_path())
-        LOGGER.debug(f'moving file to mp3 folder')
+        LOGGER.debug('moving file to mp3 folder')
         self.uploading_list.append(mp3_path)
 
         shutil.rmtree(pathlib.Path(file_path).parent)
-        LOGGER.debug(f'deleting .tmp folder')
+        LOGGER.debug('deleting .tmp folder')
         return mp3_path
 
 
@@ -577,7 +577,7 @@ class ServerUploader:
             self.upload_to_server()
         except Exception as error:
             LOGGER.critical(
-                f'Problemi a caricare file: {error} {self.uploading_file}')
+                'Problemi a caricare file: %s %s', error, self.uploading_file)
             INFO_LOGGER.critical('Controlla log/errors.log')
 
     def __str__(self):
@@ -612,7 +612,7 @@ class ServerUploader:
                     title='PodcastTool',
                     message=f'Cartella [{dir_name}] non esiste sul server.\nVuoi crearla?')
                 if user_prompt:
-                    LOGGER.debug(f'creating directory: {server_p}')
+                    LOGGER.debug('creating directory: %s', server_p)
                     ftp.mkd(server_p)
                     ftp.cwd(server_p)
                 else:
@@ -629,11 +629,11 @@ class ServerUploader:
                     status_sub = regex.sub(
                         r'226|-|\(measured here\)|\n', '', str(status))
                     INFO_LOGGER.info(status_sub)
-                    LOGGER.debug(f'status: {status_sub}')
+                    LOGGER.debug('status: %s', status_sub)
                 else:
                     print('<-test uploading->', )
-                    print('uploading file:', self.uploading_file, 'in:', ftp.pwd())
-        LOGGER.debug(f'uploaded file to server: {self.uploading_list}')
+                    print(f'uploading {self.uploading_file} in {ftp.pwd()}')
+        LOGGER.debug('uploaded file to server: %s', self.uploading_list)
 
     @property
     def server_path(self):
@@ -655,7 +655,7 @@ class HtmlGenerator:
 
         Css style file is located in the server ../../standard/style/
         """
-        LOGGER.debug(f'generating html page info from dict {self.html_data}')
+        LOGGER.debug('generating html page info from dict: %s', self.html_data)
         INFO_LOGGER.info('Pagina html generata')
         doc, tag, text = yattag.Doc().tagtext()
         doc.stag('hr')
@@ -707,7 +707,7 @@ class HtmlGenerator:
         podcast_name = self.html_data['archive_name']
         file_path = os.path.join(
             utility.get_path('archive'), today + podcast_name + '.html')
-        LOGGER.debug(f'creating html archive: {file_path}')
+        LOGGER.debug('creating html archive: %s', file_path)
         return file_path
 
     def podcast_file(self):
