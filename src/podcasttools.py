@@ -36,7 +36,8 @@ INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
 def _convert_month_name():
     """Convert month number value to italian month name."""
-    month_dict = {
+    # month_dict =
+    return {
         '01': 'Gennaio',
         '02': 'Febbraio',
         '03': 'Marzo',
@@ -50,7 +51,6 @@ def _convert_month_name():
         '11': 'Novembre',
         '12': 'Dicembre'
     }
-    return month_dict
 
 
 def _audio_library():
@@ -67,6 +67,44 @@ def _audio_library():
             if filename.endswith('mp3'):
                 library_dict[filename] = dirpath
     return library_dict
+
+
+def generate_podcast(raw_podcast):
+    podcast = PodcastFile(raw_podcast)
+    print("generate podcast")
+    tmp_dir = podcast._generate_tmp_path()
+    opening_intro = podcast._opening_intro()
+
+    def _split_raw_podcast():
+        podcast = pydub.AudioSegment.from_wav(raw_podcast)
+        cut_each = math.ceil(len(podcast) / 3)
+        podcast_parts = podcast[::cut_each]
+
+        for part in enumerate(podcast_parts, 1):
+            export_name = f"{tmp_dir}/{part[0]}-test-part.wav"
+            part[1].export(export_name,
+                           parameters=[],
+                           format="wav")
+            print(part)
+
+    # @utility.profile
+    def _get_opening_intro():
+        """Copy the opening theme files from the audio library."""
+        library = _audio_library()
+        for audio in enumerate(opening_intro):
+
+            pad_fill = str(audio[0]).zfill(2)
+            item_name = audio[1].replace(' ', '_') + '.mp3'
+
+            if item_name in library.keys():
+                src_file = os.path.join(library.get(item_name), item_name)
+                dst_name = f'{pad_fill}_{item_name}'
+
+                shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
+
+    _split_raw_podcast()
+    _get_opening_intro()
+    return podcast
 
 
 class PodcastFile:
@@ -161,6 +199,26 @@ class PodcastFile:
 
         return total_ms
 
+    def _generate_tmp_path(self):
+        """Create temporary directory.
+
+        Create a temporary directory where to put the mp3 files created.
+        Once the mp3 are merged, this directory should be delete.
+
+        Returns:
+            {str} -- path like string of the tmp folder absolute path.
+
+        """
+        # folder_name, file_ext = os.path.splitext(self._podcast_file)
+        tmp_dir_path = f'{self.get_file_dir}/.tmp_{self.get_filename}'
+        # LOGGER.debug('creating temporary folder: %s', tmp_dir_path)
+        try:
+            os.mkdir(tmp_dir_path)
+        except FileExistsError:
+            LOGGER.warning('tmp folder exists already ')
+
+        return tmp_dir_path
+
     @property
     def get_filename(self):
         """Return string representation of the file name."""
@@ -228,8 +286,8 @@ class PodcastFile:
         LOGGER.debug('formatted registration date: %s', complete_date)
 
         self.html_page_info['registration_date'] = complete_date
-
-        return complete_date
+        # return complete_date
+        return {"day": day, "month": month_name, "year": year}
 
     @property
     def teacher_name(self):
@@ -281,51 +339,9 @@ class PodcastFile:
         LOGGER.debug('formatted part: \"%sª\"', part)
         return part + 'ª'
 
-    def generate_podcast(self):
-        """Generate final podcast file to be uploaded on internet."""
-        # TODO: could use a closure to get all the uploading files?
-
-        @utility.profile
-        def _split_raw_podcast():
-            podcast = pydub.AudioSegment.from_wav(self.raw_podcast)
-            cut_each = math.ceil(len(podcast) / 3)
-            podcast_parts = podcast[::cut_each]
-
-            for part in enumerate(podcast_parts, 1):
-                export_name = f"{self._tmp_dir()}/{part[0]}-test-part.wav"
-                part[1].export(export_name,
-                               parameters=[],
-                               format="wav")
-                print(part)
-
-        def _get_opening_audio():
-            pass
-
-        _get_opening_audio()
-        _split_raw_podcast()
-
-    def _tmp_dir(self):
-        """Create temporary directory.
-
-        Create a temporary directory where to put the mp3 files created.
-        Once the mp3 are merged, this directory should be delete.
-
-        Returns:
-            {str} -- path like string of the tmp folder absolute path.
-
-        """
-        # folder_name, file_ext = os.path.splitext(self._podcast_file)
-        tmp_folder_path = f'{self.get_file_dir}/.tmp_{self.get_filename}'
-        LOGGER.debug('creating temporary folder: %s', tmp_folder_path)
-        try:
-            os.mkdir(tmp_folder_path)
-        except FileExistsError:
-            LOGGER.warning('tmp folder exists already ')
-
-        return tmp_folder_path
-
     def _opening_intro(self):
         """Opening intro audio to be merged with the podcast."""
+        date = self.registration_date
         return [
             'Fonderie_Sonore_Podcast',
             'Materiale_riservato_agli_studenti_della_scuola',
@@ -336,11 +352,12 @@ class PodcastFile:
             'Podcast audio della:',
             self.lesson_number,
             'Del:',
-            "day",
-            "month",
-            "year",
+            date["day"],
+            date["month"],
+            date["year"],
             self.part_number,
         ]
+
 
 
 class PodcastGenerator(PodcastFile):
