@@ -53,6 +53,22 @@ def _convert_month_name():
     return month_dict
 
 
+def _audio_library():
+    """Create a dictionary with all the files from the library.
+
+    Returns:
+        [dict] -- dictionary with key as files names and values as paths
+
+    """
+    library_path = utility.get_path('include/audio')
+    library_dict = {}
+    for dirpath, _, filenames in os.walk(library_path):
+        for filename in filenames:
+            if filename.endswith('mp3'):
+                library_dict[filename] = dirpath
+    return library_dict
+
+
 class PodcastFile:
     """Take podcast file name ad extract indexes based string.
 
@@ -307,6 +323,24 @@ class PodcastFile:
             LOGGER.warning('tmp folder exists already ')
 
         return tmp_folder_path
+
+    def _opening_intro(self):
+        """Opening intro audio to be merged with the podcast."""
+        return [
+            'Fonderie_Sonore_Podcast',
+            'Materiale_riservato_agli_studenti_della_scuola',
+            'Corso:',
+            self.course_name,
+            'Docente:',
+            self.teacher_name,
+            'Podcast audio della:',
+            self.lesson_number,
+            'Del:',
+            "day",
+            "month",
+            "year",
+            self.part_number,
+        ]
 
 
 class PodcastGenerator(PodcastFile):
@@ -789,4 +823,4 @@ class HtmlGenerator:
 
 
 if __name__ == '__main__':
-    pass
+    print(_audio_library())
