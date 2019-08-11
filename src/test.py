@@ -8,4 +8,7 @@ FILES = [f"{PATH}SCE4_20190228_E_Cosimi_Lezione_8_parte_1.wav",
 RAW_PODCAST = FILES[0]
 
 PODCAST = PodcastFile(RAW_PODCAST)
-print(PODCAST.generate_podcast())
+print(PODCAST._opening_intro())
+
+# GEN_PODCAST = PodcastGenerator(RAW_PODCAST)
+# print(GEN_PODCAST._opening_theme)
