@@ -1,0 +1,26 @@
+raw_podcast = "/path/to/SECD_20190106_E_Cosimi_Lezione_4_parte_2.wav"
+
+file = PodcastFile(audio_file=raw_podcast)
+
+attributes:
+    file.uploading_list          -> list[return list of file that has process]
+    file.html_page_info          -> dict{info with all data for the html page}
+    file.html_durata_podcast     -> 
+
+methods:
+    file.get_course_name()       -> "Sintesi e Campionamento" -> html_page_info
+    file.get_registration_date() -> ['01', 'Giugno', '2019']  -> html_page_info
+    file.get_teacher_name()      -> "Enrico Cosimi"           -> html_page_info
+    file.get_lesson_number()     -> "4ª Lezione"              -> html_page_info
+    file.get_part_number()       -> "2ª Parte"                -> html_page_info
+    file.get_abspath()           -> "/path/to/raw_podcast"
+    file.get_filename()          -> "SECD_20190106_E_Cosimi_Lezione_4_parte_2.wav"
+    file.get_file_directory()    -> "/parent/path"
+    file.generate_hash_name()    -> "Lezione_3_492u42jgj29gj2829g2.mp3"
+
+    file.generate_podcast() -> (
+            file.split_raw_podcast(),
+            file.get_audio_cue(),
+            file.merge_audio(),
+        )
+

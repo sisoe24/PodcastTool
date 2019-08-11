@@ -22,7 +22,7 @@ def json_catalog():
     return json_data
 
 
-file = cp.PodcastParser(test_file)
+file = cp.PodcastData(test_file)
 
 
 def test_get_filename():
