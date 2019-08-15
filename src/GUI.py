@@ -20,8 +20,8 @@ import pyperclip
 from PIL import Image, ImageTk
 from dotenv import load_dotenv, find_dotenv
 
-import src.utility as utility
-from src.generate_podcast import PodcastGenerator, ServerUploader, HtmlGenerator
+import utility
+from generate_podcast import PodcastGenerator, ServerUploader, HtmlGenerator
 
 if platform.system() == 'Darwin':
     OS_SYSTEM = 'Mac'
@@ -233,7 +233,7 @@ def get_image() -> tuple():
         [tuple] -- tuple list of images absolute path
 
     """
-    img_path = pathlib.Path(os.path.join('.', 'img')).glob('*png')
+    img_path = pathlib.Path(os.path.join('include', 'img')).glob('*png')
     return [i for i in sorted(img_path)]
 
 
@@ -746,6 +746,7 @@ class MainCore(tk.Frame):
         # self.progress_var.set('')
         [_[0].append(_[1]) for _ in zip(html_data['audio_parts'].values(),
                                         ServerUploader.uploading_list)]
+        print(f'--> DEBUG html_data: {html_data} <--')
         HtmlGenerator(html_data)
         self.progress.stop()
 
