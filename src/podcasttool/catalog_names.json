@@ -1,0 +1,215 @@
+{
+  "docenti": {
+    "A_Serraino": "Andrea Serraino",
+    "C_Brizzola": "Cristian Brizzola",
+    "E_Pietrogrande": "Edoardo Pietrogrande",
+    "E_Cosimi": "Enrico Cosimi",
+    "F_Marigliano": "Federico Marigliano",
+    "F_Paluzzi": "Franco Paluzzi",
+    "G_Lanza": "Giancarlo Lanza",
+    "M_Lecci": "Marco Lecci",
+    "M_Sacco": "Marco Sacco",
+    "M_Ancona": "Massimo Ancona",
+    "M_Scartoni": "Matteo Scartoni",
+    "M_Schiavio": "Matteo Schiavio",
+    "P_Cappellini": "Paolo Cappellini",
+    "R_Sena": "Raffaele Sena",
+    "S_Coen": "Simone Coen",
+    "F_Paris": "Francesco Paris",
+    "S_Bocchino": "Simone Bocchino",
+    "A_Catalano": "Antonio Catalano",
+    "F_Rosati": "Franz Rosati",
+    "D_Vantaggio": "Daniele Vantaggio",
+    "A_Bergen": "Aki Bergen",
+    "V_Ramaglia": "Vincenzo Ramaglia",
+    "C_Burchell": "Charles Burchell",
+    "J_Lattanzio": "Jacopo Lattanzio"
+  },
+  "corsi": {
+    "ABL": {
+      "course_path": "ALP",
+      "course_name": "Ableton Live",
+      "audio_file": "CORSO_ABLETON_LIVE.wav"
+    },
+    "MIX": {
+      "course_path": "ALP",
+      "course_name": "Mixing",
+      "audio_file": "CORSO_MIXING.wav"
+    },
+    "SEC": {
+      "course_path": "ALP",
+      "course_name": "Sintesi e Campionamento",
+      "audio_file": "CORSO_SINTESI_E_CAMPIONAMENTO.wav"
+    },
+    "MUL": {
+      "course_path": "ALP",
+      "course_name": "Multilayering",
+      "audio_file": "CORSO_MULTILAYERING.wav"
+    },
+    "CRS": {
+      "course_path": "ALP",
+      "course_name": "Creative Sampling",
+      "audio_file": "CORSO_CREATIVE_SAMPLING.wav"
+    },
+    "ARM": {
+      "course_path": "ALP",
+      "course_name": "Armonia Musicale",
+      "audio_file": "CORSO_ARMONIA_MUSICALE.wav"
+    },
+    "BPR": {
+      "course_path": "ALP",
+      "course_name": "Beat Programming",
+      "audio_file": "CORSO_BEAT_PROGRAMMING.wav"
+    },
+    "WMK": {
+      "course_path": "ALP",
+      "course_name": "Web Marketing",
+      "audio_file": "CORSO_WEB_MARKETING.wav"
+    },
+    "ABP": {
+      "course_path": "ALP",
+      "course_name": "Ableton Live Performer",
+      "audio_file": "CORSO_ABLETON_LIVE_PERFORMER.wav"
+    },
+    "ALE": {
+      "course_path": "EMP",
+      "course_name": "Ableton Live",
+      "audio_file": "CORSO_ABLETON_LIVE.wav"
+    },
+    "MXT": {
+      "course_path": "TTS",
+      "course_name": "Mixing",
+      "audio_file": "CORSO_MIXING.wav"
+    },
+    "FFE": {
+      "course_path": "EMP",
+      "course_name": "Fondamenti di Fonia",
+      "audio_file": "CORSO_FONDAMENTI_FONIA.wav"
+    },
+    "MXE": {
+      "course_path": "EMP",
+      "course_name": "Mixing",
+      "audio_file": "CORSO_MIXING.wav"
+    },
+    "CAE": {
+      "course_path": "EMP",
+      "course_name": "Composizione e Arrangiamento",
+      "audio_file": "CORSO_COMPOSIZIONE_ARRANGIAMENTO.wav"
+    },
+    "SCE": {
+      "course_path": "EMP",
+      "course_name": "Sintesi e Campionamento",
+      "audio_file": "CORSO_SINTESI_E_CAMPIONAMENTO.wav"
+    },
+    "SDE": {
+      "course_path": "EMP",
+      "course_name": "Sound Design",
+      "audio_file": "CORSO_SOUND_DESIGN.wav"
+    },
+    "FEE": {
+      "course_path": "EMP",
+      "course_name": "Fondamenti di Elettronica",
+      "audio_file": "CORSO_FONDAMENTI_ELETTRONICA.wav"
+    },
+    "MCE": {
+      "course_path": "EMP",
+      "course_name": "Microfoni e Tecniche di Microfonaggio",
+      "audio_file": "CORSO_MICROFONI_E_TECNICHE_DI_MICROFONAGGIO.wav"
+    },
+    "SYE": {
+      "course_path": "EMP",
+      "course_name": "Sintesi Modulare e Wavetable",
+      "audio_file": "CORSO_SINTESI_MODULAR_WAVETABLE.wav"
+    },
+    "RTE": {
+      "course_path": "EMP",
+      "course_name": "Routing e Studio Ibrido",
+      "audio_file": "CORSO_ROUTING_GESTIONE_STUDIO_IBRIDO.wav"
+    },
+    "MPE": {
+      "course_path": "EMP",
+      "course_name": "Mixing 2",
+      "audio_file": "CORSO_MIXING_2.wav"
+    },
+    "APE": {
+      "course_path": "EMP",
+      "course_name": "Ableton Live Performer",
+      "audio_file": "CORSO_ABLETON_LIVE_PERFORMER.wav"
+    },
+    "WME": {
+      "course_path": "EMP",
+      "course_name": "Web Marketing",
+      "audio_file": "CORSO_WEB_MARKETING.wav"
+    },
+    "SAA": {
+      "course_path": "ELM",
+      "course_name": "Sintesi Analogica Avanzata",
+      "audio_file": "CORSO_SINTESI_ANALOGICA_AVANZATA.wav"
+    },
+    "MAE": {
+      "course_path": "ELM",
+      "course_name": "Mixing Avanzato per Musica Elettronica",
+      "audio_file": "CORSO_MIXING_AVANZATO_PER_MUSICA_ELETTRONICA.wav"
+    },
+    "CAS": {
+      "course_path": "ELM",
+      "course_name": "Introduction to Contemporary American Styles",
+      "audio_file": "CORSO_INTRO_AMERICAN_STYLES.wav"
+    },
+    "TSB": {
+      "course_path": "TTS",
+      "course_name": "Tecnico del Suono Base",
+      "audio_file": "CORSO_TECNICO_DEL_SUONO_BASE.wav"
+    },
+    "ATM": {
+      "course_path": "TTS",
+      "course_name": "Arrangiamento Tecno-Musicale",
+      "audio_file": "CORSO_COMPOSIZIONE_ARRANGIAMENTO.wav"
+    },
+    "PTB": {
+      "course_path": "TTS",
+      "course_name": "Pro Tools Base",
+      "audio_file": "CORSO_PRO_TOOLS.wav"
+    },
+    "MIN": {
+      "course_path": "TTS",
+      "course_name": "Mixing livello Intermedio",
+      "audio_file": "CORSO_MIXING_INTERMEDIO.wav"
+    },
+    "PTA": {
+      "course_path": "TTS",
+      "course_name": "Pro Tools Avanzato",
+      "audio_file": "CORSO_PRO_TOOLS.wav"
+    },
+    "MIC": {
+      "course_path": "TTS",
+      "course_name": "Microfoni e Microfonaggio",
+      "audio_file": "CORSO_MICROFONI_E_TECNICHE_DI_MICROFONAGGIO.wav"
+    },
+    "TRS": {
+      "course_path": "TTS",
+      "course_name": "Tecnico di Recording Studio",
+      "audio_file": "CORSO_TECNICO_DI_RECORDING_STUDIO.wav"
+    },
+    "PPR": {
+      "course_path": "TTS",
+      "course_name": "Postproduzione",
+      "audio_file": "CORSO_POSTPRODUZIONE.wav"
+    },
+    "MAM": {
+      "course_path": "TTS",
+      "course_name": "Mixing Avanzato e Digital Mastering",
+      "audio_file": "CORSO_MIXING_AVANZATO_E_DIGITAL_MASTERING.wav"
+    },
+    "TSL": {
+      "course_path": "TTS",
+      "course_name": "Tecnico del Suono Live",
+      "audio_file": "CORSO_TECNICO_DEL_SUONO_LIVE.wav"
+    },
+    "THM": {
+      "course_path": "TTS",
+      "course_name": "Teoria Musicale",
+      "audio_file": "CORSO_TEORIA_MUSICALE.wav"
+    }
+  }
+}
