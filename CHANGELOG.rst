@@ -2,6 +2,15 @@
 Changelog
 =========
 
+Version 2.2.0
+==============
+
+[New Feature] :
+
+[other] :
+
+[bug fix] :
+
 Version 2.1.0
 ==============
 
@@ -14,7 +23,7 @@ Version 2.1.0
   This is for when, if the algorithm doesnt catch all the podcasts, the user
   can fallback manually.
 - App launcher can now be saved on the dock. For more info check new folder
-  **make_shortcut**.
+  **include/scripts**.
 - New Align window button that aligns the terminal window next to the app.
   (requires ``wmctrl``)
 
