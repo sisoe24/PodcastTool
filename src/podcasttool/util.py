@@ -35,8 +35,8 @@ def profile(func):
             sortby = SortKey.CUMULATIVE
             ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
             ps.print_stats()
-            with open(f'{get_path("log")}/profile.log', 'w') as f:
-                f.write(s.getvalue())
+            with open(f'{get_path("log")}/profile.log', 'w') as file:
+                file.write(s.getvalue())
             return value
         return inner
     except ModuleNotFoundError:
@@ -52,8 +52,8 @@ def total_time(func):
         total = datetime.timedelta(seconds=end - start)
         print_str = f"total time: {str(total)}\n"
         print(print_str)
-        with open(f'{get_path("log")}/profile.log', 'a') as f:
-            f.write(print_str)
+        with open(f'{get_path("log")}/profile.log', 'a') as file:
+            file.write(print_str)
         return value
     return wrapper
 
@@ -71,7 +71,7 @@ def get_path(directory: str) -> str:
     if directory in ['archive', 'log'] and not os.path.exists(new_path):
         os.mkdir(new_path)
     elif not os.path.exists(new_path):
-        LOGGER.critical('path not found')
+        LOGGER.critical('path not found: %s', new_path)
         exit()
     return new_path
 
@@ -139,9 +139,9 @@ def catalog_names() -> dict:
     json_file = os.path.join(
         os.path.dirname(__file__), 'catalog_names.json')
     try:
-        with open(json_file) as f:
+        with open(json_file) as json_file:
             LOGGER.debug('parsing json file: %s', json_file)
-            json_data = json.load(f)
+            json_data = json.load(json_file)
             return json_data
     except FileNotFoundError:
         print('no json file found!', json_file)
@@ -203,7 +203,7 @@ def dev_mode(bypass=False):
     return None
 
 
-DEV_MODE = dev_mode()
+DEV_MODE = dev_mode(bypass=False)
 if __name__ == '__main__':
     pass
     # print(a)
