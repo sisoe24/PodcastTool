@@ -1,6 +1,5 @@
 """GUI interface of PodcastTool."""
 import os
-import sys
 import pathlib
 import logging
 import datetime
@@ -211,6 +210,7 @@ def get_image() -> tuple():
 
 
 class HtmlFrame(tk.Frame):
+    """Html section of the gui."""
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self._create_html_frame()
@@ -255,40 +255,10 @@ class HtmlFrame(tk.Frame):
                                        state='disabled', command=preview)
         self._preview_btn.grid(column=1, row=2)
 
-        #  ARCHIVE SECTION OF THE HTML FRAME
-        # html_archive = [i.name for i in archive_files()]
-
-        # archive_text = ttk.LabelFrame(html_frame, text='Archive: ')
-        # archive_text.grid(column=0, columnspan=4, row=3, sticky=tk.W)
-
-        # combo_width = 30 if OS_SYSTEM == 'Mac' else 34
-        # self._archive_combobox = ttk.Combobox(archive_text, value=html_archive,
-        #                                       width=combo_width)
-        # self._archive_combobox.grid(column=0, columnspan=3, row=0, sticky=tk.W)
-
-        # archive_copy = ttk.Button(archive_text, text='copia archivio',
-        #                           command=self._copy_archive)
-        # archive_copy.grid(column=2, row=1, pady=5, padx=5, sticky=tk.E)
-
-        # del_archive_btn = ttk.Button(archive_text, text='cancella archivio',
-        #                              command=delete_archive)
-        # del_archive_btn.grid(column=0, row=1)
-
-        # hr1 = ttk.Separator(html_frame, orient='horizontal')
-        # hr1.grid(column=0, row=4, columnspan=4, pady=10, sticky=tk.EW)
-
     def _html_status(self, status, color):
         """Show html status message."""
         self.status_var.set(status)
         self._status_display.configure(background=color)
-
-    # def _copy_archive(self):
-    #     """Copy the current selected archive html page."""
-    #     selected_html = self._archive_combobox.get()
-    #     file_path = os.path.join(util.get_path('archive'), selected_html)
-    #     with open(file_path) as file:
-    #         pyperclip.copy(file.read())
-    #     self.bell()
 
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
@@ -312,6 +282,7 @@ class HtmlFrame(tk.Frame):
 
 
 class AudioFrame(tk.Frame):
+    """Audio section of the gui."""
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self._create_audio_frame()
@@ -379,6 +350,10 @@ class AudioFrame(tk.Frame):
 
 
 class MainFrame(tk.Frame):
+    """Main Core of the gui.
+
+    Class selects the podcast and error checkes them.
+    """
     valid_podcast = []
     path = ''
 
@@ -429,9 +404,6 @@ class MainFrame(tk.Frame):
         progress_text.place(x=120, y=0)
 
         self.progress_var = tk.StringVar()
-        # progress_status = ttk.Label(parent, textvariable=self.progress_var,)
-        # progress_status.place(x=150, y=20)
-        # TODO: need maximum number from podcast files
         self.progress = ttk.Progressbar(parent, maximum=4,
                                         orient=tk.HORIZONTAL,
                                         mode='indeterminate', length=200)
@@ -460,7 +432,6 @@ class MainFrame(tk.Frame):
                 self.valid_podcast = [i for i in _match_lesson(open_file[0])]
             elif len(open_file) > 1:
                 self.valid_podcast = [os.path.basename(i) for i in open_file]
-
             if not self.valid_podcast:
                 self._message_box('File invalido', exit_script='yes')
             else:
