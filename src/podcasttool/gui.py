@@ -303,52 +303,64 @@ class HtmlFrame(tk.Frame):
 
 
 class AudioFrame(tk.Frame):
-    """Audio section of the gui."""
+    """Audio section frame of the gui."""
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self._create_audio_frame()
 
-    def _create_audio_frame(self):
-        audio = ttk.Frame(self, width=300, height=100)
-        audio.grid(column=2, row=2, rowspan=2, sticky=tk.N)
-        audio.grid_propagate(False)
+        self._audio = ttk.Frame(self, width=300, height=100)
+        self._audio.grid(column=2, row=2, rowspan=2, sticky=tk.N)
+        self._audio.grid_propagate(False)
 
-        ttk.Label(audio, text='Audio',
-                  style='label.TLabel').grid(column=0, row=0, sticky=tk.W)
+        self._watermarks = ttk.Combobox(self._audio, width=4,
+                                        value=self._watermarks_list(),
+                                        state='readonly')
+        self._watermarks.grid(column=1, row=1, sticky=tk.E)
+        self._watermarks.current(0)
 
-        # watermarks
-        ttk.Label(audio, style='audio.TLabel',
-                  text='Watermarks:   ').grid(column=0, row=1, sticky=tk.W)
-
-        nums = [_ for _ in range(2, 9)]
-        nums.insert(0, "auto")
-        self._watermark = ttk.Combobox(audio, width=4,
-                                       value=nums, state='readonly')
-        self._watermark.grid(column=1, row=1, sticky=tk.E)
-        self._watermark.current(0)
-
-        # bitrate
-        ttk.Label(audio, text='Bitrate:',
-                  style='audio.TLabel').grid(column=0, row=2, sticky=tk.W)
-
-        bitrate_list = ['32k', '64k', '128k', '192k', '256k', '320k']
-        self._bitrate = ttk.Combobox(audio, width=4,
-                                     value=bitrate_list,
+        self._bitrate = ttk.Combobox(self._audio, width=4,
+                                     value=self._bitrate_list(),
                                      state='readonly')
         self._bitrate.grid(column=1, row=2, pady=2, sticky=tk.E)
         self._bitrate.current(1)
 
-        # sample rate
-        ttk.Label(audio, text='Sample rate:',
-                  style='audio.TLabel').grid(column=0, row=3, sticky=tk.W)
-
-        sample_rate_list = ['22050Hz', '44100Hz']
-        self._sample_rate = ttk.Combobox(audio, width=7,
-                                         value=sample_rate_list,
+        self._sample_rate = ttk.Combobox(self._audio, width=7,
+                                         value=self._sample_rate_list(),
                                          state='readonly')
         self._sample_rate.grid(column=1, row=3)
         self._sample_rate.current(0)
+
+        self._labels()
+
+    def _labels(self):
+        """Generate labels for audio frame."""
+        ttk.Label(self._audio, text='Audio',
+                  style='label.TLabel').grid(column=0, row=0, sticky=tk.W)
+        ttk.Label(self._audio, style='audio.TLabel',
+                  text='Watermarks:   ').grid(column=0, row=1, sticky=tk.W)
+        ttk.Label(self._audio, text='Bitrate:',
+                  style='audio.TLabel').grid(column=0, row=2, sticky=tk.W)
+        ttk.Label(self._audio, text='Sample rate:',
+                  style='audio.TLabel').grid(column=0, row=3, sticky=tk.W)
+        ttk.Label(self._audio, text='Sample rate:',
+                  style='audio.TLabel').grid(column=0, row=3, sticky=tk.W)
+
+    @staticmethod
+    def _watermarks_list() -> list:
+        """Generate a list to populate watermark_num combobox."""
+        nums = [_ for _ in range(2, 9)]
+        nums.insert(0, "auto")
+        return nums
+
+    @staticmethod
+    def _bitrate_list() -> list:
+        """Generate a list to populate bitrate combobox."""
+        return ['32k', '64k', '128k', '192k', '256k', '320k']
+
+    @staticmethod
+    def _sample_rate_list() -> list:
+        """Generate a list to populate bitrate combobox."""
+        return ['22050Hz', '44100Hz']
 
     @property
     def bitrate(self) -> str:
@@ -363,13 +375,13 @@ class AudioFrame(tk.Frame):
     @property
     def watermark_state(self) -> str:
         """Get watermark_toggle check button state."""
-        return self._watermark.get()
+        return self._watermarks.get()
 
     @property
     def watermark_num(self) -> int:
         """Return number of cuts to make in audio from options."""
         if not self.watermark_state == "auto":
-            return int(self._watermark.get())
+            return int(self._watermarks.get())
         return None
 
 
@@ -664,8 +676,6 @@ class MainFrame(tk.Frame):
 
         valid_files = [os.path.join(self.path, i)
                        for i in self.get_text_lines if i]
-
-        INFO_LOGGER.debug("watermark %s", self.audio.watermark_num)
 
         self.progress.start()
         for valid_file in enumerate(valid_files, 1):
