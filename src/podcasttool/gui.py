@@ -211,6 +211,7 @@ def get_image() -> tuple():
 
 class HtmlFrame(tk.Frame):
     """Html section of the gui."""
+
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self._create_html_frame()
@@ -235,7 +236,7 @@ class HtmlFrame(tk.Frame):
                                         font=('TkDefaultFont', status_font))
         self._status_display.grid(column=1, row=1, )
 
-        self._html_status('Non Pronto', 'red')
+        self.status('Non Pronto', 'red')
 
         self._copy_btn = ttk.Button(html_frame,
                                     text='Copy HTML', state='disabled',
@@ -255,7 +256,27 @@ class HtmlFrame(tk.Frame):
                                        state='disabled', command=preview)
         self._preview_btn.grid(column=1, row=2)
 
-    def _html_status(self, status, color):
+    @property
+    def preview_btn(self):
+        """Return copy button state."""
+        return self._preview_btn["state"]
+
+    @preview_btn.setter
+    def preview_btn(self, value):
+        """Set preview button state."""
+        self._preview_btn["state"] = value
+
+    @property
+    def copy_btn(self):
+        """Return copy button state."""
+        return self._copy_btn["state"]
+
+    @copy_btn.setter
+    def copy_btn(self, value):
+        """Set copy button state."""
+        self._copy_btn["state"] = value
+
+    def status(self, status, color):
         """Show html status message."""
         self.status_var.set(status)
         self._status_display.configure(background=color)
@@ -264,7 +285,7 @@ class HtmlFrame(tk.Frame):
         """Copy the main page generated after the script is completed."""
         with open(last_archive_created()) as html_file:
             pyperclip.copy(html_file.read())
-        self._html_status('Copiato', 'RoyalBlue1')
+        self.status('Copiato', 'RoyalBlue1')
         self.bell()
 
     @staticmethod
@@ -283,6 +304,7 @@ class HtmlFrame(tk.Frame):
 
 class AudioFrame(tk.Frame):
     """Audio section of the gui."""
+
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self._create_audio_frame()
@@ -319,10 +341,10 @@ class AudioFrame(tk.Frame):
 
         self._watermark_toggle = tk.StringVar()
         self._watermark_toggle = tk.IntVar(value=1)
-        self._watermark_auto = ttk.Checkbutton(audio,
-                                               variable=self._watermark_toggle,
-                                               command=self._get_watermark_num)
-        self._watermark_auto.grid(column=3, row=1, sticky=tk.E)
+        _watermark_auto = ttk.Checkbutton(audio,
+                                          variable=self._watermark_toggle,
+                                          command=self._get_watermark_num)
+        _watermark_auto.grid(column=3, row=1, sticky=tk.E)
 
         # bitrate
         bitrate_label = ttk.Label(audio, text='Bitrate:',
@@ -347,6 +369,25 @@ class AudioFrame(tk.Frame):
                                           state='readonly')
         self._sample_frame.grid(column=1, row=3)
         self._sample_frame.current(0)
+
+    @property
+    def bitrate(self):
+        """Return bitrate from options."""
+        return self._bitrate.get()
+
+    @property
+    def sample_rate(self):
+        """Return sample rate from options without the Hz."""
+        return self._sample_frame.get().replace('Hz', '')
+
+    @property
+    def watermark_num(self):
+        """Return number of cuts to make in audio from options."""
+        # TODO dont like the way i am comparing. doesnt make much sense
+        # need to check if I can change the default value to something else no 0
+        if self._watermark_toggle.get() == 0:
+            return int(self._watermark.get())
+        return None
 
 
 class MainFrame(tk.Frame):
@@ -637,13 +678,6 @@ class MainFrame(tk.Frame):
             - 320k – highest level supported by the MP3 standard
         """
         self._rename_files()
-        set_bitrate = self.audio._bitrate.get()
-        set_sample = self.audio._sample_frame.get().replace('Hz', '')
-
-        if self.audio._watermark_toggle.get() == 0:
-            watermark_n = int(self.audio._watermark.get())
-        else:
-            watermark_n = ''
 
         valid_files = [os.path.join(self.path, i)
                        for i in self.get_text_lines if i]
@@ -654,9 +688,9 @@ class MainFrame(tk.Frame):
                              os.path.basename(valid_file[1]))
             self.update()
             podcast = PodcastFile(valid_file[1])
-            podcast.generate_podcast(bitrate=set_bitrate,
-                                     sample_rate=set_sample,
-                                     num_cuts=watermark_n)
+            podcast.generate_podcast(bitrate=self.audio.bitrate,
+                                     sample_rate=self.audio.sample_rate,
+                                     num_cuts=self.audio.watermark_num)
 
         for file in podcast.files_to_upload():
             self.update()
@@ -667,10 +701,10 @@ class MainFrame(tk.Frame):
         generate_html(podcast.html_page)
         self.progress.stop()
 
-        self.html._copy_btn['state'] = 'normal'
-        self.html._preview_btn['state'] = 'normal'
+        self.html.copy_btn = "normal"
+        self.html.preview_btn = "normal"
 
-        self.html._html_status('Pronto', 'green')
+        self.html.status('Pronto', 'green')
         self._message_box('Done!')
 
         # for now deactivate button so it cannot be done again
