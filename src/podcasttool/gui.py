@@ -91,9 +91,6 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
         catalog {str} - the type of list in where to search:
                         c = corsi (list of courses)
                         d = docenti (list of teachers)
-    If 'c' or 'd' is passed as an argument to type then the check will be done
-    thru a list of choices.
-
     Returns:
         [str] -- return the correct word choosen by the user.
 
@@ -166,10 +163,10 @@ def archive_files():
 
 
 def last_archive_created():
-    """Get the last created html page from the archive.
+    """Get the last created html file from the archive directory.
 
     Returns:
-        [str] -- file path of the last html page.
+        {str} -- file path of the last html page.
 
     """
     mod = {file: os.stat(file).st_mtime for file in archive_files()}
@@ -181,6 +178,7 @@ def last_archive_created():
 
 def delete_archive():
     """Delete all the html archive files."""
+    # XXX currently is not begin used anymore. I could move it to util?
     prompt = messagebox.askyesno(
         title='Conferma', message='Cancellare tutto l\'archivio. Sei sicuro?')
     if prompt:
@@ -353,7 +351,16 @@ class AudioFrame(tk.Frame):
 
     @staticmethod
     def _bitrate_list() -> list:
-        """Generate a list to populate bitrate combobox."""
+        """Generate a list to populate bitrate combobox.
+
+        Common audio birate:
+            - 32k or 64k – generally acceptable only for speech
+            - 96k – generally used for speech or low-quality streaming
+            - 128k or 160k – mid-range bitrate quality
+            - 192k – medium quality bitrate
+            - 256k – a commonly used high-quality bitrate
+            - 320k – highest level supported by the MP3 standard
+        """
         return ['32k', '64k', '128k', '192k', '256k', '320k']
 
     @staticmethod
@@ -662,15 +669,7 @@ class MainFrame(tk.Frame):
             self._error_refresh()
 
     def _main(self):
-        """Common audio birate.
-
-            - 32k or 64k – generally acceptable only for speech
-            - 96k – generally used for speech or low-quality streaming
-            - 128k or 160k – mid-range bitrate quality
-            - 192k – medium quality bitrate
-            - 256k – a commonly used high-quality bitrate
-            - 320k – highest level supported by the MP3 standard
-        """
+        
         self._rename_files()
 
         valid_files = [os.path.join(self.path, i)
