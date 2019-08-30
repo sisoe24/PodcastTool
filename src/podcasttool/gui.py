@@ -345,8 +345,8 @@ class AudioFrame(tk.Frame):
 
         sample_rate_list = ['22050Hz', '44100Hz']
         self._sample_rate = ttk.Combobox(audio, width=7,
-                                          value=sample_rate_list,
-                                          state='readonly')
+                                         value=sample_rate_list,
+                                         state='readonly')
         self._sample_rate.grid(column=1, row=3)
         self._sample_rate.current(0)
 
