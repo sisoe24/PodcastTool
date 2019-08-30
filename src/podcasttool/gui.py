@@ -214,47 +214,51 @@ class HtmlFrame(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self._create_html_frame()
 
-    # HTML WIDGETS
-    def _create_html_frame(self):
-        html_frame = ttk.Frame(self, width=300, height=90)
-        html_frame.grid(column=2, row=3, sticky=tk.N)
-        html_frame.grid_propagate(False)
+        self._html_frame = ttk.Frame(self, width=300, height=90)
+        self._html_frame.grid(column=2, row=3, sticky=tk.N)
+        self._html_frame.grid_propagate(False)
 
-        html_label = ttk.Label(html_frame, text='HTML', style='label.TLabel')
-        html_label.grid(column=0, row=0, sticky=tk.W)
-
-        html_text = ttk.Label(html_frame, text='Status:    ')
-        html_text.grid(column=0, row=1)
-
-        self.status_var = tk.StringVar()
-        self.status_var.set('Non Pronto')
-        status_font = 20 if OS_SYSTEM == 'Mac' else 14
-        self._status_display = tk.Label(html_frame,
-                                        textvariable=self.status_var,
-                                        font=('TkDefaultFont', status_font))
-        self._status_display.grid(column=1, row=1, )
-
-        self.status('Non Pronto', 'red')
-
-        self._copy_btn = ttk.Button(html_frame,
-                                    text='Copy HTML', state='disabled',
-                                    command=self._copy_html)
+        self._copy_btn = ttk.Button(self._html_frame, text='Copy HTML',
+                                    state='disabled', command=self._copy_html)
         self._copy_btn.grid(column=3, row=1, padx=20)
 
-        web_text = ttk.Label(html_frame, text='Web: ')
-        web_text.grid(column=0, row=2, sticky=tk.W)
+        open_web = partial(self._open_link, 'web')
+        ttk.Button(self._html_frame, text='Apri website',
+                   command=open_web).grid(column=3, row=2, pady=5)
 
-        web = partial(self._open_web, 'web')
-        open_web_btn = ttk.Button(html_frame, text='Apri website',
-                                  command=web)
-        open_web_btn.grid(column=3, row=2, pady=5)
-
-        preview = partial(self._open_web, 'preview')
-        self._preview_btn = ttk.Button(html_frame, text='Preview HTML',
-                                       state='disabled', command=preview)
+        open_preview = partial(self._open_link, 'preview')
+        self._preview_btn = ttk.Button(self._html_frame, text='Preview HTML',
+                                       state='disabled', command=open_preview)
         self._preview_btn.grid(column=1, row=2)
+
+        status_font = 20 if OS_SYSTEM == 'Mac' else 14
+        self.status_var = tk.StringVar(value="Non pronto")
+        self._status_display = tk.Label(self._html_frame,
+                                        textvariable=self.status_var,
+                                        font=('TkDefaultFont', status_font))
+        self._status_display.grid(column=1, row=1)
+        self._status_display.configure(background="red")
+
+        self._labels()
+
+    def status(self, status, color):
+        """Display html status message on gui
+
+        Arguments:
+            status {str} - the message to be displayed.
+            color {str} - name of the background color(e.g. red, green, blue).
+        """
+        self.status_var.set(status)
+        self._status_display.configure(background=color)
+
+    def _labels(self):
+        """Generate labels for the html frame."""
+        ttk.Label(self._html_frame, text='HTML',
+                  style='label.TLabel').grid(column=0, row=0, sticky=tk.W)
+        ttk.Label(self._html_frame, text='Status:    ').grid(column=0, row=1)
+        ttk.Label(self._html_frame, text='Web: ').grid(column=0, row=2,
+                                                       sticky=tk.W)
 
     @property
     def preview_btn(self):
@@ -276,11 +280,6 @@ class HtmlFrame(tk.Frame):
         """Set copy button state."""
         self._copy_btn["state"] = value
 
-    def status(self, status, color):
-        """Show html status message."""
-        self.status_var.set(status)
-        self._status_display.configure(background=color)
-
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
         with open(last_archive_created()) as html_file:
@@ -289,8 +288,8 @@ class HtmlFrame(tk.Frame):
         self.bell()
 
     @staticmethod
-    def _open_web(page: str):
-        """Open website page directly."""
+    def _open_link(page: str):
+        """Open website or preview html page."""
         if page == 'web':
             open_link = 'http://www.fonderiesonore.it/elearning/'
         elif page == 'preview':
