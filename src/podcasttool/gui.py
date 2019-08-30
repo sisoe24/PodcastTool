@@ -309,47 +309,28 @@ class AudioFrame(tk.Frame):
         super().__init__(parent, *args, **kwargs)
         self._create_audio_frame()
 
-    def _get_watermark_num(self):
-        if self._watermark_toggle.get() == 0:
-            self._watermark['state'] = 'readonly'
-        elif self._watermark_toggle.get() == 1:
-            self._watermark['state'] = 'disabled'
-
     def _create_audio_frame(self):
         audio = ttk.Frame(self, width=300, height=100)
         audio.grid(column=2, row=2, rowspan=2, sticky=tk.N)
         audio.grid_propagate(False)
 
-        audio_label = ttk.Label(audio, text='Audio',
-                                style='label.TLabel')
-        audio_label.grid(column=0, row=0, sticky=tk.W)
+        ttk.Label(audio, text='Audio',
+                  style='label.TLabel').grid(column=0, row=0, sticky=tk.W)
 
         # watermarks
-        watermark_text = ttk.Label(audio, style='audio.TLabel',
-                                   text='Watermarks:   ')
-        watermark_text.grid(column=0, row=1, sticky=tk.W)
+        ttk.Label(audio, style='audio.TLabel',
+                  text='Watermarks:   ').grid(column=0, row=1, sticky=tk.W)
 
         nums = [_ for _ in range(2, 9)]
-        self._watermark = ttk.Combobox(audio, width=2,
-                                       value=nums, state='disabled')
+        nums.insert(0, "auto")
+        self._watermark = ttk.Combobox(audio, width=4,
+                                       value=nums, state='readonly')
         self._watermark.grid(column=1, row=1, sticky=tk.E)
-        self._watermark.current(1)
-
-        auto_watermarks = ttk.Label(audio, text='auto', style='audio.TLabel')
-        auto_watermarks.grid(column=2, columnspan=2,
-                             padx=25, row=1, sticky=tk.E)
-
-        self._watermark_toggle = tk.StringVar()
-        self._watermark_toggle = tk.IntVar(value=1)
-        _watermark_auto = ttk.Checkbutton(audio,
-                                          variable=self._watermark_toggle,
-                                          command=self._get_watermark_num)
-        _watermark_auto.grid(column=3, row=1, sticky=tk.E)
+        self._watermark.current(0)
 
         # bitrate
-        bitrate_label = ttk.Label(audio, text='Bitrate:',
-                                  style='audio.TLabel')
-        bitrate_label.grid(column=0, row=2, sticky=tk.W)
+        ttk.Label(audio, text='Bitrate:',
+                  style='audio.TLabel').grid(column=0, row=2, sticky=tk.W)
 
         bitrate_list = ['32k', '64k', '128k', '192k', '256k', '320k']
         self._bitrate = ttk.Combobox(audio, width=4,
@@ -359,33 +340,35 @@ class AudioFrame(tk.Frame):
         self._bitrate.current(1)
 
         # sample rate
-        sample_frame_label = ttk.Label(audio, text='Sample rate:',
-                                       style='audio.TLabel')
-        sample_frame_label.grid(column=0, row=3, sticky=tk.W)
+        ttk.Label(audio, text='Sample rate:',
+                  style='audio.TLabel').grid(column=0, row=3, sticky=tk.W)
 
-        sample_frame_list = ['22050Hz', '44100Hz']
-        self._sample_frame = ttk.Combobox(audio, width=7,
-                                          value=sample_frame_list,
+        sample_rate_list = ['22050Hz', '44100Hz']
+        self._sample_rate = ttk.Combobox(audio, width=7,
+                                          value=sample_rate_list,
                                           state='readonly')
-        self._sample_frame.grid(column=1, row=3)
-        self._sample_frame.current(0)
+        self._sample_rate.grid(column=1, row=3)
+        self._sample_rate.current(0)
 
     @property
-    def bitrate(self):
+    def bitrate(self) -> str:
         """Return bitrate from options."""
         return self._bitrate.get()
 
     @property
-    def sample_rate(self):
+    def sample_rate(self) -> str:
         """Return sample rate from options without the Hz."""
-        return self._sample_frame.get().replace('Hz', '')
+        return self._sample_rate.get().replace('Hz', '')
 
     @property
-    def watermark_num(self):
+    def watermark_state(self) -> str:
+        """Get watermark_toggle check button state."""
+        return self._watermark.get()
+
+    @property
+    def watermark_num(self) -> int:
         """Return number of cuts to make in audio from options."""
-        # TODO dont like the way i am comparing. doesnt make much sense
-        # need to check if I can change the default value to something else no 0
-        if self._watermark_toggle.get() == 0:
+        if not self.watermark_state == "auto":
             return int(self._watermark.get())
         return None
 
@@ -681,6 +664,8 @@ class MainFrame(tk.Frame):
 
         valid_files = [os.path.join(self.path, i)
                        for i in self.get_text_lines if i]
+
+        INFO_LOGGER.debug("watermark %s", self.audio.watermark_num)
 
         self.progress.start()
         for valid_file in enumerate(valid_files, 1):
