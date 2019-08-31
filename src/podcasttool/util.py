@@ -131,13 +131,17 @@ def calculate_cuts(ms_time: int) -> int:
     return 4
 
 
-@profile
+def catalog_file():
+    """Return catalog file path.
+    
+    File should always be in the same directory where the src code is.
+    """
+    return os.path.join(os.path.dirname(__file__), 'catalog_names.json')
+
+
 def catalog_names() -> dict:
     """Open json catalog of names to grab the teachers and courses names."""
-    # json file should always be in
-    # the same directory of where the src code is
-    json_file = os.path.join(
-        os.path.dirname(__file__), 'catalog_names.json')
+    json_file = catalog_file()
     try:
         with open(json_file) as json_file:
             LOGGER.debug('parsing json file: %s', json_file)
