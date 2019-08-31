@@ -427,7 +427,7 @@ class MainFrame(tk.Frame):
         self.select_btn.place(x=120, y=55)
 
         self._conferm_btn = ttk.Button(parent, text='Conferma e procedi',
-                                       state='disabled', command=self._main)
+                                       state='disabled', command=self._run)
         self._conferm_btn.place(x=230, y=55)
 
         sign_img = ImageTk.PhotoImage(Image.open(get_image()[0]))
@@ -668,8 +668,8 @@ class MainFrame(tk.Frame):
             self._label_img.image = x_img
             self._error_refresh()
 
-    def _main(self):
-        
+    def _run(self):
+        """Run script when confirm button is pressed."""
         self._rename_files()
 
         valid_files = [os.path.join(self.path, i)
