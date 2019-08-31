@@ -73,7 +73,7 @@ def generate_audio_clip(text, filename, path, lang='it'):
     name = str(text)
     path = get_path(path)
     speak = gtts.gTTS(text=name, lang=lang)
-    speak.save(f'{path}/{filename}.wav')
+    speak.save(f'{path}/{filename}.mp3')
 
 
 def get_path(directory: str) -> str:
