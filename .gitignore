@@ -70,3 +70,4 @@ src/podcasttool/create_audio_library.py
 send_separately
 
 TODO.md
+.vscode/tasks.json
