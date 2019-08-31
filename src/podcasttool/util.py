@@ -8,6 +8,7 @@ import datetime
 import subprocess
 
 import regex
+import gtts
 from dotenv import load_dotenv, find_dotenv
 
 # from podcasttool import logger
@@ -56,6 +57,23 @@ def total_time(func):
             file.write(print_str)
         return value
     return wrapper
+
+
+def generate_audio_clip(text, filename, path, lang='it'):
+    """Generate the audio cues.
+
+    Arguments:
+        text {str} - what is going to be spoke in the audio cue.
+        file_name {str} - the name of the saved file.
+        path {str} - relative path of where to save the file.
+
+    Keyword Arguments:
+        lang {str} - the language for the audio(default: 'it')
+    """
+    name = str(text)
+    path = get_path(path)
+    speak = gtts.gTTS(text=name, lang=lang)
+    speak.save(f'{path}/{filename}.wav')
 
 
 def get_path(directory: str) -> str:
@@ -133,7 +151,7 @@ def calculate_cuts(ms_time: int) -> int:
 
 def catalog_file():
     """Return catalog file path.
-    
+
     File should always be in the same directory where the src code is.
     """
     return os.path.join(os.path.dirname(__file__), 'catalog_names.json')
