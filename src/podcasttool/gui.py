@@ -484,22 +484,22 @@ class HtmlFrame(tk.Frame):
                                                        sticky=tk.W)
 
     @property
-    def preview_btn(self):
+    def preview_button(self):
         """Return copy button state."""
         return self._preview_btn["state"]
 
-    @preview_btn.setter
-    def preview_btn(self, value):
+    @preview_button.setter
+    def preview_button(self, value):
         """Set preview button state."""
         self._preview_btn["state"] = value
 
     @property
-    def copy_btn(self):
+    def copy_button(self):
         """Return copy button state."""
         return self._copy_btn["state"]
 
-    @copy_btn.setter
-    def copy_btn(self, value):
+    @copy_button.setter
+    def copy_button(self, value):
         """Set copy button state."""
         self._copy_btn["state"] = value
 
@@ -919,8 +919,8 @@ class MainFrame(tk.Frame):
         generate_html(podcast.html_page)
         self.progress.stop()
 
-        self.html.copy_btn = "normal"
-        self.html.preview_btn = "normal"
+        self.html.copy_button = "normal"
+        self.html.preview_button = "normal"
 
         self.html.status('Pronto', 'green')
         self._message_box('Done!')
