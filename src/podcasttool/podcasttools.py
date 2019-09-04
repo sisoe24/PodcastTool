@@ -32,6 +32,14 @@ print('--> DEBUG THIS IS PODCAST COPY--')
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
+ERROR_FRAME = None
+TKINTER = None
+
+
+def gui_msg(msg):
+    ERROR_FRAME.display_errors(msg)
+    TKINTER.update()
+
 
 @util.profile
 def upload_to_server(uploading_file, server_path, test_env=False):
@@ -75,6 +83,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
         with open(uploading_file, 'rb') as upload:
             INFO_LOGGER.info('Carico podcast sul server'
                              '... ci puo volere un po ... ')
+            gui_msg('\nCarico podcast sul server... ci puo volere un po ... ')
             # check if user is me. if yes then app will NOT upload to server
             if not util.DEV_MODE:
                 file_name = os.path.basename(uploading_file)
@@ -112,6 +121,7 @@ class PodcastFile:
 
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
+        gui_msg("\n" + self.__name)
 
         # podcast names have always this structure:
         # ex: SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav
@@ -483,6 +493,8 @@ class PodcastFile:
             """Merge all the mp3 files from tmp folder."""
             INFO_LOGGER.info(
                 'Unisco e converto i file audio per creare podcast finale...')
+            gui_msg('Unisco e converto i file audio per creare podcast finale...')
+            gui_msg('...ci puo volere un po (da 30 a 50 secondi)')
             INFO_LOGGER.info('...ci puo volere un po (da 30 a 50 secondi)')
             # see pydub documentation of what is empty()
             podcast_segment = pydub.AudioSegment.empty()
@@ -587,6 +599,7 @@ def generate_html(html_data):
 
     page = yattag.indent(doc.getvalue())
     INFO_LOGGER.info('Pagina html generata')
+    gui_msg('Pagina html generata')
     generate_archive(page)
 
 
