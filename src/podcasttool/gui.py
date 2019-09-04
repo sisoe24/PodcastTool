@@ -191,7 +191,7 @@ def delete_archive():
         messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
-def get_image() -> tuple():
+def get_imagex() -> tuple():
     """Get images from image directory.
 
         warning image = index 0
@@ -209,6 +209,16 @@ def get_image() -> tuple():
     img_directory = util.get_path("include/img")
     img_list = pathlib.Path(os.path.join(img_directory)).glob('*png')
     return [i for i in sorted(img_list)]
+
+
+def get_image(img):
+    image_dict = {
+        "warning": "", "x": "", "ok": "", "logo": "", "icon": "", "sorry": ""
+    }
+    for image in zip(image_dict.keys(), get_imagex()):
+        image_dict[image[0]] = image[1]
+    # return image_dict[img]
+    return ImageTk.PhotoImage(Image.open(image_dict[img]))
 
 
 def _set_directory():
@@ -672,10 +682,8 @@ class ErrorFrame(tk.Frame):
         # dont like it though should fine better solution
         self._error_label = None
 
-        sign_img = ImageTk.PhotoImage(Image.open(get_image()[0]))
-        self._label_img = ttk.Label(self._error_frame, image=sign_img,
-                                    name='logo', width=500)
-        self._label_img.image = sign_img
+        self._label_img = ttk.Label(self._error_frame, name='logo', width=500)
+        self.insert_img(get_image("warning"))
         self._label_img.place(x=150, y=10)
 
     def insert_img(self, img):
@@ -713,8 +721,8 @@ class ErrorFrame(tk.Frame):
     def display_errors(self, message: str, color=''):
         """Display message errors with suggestion in the error label frame."""
         ttk.Label(self._error_label, background=color, text=message,
-                  style='label1.TLabel').grid(
-            column=0, row=self.row_number, sticky=tk.W)
+                  style='label1.TLabel').grid(column=0, row=self.row_number,
+                                              sticky=tk.W)
         self.row_increment()
 
 
@@ -816,7 +824,7 @@ class MainFrame(tk.Frame):
     def files_select(self):
         """Select the podcast file to parse."""
         # open_file = (
-            # "/Users/virgilsisoe/.venvs/PodcastTool/other/Scrivania/Podcast/ALP/MULO/MUL6_20130823_J_Lattanzio_Lezione_4_parte_2.wav",)
+        # "/Users/virgilsisoe/.venvs/PodcastTool/other/Scrivania/Podcast/ALP/MULO/MUL6_20130823_J_Lattanzio_Lezione_4_parte_2.wav",)
         open_file = filedialog.askopenfilenames(initialdir=_set_directory())
         try:
             check_folder(open_file[0])
@@ -1048,8 +1056,7 @@ class MainFrame(tk.Frame):
 
     def _check_error_tag(self):
         if self._text_errors():
-            x_img = ImageTk.PhotoImage(Image.open(get_image()[1]))
-            self.error_frame.insert_img(x_img)
+            self.error_frame.insert_img(get_image("x"))
             self._refresh_frame()
 
         if not self._text_errors():
@@ -1060,8 +1067,7 @@ class MainFrame(tk.Frame):
             self.select_button = 'disabled'
             self.text_widget['state'] = 'disabled'
 
-            ok_img = ImageTk.PhotoImage(Image.open(get_image()[2]))
-            self.error_frame.insert_img(ok_img)
+            self.error_frame.insert_img(get_image("ok"))
 
     def _refresh_frame(self):
         """Create the refresh button if there are any errors."""
@@ -1086,10 +1092,10 @@ class MainFrame(tk.Frame):
     def _run(self):
         """Run the podcastool main script when button is pressed."""
         self._rename_files()
-        
+
         podcasttools.ERROR_FRAME = self.error_frame
         podcasttools.TKINTER = self
-        
+
         for file in self.process_files():
             podcast = PodcastFile(file)
             podcast.generate_podcast(bitrate=self.audio.bitrate,
