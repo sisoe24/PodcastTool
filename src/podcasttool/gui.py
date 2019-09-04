@@ -3,10 +3,10 @@ import os
 import json
 import pathlib
 import logging
-import datetime
 import platform
 import subprocess
 
+from datetime import datetime
 from functools import partial
 from difflib import get_close_matches
 
@@ -46,7 +46,7 @@ TEACHERS_NAMES = CATALOG_NAMES['docenti'].keys()
 def _match_lesson(podcast_file):
     """Search for same podcast lesson in directory."""
     path = pathlib.Path(podcast_file)
-    date_selected_file = get_file_date(path, lesson_check=True)
+    date_selected_file = get_file_date(path)["creation"]
     lezione_search = "_".join(path.name.split('_')[4:6])
 
     try:
@@ -64,7 +64,7 @@ def _match_lesson(podcast_file):
         valid_lesson = regex.search(r'[L|l]\w+_' + num, lezione_check)
         file_vecchio = regex.search(r'vecchio', file.name)
 
-        date_file = get_file_date(file, lesson_check=True)
+        date_file = get_file_date(file)["creation"]
         if valid_lesson and not file_vecchio:
             if date_file == date_selected_file:
                 LOGGER.debug('file that match date of creation: %s', file.name)
@@ -110,53 +110,39 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
     return choice
 
 
-def get_file_date(file_path: str, date='', lesson_check='') -> str:
+def format_date(date):
+    """Formate date object from datetime module and return %Y-%m-%d."""
+    human_date = datetime.fromtimestamp(date)
+    formatted_date = human_date.strftime('%Y-%m-%d')
+    return formatted_date
+
+
+def get_file_date(file_path: str) -> str:
     """Check if the written date is the same as the last modification date.
 
     If not then suggests to the user if he wants to automatically correct.
 
     Arguments:
         file_path {str} -- path of the file to check the date.
-        date {str} -- the numeric date to make the comparison
 
     Returns:
-        {str} -- a numeric date.
-
+        {dict} - a dict with today, creation and modification date.
     """
-    # get creation_time
     if OS_SYSTEM == 'Mac':
         create_time = os.stat(file_path).st_birthtime
     elif OS_SYSTEM == 'Linux':
         create_time = os.stat(file_path).st_ctime
 
-    # get last_mod_time
+    today = datetime.today().strftime('%Y-%m-%d')
     mod_time = os.path.getmtime(file_path)
-    if lesson_check:
-        human_date = str(datetime.datetime.fromtimestamp(create_time))
-        date, _ = human_date.split(' ')
-        return date
 
-    file_attr = {}
-    file_attr['last_mod_time'] = mod_time
-    file_attr['creation_time'] = create_time
-    file_attr['written_date'] = date
+    file_attr = {
+        "today": today,
+        "creation": format_date(create_time),
+        "modification": format_date(mod_time)
+    }
 
-    for key, value in file_attr.items():
-        if key == 'written_date':
-            formatted_date = value
-        else:
-            human_date = datetime.datetime.fromtimestamp(value)
-            formatted_date = human_date.strftime('%Y.%m.%d')
-        file_attr[key] = formatted_date
-
-    # get today date
-    today = datetime.datetime.today().strftime('%Y.%m.%d')
-
-    today_msg = f'oggi [{today}] '
-    creation_msg = f'creato [{file_attr["creation_time"]}] '
-    modified_msg = f'modificato [{file_attr["last_mod_time"]}]'
-
-    return today_msg + creation_msg + modified_msg
+    return file_attr
 
 
 def archive_files():
@@ -763,7 +749,7 @@ class MainFrame(tk.Frame):
 
         self._select_btn = ttk.Button(parent, text='Seleziona file',
                                       command=self.files_select)
-        # self._select_btn.invoke()
+        self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=120, y=55)
 
@@ -823,9 +809,9 @@ class MainFrame(tk.Frame):
 
     def files_select(self):
         """Select the podcast file to parse."""
-        # open_file = (
-        # "/Users/virgilsisoe/.venvs/PodcastTool/other/Scrivania/Podcast/ALP/MULO/MUL6_20130823_J_Lattanzio_Lezione_4_parte_2.wav",)
-        open_file = filedialog.askopenfilenames(initialdir=_set_directory())
+        open_file = (os.environ["TEST_FILE"],)
+
+        # open_file = filedialog.askopenfilenames(initialdir=_set_directory())
         try:
             check_folder(open_file[0])
         except IndexError:
@@ -947,12 +933,11 @@ class MainFrame(tk.Frame):
                 _tag_errors(numbers_match.span(), line_num, tag)
 
                 # TODO when refreshing the error this fails
-                # file_path = os.path.join(self.file_path, filename)
-                # compare_date = get_file_date(file_path=file_path,
-                #                              date=numbers_match.group())
+                file_path = os.path.join(self.file_path, filename)
+                compare_date = get_file_date(file_path=file_path)
 
                 self.error_frame.display_errors(
-                    f'- {numbers_match.group()} -> {"compare_date"}',
+                    f'- {numbers_match.group()} -> {compare_date}',
                     self._tag_color(tag))
             else:
                 self._tag_remove(tag)
