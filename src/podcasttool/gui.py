@@ -1061,7 +1061,6 @@ class MainFrame(tk.Frame):
 
         if not self._text_errors():
             self.error_frame.refresh_widgets("errori")
-            INFO_LOGGER.info('Nessun Errore!')
 
             self.conferm_button = 'active'
             self.select_button = 'disabled'
@@ -1231,7 +1230,6 @@ class MainPage(tk.Tk):
 
 def run():
     """Run gui."""
-    INFO_LOGGER.info('Applicazione Partita')
     try:
         app = MainPage()
         app.mainloop()
