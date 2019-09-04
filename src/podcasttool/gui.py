@@ -191,34 +191,34 @@ def delete_archive():
         messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
-def get_imagex() -> tuple():
-    """Get images from image directory.
-
-        warning image = index 0
-        x image       = index 1
-        ok image      = index 2
-        logo          = index 3
-        icon app      = index 4
-        sorry image   = index 5
+def images_path() -> tuple():
+    """Get images path from image directory.
 
     Returns:
-        [tuple] -- tuple list of images absolute path
+        [tuple] - tuple list of images absolute path
 
     """
-
     img_directory = util.get_path("include/img")
     img_list = pathlib.Path(os.path.join(img_directory)).glob('*png')
     return [i for i in sorted(img_list)]
 
 
-def get_image(img):
-    image_dict = {
+def get_image(img, get_path=False):
+    """Get ImageTK object with image.
+    Arguments:
+        img {str} - the name of the image to get.
+                    (warning, x, ok, logo, icon, sorry)
+        get_path {bool} - if True then returns only the path not the object
+                        [default] : False.
+    """
+    images = {
         "warning": "", "x": "", "ok": "", "logo": "", "icon": "", "sorry": ""
     }
-    for image in zip(image_dict.keys(), get_imagex()):
-        image_dict[image[0]] = image[1]
-    # return image_dict[img]
-    return ImageTk.PhotoImage(Image.open(image_dict[img]))
+    for name, path in zip(images.keys(), images_path()):
+        images[name] = path
+    if get_path:
+        return images[img]
+    return ImageTk.PhotoImage(Image.open(images[img]))
 
 
 def _set_directory():
