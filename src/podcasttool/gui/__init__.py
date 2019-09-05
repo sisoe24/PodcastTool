@@ -1,9 +1,4 @@
-# from . import util
-from .html import HtmlFrame
-from .audio import AudioFrame
-from .catalog import CatalogFrame
-from .main import MainFrame
-
-# CATALOG_NAMES = util.catalog_names()
-# COURSES_NAMES = CATALOG_NAMES['corsi'].keys()
-# TEACHERS_NAMES = CATALOG_NAMES['docenti'].keys()
+from .html_frame import HtmlFrame
+from .audio_frame import AudioFrame
+from .catalog_frame import CatalogFrame
+from .main_frame import MainFrame
