@@ -37,7 +37,7 @@ TKINTER = None
 
 
 def gui_msg(msg):
-    ERROR_FRAME.display_errors(msg)
+    ERROR_FRAME.display_msg(msg)
     TKINTER.update()
 
 
