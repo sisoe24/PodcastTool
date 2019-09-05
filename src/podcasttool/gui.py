@@ -46,7 +46,7 @@ TEACHERS_NAMES = CATALOG_NAMES['docenti'].keys()
 def _match_lesson(podcast_file):
     """Search for same podcast lesson in directory."""
     path = pathlib.Path(podcast_file)
-    date_selected_file = get_file_date(path)["creation"]
+    date_selected_file = get_date(path)["creation"]
     lezione_search = "_".join(path.name.split('_')[4:6])
 
     try:
@@ -64,7 +64,7 @@ def _match_lesson(podcast_file):
         valid_lesson = regex.search(r'[L|l]\w+_' + num, lezione_check)
         file_vecchio = regex.search(r'vecchio', file.name)
 
-        date_file = get_file_date(file)["creation"]
+        date_file = get_date(file)["creation"]
         if valid_lesson and not file_vecchio:
             if date_file == date_selected_file:
                 LOGGER.debug('file that match date of creation: %s', file.name)
@@ -117,7 +117,7 @@ def format_date(date):
     return formatted_date
 
 
-def get_file_date(file_path: str) -> str:
+def get_date(file_path: str) -> str:
     """Check if the written date is the same as the last modification date.
 
     If not then suggests to the user if he wants to automatically correct.
@@ -934,7 +934,7 @@ class MainFrame(tk.Frame):
 
                 # TODO when refreshing the error this fails
                 file_path = os.path.join(self.file_path, filename)
-                compare_date = get_file_date(file_path=file_path)
+                compare_date = get_date(file_path=file_path)
 
                 self.error_frame.display_errors(
                     f'- {numbers_match.group()} -> {compare_date}',

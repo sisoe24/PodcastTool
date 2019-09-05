@@ -208,12 +208,12 @@ def generate_audio_clip(text, filename, rel_path, lang='it'):
     """Generate the audio cues.
 
     Arguments:
-        text {str} - - what is going to be spoke in the audio cue.
-        file_name {[type]} - - the name of the saved file.
-        rel_path {[type]} - - relative path of where to save the file.
+        text {str} - what is going to be spoke in the audio cue.
+        file_name {str} - the name of the saved file.
+        rel_path {str} - relative path of where to save the file.
 
     Keyword Arguments:
-        lang {str} - - the language for the audio(default: 'it')
+        lang {str} - the language for the audio(default: 'it')
     """
     name = str(text)
     speak = gtts.gTTS(text=name, lang=lang)
