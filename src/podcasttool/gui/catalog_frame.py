@@ -1,3 +1,8 @@
+"""Catalog page frame from the gui.
+
+From here you can modify the name catalog by adding and deleting other names.
+The module will create the audio files for the newly created names.
+"""
 import json
 
 import tkinter as tk
@@ -154,6 +159,7 @@ class CatalogFrame(tk.Frame):
 
     def _delete_from_catalog(self, delete_key):
         """Delete key from class catalog list."""
+        # TODO: currently not deleting the file on disk?
         self._catalog_list[self.get_catalog].pop(delete_key)
 
     def _get_new_names(self):

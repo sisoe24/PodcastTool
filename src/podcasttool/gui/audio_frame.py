@@ -1,4 +1,12 @@
-"""Audio frame widget of the gui."""
+"""Audio widget frame of the gui.
+
+From here you can set the export audio options for the final podcast file
+that is going to be uploaded to internet.
+Default configurations are:
+    Bitrate: 64k.
+    Sample Rate: 22050Hz.
+    Watermark cuts: auto.
+"""
 import tkinter as tk
 from tkinter import ttk
 
