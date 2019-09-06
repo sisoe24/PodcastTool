@@ -1,3 +1,11 @@
+"""Html frame of the gui.
+
+From here you can open open the website directly, open a preview of the html
+even though it uses an audio player that is located on the server, thus it will
+not work on the preview window and copy the html page on the os clipboard using
+an external module 'pyperclip'.
+"""
+
 import os
 import pathlib
 import platform
