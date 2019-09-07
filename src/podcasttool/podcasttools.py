@@ -36,7 +36,8 @@ ERROR_FRAME = None
 TKINTER = None
 
 
-def gui_msg(msg):
+def gui_log(msg):
+    """Show msg log into gui."""
     ERROR_FRAME.display_msg(msg)
     TKINTER.update()
 
@@ -83,7 +84,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
         with open(uploading_file, 'rb') as upload:
             INFO_LOGGER.info('Carico podcast sul server'
                              '... ci puo volere un po ... ')
-            gui_msg('\nCarico podcast sul server... ci puo volere un po ... ')
+            gui_log('Carico podcast sul server... ci puo volere un po ... ')
             # check if user is me. if yes then app will NOT upload to server
             if not util.DEV_MODE:
                 file_name = os.path.basename(uploading_file)
@@ -121,7 +122,7 @@ class PodcastFile:
 
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
-        gui_msg("\n" + self.__name)
+        gui_log(self.__name)
 
         # podcast names have always this structure:
         # ex: SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav
@@ -493,9 +494,10 @@ class PodcastFile:
             """Merge all the mp3 files from tmp folder."""
             INFO_LOGGER.info(
                 'Unisco e converto i file audio per creare podcast finale...')
-            gui_msg('Unisco e converto i file audio per creare podcast finale...')
-            gui_msg('...ci puo volere un po (da 30 a 50 secondi)')
+            gui_log('Unisco e converto i file per creare podcast finale...')
+            gui_log('...ci puo volere un po (da 30 a 50 secondi)\n')
             INFO_LOGGER.info('...ci puo volere un po (da 30 a 50 secondi)')
+
             # see pydub documentation of what is empty()
             podcast_segment = pydub.AudioSegment.empty()
             for sound in _create_audiosegment():
@@ -599,7 +601,7 @@ def generate_html(html_data):
 
     page = yattag.indent(doc.getvalue())
     INFO_LOGGER.info('Pagina html generata')
-    gui_msg('Pagina html generata')
+    gui_log('\nPagina html generata')
     generate_archive(page)
 
 
