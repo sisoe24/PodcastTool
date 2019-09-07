@@ -8,23 +8,17 @@ an external module 'pyperclip'.
 
 import os
 import pathlib
-import platform
 import subprocess
 from functools import partial
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 
 import pyperclip
-from podcasttool import util
 
-if platform.system() == 'Darwin':
-    OS_SYSTEM = 'Mac'
-elif platform.system() == 'Linux':
-    OS_SYSTEM = 'Linux'
-else:
-    print('sorry your OS is not supported')
+from podcasttool import util
+from podcasttool import open_link
+from podcasttool import OS_SYSTEM
 
 
 def archive_files():
@@ -46,17 +40,6 @@ def last_archive_created():
         if mtime == max(mod.values()):
             return filepath
     return None
-
-
-def delete_archive():
-    """Delete all the html archive files."""
-    # XXX currently is not begin used anymore. I could move it to util?
-    prompt = messagebox.askyesno(
-        title='Conferma', message='Cancellare tutto l\'archivio. Sei sicuro?')
-    if prompt:
-        for i in archive_files():
-            os.remove(i)
-        messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
 class HtmlFrame(tk.Frame):
@@ -110,7 +93,6 @@ class HtmlFrame(tk.Frame):
             ttk.Label(self._html_frame, text=label).grid(
                 column=0, row=index, stick=tk.W)
 
-
     @property
     def preview_button(self):
         """Return copy button state."""
@@ -142,11 +124,7 @@ class HtmlFrame(tk.Frame):
     def _open_link(page: str):
         """Open website or preview html page."""
         if page == 'web':
-            open_link = 'http://www.fonderiesonore.it/elearning/'
+            link = 'http://www.fonderiesonore.it/elearning/'
         elif page == 'preview':
-            open_link = last_archive_created()
-
-        if OS_SYSTEM == 'Mac':
-            subprocess.run(['open', open_link])
-        elif OS_SYSTEM == 'Linux':
-            subprocess.run(['xdg-open', open_link])
+            link = last_archive_created()
+        open_link(link)
