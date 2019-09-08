@@ -216,15 +216,15 @@
     "Fonderie Sonore Podcast",
     "Materiale riservato agli studenti della scuola",
     "Corso",
-    "course_name",
+    "${course_name}",
     "Docente",
-    "teacher_name",
+    "${teacher_name}",
     "Podcast audio della",
-    "lesson_number",
+    "${lesson_number}",
     "Del",
-    "day",
-    "month",
-    "year",
-    "part_number"
+    "${day}",
+    "${month}",
+    "${year}",
+    "${part_number}"
   ]
 }
