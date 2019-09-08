@@ -230,7 +230,6 @@ class CatalogFrame(tk.Frame):
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
         for category, list_ in self._updated_names.items():
+            path = util.get_path("include/audio") / category
             name, lang = list_
-            file_name = name.replace(" ", "_")
-            util.generate_audio(name, file_name,
-                                     f"include/audio/{category}", lang)
+            util.generate_audio(text=name, path=path, lang=lang)
