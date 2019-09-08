@@ -41,8 +41,11 @@ print('--> DEBUG THIS IS PODCAST COPY--')
 
 def gui_log(msg):
     """Show msg log into gui."""
-    ERROR_FRAME.display_msg(msg)
-    TKINTER.update()
+    try:
+        ERROR_FRAME.display_msg(msg)
+        TKINTER.update()
+    except Exception as error:
+        INFO_LOGGER.debug(error)
 
 
 def upload_to_server(uploading_file, server_path, test_env=False):
@@ -121,6 +124,7 @@ class PodcastFile:
     def __init__(self, raw_podcast: str):
         LOGGER.debug('Initialize PodcastFile class ->')
         INFO_LOGGER.debug('Initialize PodcastFile class ->')
+
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
         gui_log(self.__name)
@@ -137,8 +141,7 @@ class PodcastFile:
         LOGGER.debug('podcast file directory: %s', self.__directory)
 
         self._course_path = None
-
-        self._audio_intro = self._set_audio_intro()
+        self._audio_intro = None
 
     def __iter__(self):
         """Return all elements of the podcast file.
@@ -409,28 +412,37 @@ class PodcastFile:
         else:
             self.html_page['parts'].update({part: update_dict})
 
-    def _set_audio_intro(self) -> list:
+    def set_audio_intro(self):
+        """Set the intro audio from the list in the catalog_names json file."""
+        self.audio_intro = util.catalog_names()["intro"]
+
+    @property
+    def audio_intro(self) -> list:
         """Opening intro audio to be merged with the podcast."""
-        # need filename for creating the archive of the html page
+        return self._audio_intro
+
+    @audio_intro.setter
+    def audio_intro(self, value):
         self.html_page['archive_name'] = '_'.join(
             self._splitted_name[:-2])
-
         date = self.registration_date
-        return [
-            'Fonderie Sonore Podcast',
-            'Materiale riservato agli studenti della scuola',
-            'Corso',
-            self.course_name,
-            'Docente',
-            self.teacher_name,
-            'Podcast audio della:',
-            self.lesson_number,
-            'Del',
-            date["day"],
-            date["month"],
-            date["year"],
-            self.part_number,
-        ]
+        const_dict = {
+            "${course_name}": self.course_name,
+            "${teacher_name}": self.teacher_name,
+            "${lesson_number}": self.lesson_number,
+            "${day}": date["day"],
+            "${month}": date["month"],
+            "${year}": date["year"],
+            "${part_number}": self.part_number,
+        }
+        new_intro = []
+        for audio in value:
+            if audio in const_dict:
+                new_intro.append(const_dict[audio])
+            else:
+                new_intro.append(audio)
+
+        self._audio_intro = new_intro
 
     def _mkdir_tmp(self):
         """Create temporary directory.
@@ -462,6 +474,7 @@ class PodcastFile:
             num_cuts {str} - - how many cuts in audio(default: {None})
         """
         tmp_dir = self._mkdir_tmp()
+        self.set_audio_intro()
 
         def _split_raw_podcast():
             watermark = "Materiale riservato agli studenti della scuola"
