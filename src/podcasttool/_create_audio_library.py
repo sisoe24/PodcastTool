@@ -36,14 +36,14 @@ def generate_docenti(override=False):
             # print(check_lang)
             try:
                 check_lang = textblob.TextBlob(nome_docente).detect_language()
-                generate_audio_clip(text=nome_docente,
-                                    filename=filename_docenti,
-                                    rel_path=fp,
-                                    lang=check_lang)
+                generate_audio(text=nome_docente,
+                               filename=filename_docenti,
+                               rel_path=fp,
+                               lang=check_lang)
             except ValueError:
-                generate_audio_clip(text=nome_docente,
-                                    filename=filename_docenti,
-                                    rel_path=fp)
+                generate_audio(text=nome_docente,
+                               filename=filename_docenti,
+                               rel_path=fp)
 
 
 def generate_corsi(override=False):
@@ -64,11 +64,11 @@ def generate_corsi(override=False):
             # print(nome_corso, '-', check_lang)
             try:
                 check_lang = textblob.TextBlob(nome_corso).detect_language()
-                generate_audio_clip(
+                generate_audio(
                     text=nome_corso, filename=filename_corso,
                     rel_path=fp, lang=check_lang)
             except ValueError:
-                generate_audio_clip(
+                generate_audio(
                     text=nome_corso, filename=filename_corso,
                     rel_path=fp)
 
@@ -95,7 +95,7 @@ def generate_other(override=False):
         for phrase in mix_phrases:
             print(phrase)
             filename_phrase = phrase.replace(' ', '_')
-            generate_audio_clip(
+            generate_audio(
                 text=phrase, filename=filename_phrase, rel_path=fp)
 
 
@@ -120,14 +120,14 @@ def generate_other_2(override=False):
                 if phrase == 'parte':
                     text = f'{phrase} {i}ª'
                     filename_text = text.replace(' ', '_')
-                    # generate_audio_clip()
+                    # generate_audio()
                     print(text)
-                    generate_audio_clip(
+                    generate_audio(
                         text=text, filename=filename_text, rel_path=fp)
                 elif phrase == 'Lezione':
                     text = f'{i}ª {phrase}'
                     filename_text = text.replace(' ', '_')
-                    generate_audio_clip(
+                    generate_audio(
                         text=text, filename=filename_text, rel_path=fp)
                     # print(i, phrase)
                     print(text)
@@ -147,7 +147,7 @@ def generate_numeri(override=False):
             print(numero, 'ª')
             nome_numero = str(numero) + 'ª'
             file_name = nome_numero.zfill(2)
-            generate_audio_clip(
+            generate_audio(
                 text=nome_numero, filename=file_name, rel_path=fp)
 
 
@@ -169,7 +169,7 @@ def generate_data(override_all=False, override_giorni=False,
             for giorno in range(1, 32):
                 giorno_nome = str(giorno)
                 file_name = f'{str(giorno).zfill(2)}'
-                generate_audio_clip(
+                generate_audio(
                     text=giorno_nome, filename=file_name,
                     rel_path=fp)
                 print(giorno)
@@ -185,7 +185,7 @@ def generate_data(override_all=False, override_giorni=False,
             n = 1
             for mese in mesi:
                 # file_name = f'{str(n).zfill(2)}_{mese}'
-                generate_audio_clip(
+                generate_audio(
                     text=mese, filename=mese, rel_path=fp)
                 n += 1
                 print(mese)
@@ -196,7 +196,7 @@ def generate_data(override_all=False, override_giorni=False,
             delete_old(fp)
             print('Anni: ')
             for anno in range(2018, 2031):
-                generate_audio_clip(text=anno, filename=anno, rel_path=fp)
+                generate_audio(text=anno, filename=anno, rel_path=fp)
                 print(anno)
 
     generate_giorni()
@@ -204,7 +204,7 @@ def generate_data(override_all=False, override_giorni=False,
     generate_anni()
 
 
-def generate_audio_clip(text, filename, rel_path, lang='it'):
+def generate_audio(text, filename, rel_path, lang='it'):
     """Generate the audio cues.
 
     Arguments:

@@ -232,5 +232,5 @@ class CatalogFrame(tk.Frame):
         for category, list_ in self._updated_names.items():
             name, lang = list_
             file_name = name.replace(" ", "_")
-            util.generate_audio_clip(name, file_name,
+            util.generate_audio(name, file_name,
                                      f"include/audio/{category}", lang)
