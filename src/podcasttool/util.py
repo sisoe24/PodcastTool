@@ -59,7 +59,7 @@ def total_time(func):
     return wrapper
 
 
-def generate_audio(text, filename="", path, lang='it'):
+def generate_audio(text, path, filename="",  lang='it'):
     """Generate the audio cues.
 
     Arguments:
