@@ -211,5 +211,20 @@
       "course_name": "Teoria Musicale",
       "audio_file": "CORSO_TEORIA_MUSICALE.wav"
     }
-  }
+  },
+  "intro": [
+    "Fonderie Sonore Podcast",
+    "Materiale riservato agli studenti della scuola",
+    "Corso",
+    "course_name",
+    "Docente",
+    "teacher_name",
+    "Podcast audio della",
+    "lesson_number",
+    "Del",
+    "day",
+    "month",
+    "year",
+    "part_number"
+  ]
 }
