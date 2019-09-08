@@ -226,5 +226,6 @@
     "$VAR{month}",
     "$VAR{year}",
     "$VAR{part_number}"
-  ]
+  ],
+  "watermark": "Materiale riservato agli studenti della scuola"
 }

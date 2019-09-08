@@ -477,7 +477,7 @@ class PodcastFile:
         self.set_audio_intro()
 
         def _split_raw_podcast():
-            watermark = "Materiale riservato agli studenti della scuola"
+            watermark = util.catalog_names()["watermark"]
             podcast = pydub.AudioSegment.from_wav(self.abspath)
             cuts = (util.calculate_cuts(len(podcast))
                     if not num_cuts else num_cuts)
