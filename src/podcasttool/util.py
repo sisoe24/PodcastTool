@@ -159,9 +159,8 @@ def catalog_file():
 
 def catalog_names() -> dict:
     """Open json catalog of names to grab the teachers and courses names."""
-    json_file = catalog_file()
     try:
-        with open(json_file) as json_file:
+        with open(catalog_file()) as json_file:
             LOGGER.debug('parsing json file: %s', json_file)
             json_data = json.load(json_file)
             return json_data
