@@ -18,7 +18,6 @@ import pathlib
 import logging
 
 from datetime import datetime
-from tkinter import messagebox
 
 import regex
 
@@ -86,7 +85,9 @@ def _match_lesson(podcast_file):
             "if problem persist, remember that you can select multiple files")
         open_log("Nessun match in lezione\nControllare errors.log?")
         exit()
+
     compare_date = get_date(file_path)["creation"]
+
     for file in sorted(file_path.parent.glob('*wav')):
         check_lesson = "_".join(file.name.split('_')[4:6])
 
@@ -103,26 +104,11 @@ def _match_lesson(podcast_file):
                 yield str(file.name)
 
 
-def check_folder(podcast_folder):
-    """Check if the folder name is correct otherwise quit."""
-    # on linux if podcast_folder is empty, it will return a tuple
-    # so need to convert in string before to catch the error
-    path = os.path.dirname(str(podcast_folder))
-    folder_name = os.path.split(path)[1][:3]
-
-    if folder_name not in COURSES_NAMES:
-        LOGGER.critical('Nome cartella sbagliato: %s',
-                        folder_name, exc_info=True)
-        open_log("Nome cartella sbagliato\nControllare errors.log?")
-        exit()
-
-
 class SelectPodcast:
     """Select podcast file from disk."""
 
     def __init__(self, selection):
         self._selection = selection
-        check_folder(self._selection)
 
     @property
     def group_selection(self):
