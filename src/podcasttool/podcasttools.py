@@ -26,14 +26,17 @@ import yattag
 # import tinytag
 
 from podcasttool import util
-print('--> DEBUG THIS IS PODCAST COPY--')
 
 
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
+COURSES_NAMES = None
+TEACHERS_NAMES = None
 ERROR_FRAME = None
 TKINTER = None
+
+print('--> DEBUG THIS IS PODCAST COPY--')
 
 
 def gui_log(msg):
@@ -42,7 +45,6 @@ def gui_log(msg):
     TKINTER.update()
 
 
-@util.profile
 def upload_to_server(uploading_file, server_path, test_env=False):
     """Upload podcast file to server.
 
@@ -119,7 +121,6 @@ class PodcastFile:
     def __init__(self, raw_podcast: str):
         LOGGER.debug('Initialize PodcastFile class ->')
         INFO_LOGGER.debug('Initialize PodcastFile class ->')
-
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
         gui_log(self.__name)
@@ -134,6 +135,8 @@ class PodcastFile:
 
         self.__directory = os.path.dirname(raw_podcast)
         LOGGER.debug('podcast file directory: %s', self.__directory)
+
+        self._course_path = None
 
         self._audio_intro = self._set_audio_intro()
 
@@ -263,19 +266,17 @@ class PodcastFile:
             [str] - - the full name of the course name.
 
         """
-        # the code is always the first 3 strings in the name
         code = self._splitted_name[0]
         LOGGER.debug('course code from file: %s', code)
 
-        # for parsing pursoses I need to deattache the edition
+        # the code is always the first 3 strings in the name
         course_code, edition = regex.sub(
             r'([A-Z]{3})([A-Z]{1,3}|\d{1,3})', r'\1 \2', code).split(' ')
 
         LOGGER.debug('codice corso, edizione: %s, %s', course_code, edition)
 
-        course_catalog = util.catalog_names()['corsi']
-
-        course_info = course_catalog[course_code]
+        course_info = COURSES_NAMES[course_code]
+        self._course_path = f"{course_info['course_path']}/{code}"
 
         course = course_info['course_name']
         LOGGER.debug('get complete course name: %s', course)
@@ -283,6 +284,11 @@ class PodcastFile:
         self.html_page['course_name'] = course
 
         return course
+
+    @property
+    def course_path(self):
+        """Get the parent folder of the podcast course."""
+        return os.environ['FONDERIE_PODCAST'] + self._course_path
 
     @property
     def registration_date(self):
@@ -321,8 +327,7 @@ class PodcastFile:
         short_name = '_'.join(self._splitted_name[2:4])
         LOGGER.debug('teacher name from file: %s', short_name)
 
-        teacher_catalog = util.catalog_names()['docenti']
-        full_name = teacher_catalog[short_name]
+        full_name = TEACHERS_NAMES[short_name]
         LOGGER.debug('teacher full name: %s', full_name)
 
         self.html_page['teacher_name'] = full_name
@@ -361,7 +366,7 @@ class PodcastFile:
         return part + 'ª'
 
     @property
-    def _get_hash_name(self):
+    def hash_name(self):
         """Create a hash name.
 
         Create a hash name for the file name that is going to be uploaded
@@ -378,7 +383,7 @@ class PodcastFile:
 
         new_name = f'{upload_name}_{secret_token}.mp3'
 
-        server_path = util.get_server_path(self.directory)
+        server_path = self.course_path
         server_filepath = f"http://{server_path}/{new_name}"
 
         self.add_html_parts(
@@ -506,7 +511,7 @@ class PodcastFile:
             podcast_duration = util.audio_duration(len(podcast_segment))
             self.add_html_parts({"duration": podcast_duration})
 
-            podcast_mp3_path = os.path.join(_mp3_path(), self._get_hash_name)
+            podcast_mp3_path = os.path.join(_mp3_path(), self.hash_name)
             podcast = podcast_segment.export(podcast_mp3_path,
                                              format="mp3",
                                              bitrate=bitrate,
