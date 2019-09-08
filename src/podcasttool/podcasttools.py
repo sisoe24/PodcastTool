@@ -427,13 +427,13 @@ class PodcastFile:
             self._splitted_name[:-2])
         date = self.registration_date
         const_dict = {
-            "${course_name}": self.course_name,
-            "${teacher_name}": self.teacher_name,
-            "${lesson_number}": self.lesson_number,
-            "${day}": date["day"],
-            "${month}": date["month"],
-            "${year}": date["year"],
-            "${part_number}": self.part_number,
+            "$VAR{course_name}": self.course_name,
+            "$VAR{teacher_name}": self.teacher_name,
+            "$VAR{lesson_number}": self.lesson_number,
+            "$VAR{day}": date["day"],
+            "$VAR{month}": date["month"],
+            "$VAR{year}": date["year"],
+            "$VAR{part_number}": self.part_number,
         }
         new_intro = []
         for audio in value:
