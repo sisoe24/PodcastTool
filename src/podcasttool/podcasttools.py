@@ -418,15 +418,15 @@ class PodcastFile:
 
         date = self.registration_date
         return [
-            'Fonderie_Sonore_Podcast',
-            'Materiale_riservato_agli_studenti_della_scuola',
-            'Corso:',
+            'Fonderie Sonore Podcast',
+            'Materiale riservato agli studenti della scuola',
+            'Corso',
             self.course_name,
-            'Docente:',
+            'Docente',
             self.teacher_name,
             'Podcast audio della:',
             self.lesson_number,
-            'Del:',
+            'Del',
             date["day"],
             date["month"],
             date["year"],
@@ -465,7 +465,7 @@ class PodcastFile:
         tmp_dir = self._mkdir_tmp()
 
         def _split_raw_podcast():
-            watermark = "Materiale_riservato_agli_studenti_della_scuola"
+            watermark = "Materiale riservato agli studenti della scuola"
             podcast = pydub.AudioSegment.from_wav(self.abspath)
             cuts = (util.calculate_cuts(len(podcast))
                     if not num_cuts else num_cuts)
@@ -486,10 +486,10 @@ class PodcastFile:
         def _copy_audio_intro():
             """Copy the opening theme files from the audio library."""
             library = util.audio_library()
-            for audio in enumerate(self._audio_intro):
+            for index, audio in enumerate(self._audio_intro):
 
-                pad_fill = str(audio[0]).zfill(2)
-                item_name = audio[1].replace(' ', '_') + '.mp3'
+                pad_fill = str(index).zfill(2)
+                item_name = audio.replace(' ', '_') + '.mp3'
 
                 if item_name in library.keys():
                     src_file = os.path.join(library.get(item_name), item_name)
