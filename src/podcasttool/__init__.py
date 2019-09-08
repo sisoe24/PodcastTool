@@ -2,16 +2,10 @@ import platform
 import subprocess
 from tkinter import messagebox
 
-from dotenv import load_dotenv, find_dotenv
-
 from . import logger
 from . import util
 from . import podcasttools
 from .podcasttools import PodcastFile, generate_html, upload_to_server
-
-
-# search and load .env file
-load_dotenv(find_dotenv())
 
 if platform.system() == 'Darwin':
     OS_SYSTEM = 'Mac'
@@ -19,6 +13,8 @@ elif platform.system() == 'Linux':
     OS_SYSTEM = 'Linux'
 
 CATALOG_NAMES = util.catalog_names()
+podcasttools.COURSES_NAMES = CATALOG_NAMES['corsi']
+podcasttools.TEACHERS_NAMES = CATALOG_NAMES['docenti']
 
 
 def open_link(link):
