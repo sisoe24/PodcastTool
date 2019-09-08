@@ -386,11 +386,10 @@ class PodcastFile:
 
         new_name = f'{upload_name}_{secret_token}.mp3'
 
-        server_path = self.course_path
-        server_filepath = f"http://{server_path}/{new_name}"
+        server_filepath = f"http://{self.course_path}/{new_name}"
 
         self.add_html_parts(
-            {"server_path": server_path, "link": server_filepath})
+            {"server_path": self.course_path, "link": server_filepath})
 
         LOGGER.debug('uploading name: %s for %s', new_name, self.name)
 
