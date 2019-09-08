@@ -183,20 +183,6 @@ def convert_month_name():
             '10': 'Ottobre', '11': 'Novembre', '12': 'Dicembre'}
 
 
-def get_server_path(uploading_file: str) -> str:
-    """Extract root course name from file path and create server path.
-
-    Arguments:
-        [str] -- path like string of the file to parse.
-
-    Returns:
-        [str] -- path like string of the server path.
-    """
-    root_folder = '/'.join(uploading_file.split('/')[-2:])
-    server_path = os.environ['FONDERIE_PODCAST'] + root_folder
-    return server_path
-
-
 def dev_mode(bypass=False):
     """Check if user is me. if yes then perform some operations.
 
