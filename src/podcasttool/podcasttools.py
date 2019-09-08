@@ -202,6 +202,9 @@ class PodcastFile:
 
     @staticmethod
     def _check_valid_file(filename):
+        """If calling this class by CLI then needs to check whetever the file
+        has a valid podcast structure.
+        """
         valid_file = regex.match(r'''
                     [A-Z]+(\d+)?_   # course name
                     \d{8}_          # registration date
