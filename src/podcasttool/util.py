@@ -59,20 +59,24 @@ def total_time(func):
     return wrapper
 
 
-def generate_audio(text, path, filename="",  lang='it'):
+def generate_audio(text, path, filename="", lang='it'):
     """Generate the audio cues.
 
     Arguments:
         text {str} - what is going to be spoke in the audio cue.
         file_name {str} - the name of the saved file.
-        path {str} - path of where to save the file.
+        path {str} - relative path of where to save the file.
 
     Keyword Arguments:
         lang {str} - the language for the audio(default: 'it')
     """
     name = str(text).replace("_", " ")
+
     if not filename:
         filename = name.replace(" ", "_")
+    else:
+        filename = filename.replace(" ", "_")
+        
     path = get_path(path)
     speak = gtts.gTTS(text=name, lang=lang)
     speak.save(f'{path}/{filename}.mp3')
