@@ -1,5 +1,7 @@
 """Some utility functions."""
 import os
+import shutil
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -29,7 +31,7 @@ class DevFrame(tk.Frame):
 
         ttk.Label(parent, text='Upload file to test folder').grid(
             column=1, row=0, sticky=tk.W)
-        self.delete_archive = ttk.Button(parent, text="Clean archive folder",
+        self.delete_archive = ttk.Button(parent, text="Clean archive",
                                          command=delete_archive)
         self.delete_archive.grid(column=0, row=1)
 
@@ -37,8 +39,20 @@ class DevFrame(tk.Frame):
         archive_msg = f"There are {n_archive} html files in the archive"
         ttk.Label(parent, text=archive_msg).grid(column=1, row=1)
 
-        ttk.Button(parent, text="Clean log folder",
+        ttk.Button(parent, text="Clean log",
                    command=self.clean_log).grid(column=0, row=2, stick=tk.W)
+
+        ttk.Button(parent, text="Reset json",
+                   command=self.restore_json).grid(column=0, row=3, stick=tk.W)
+
+        ttk.Label(parent, text="restore json catalog to original form").grid(
+            column=1, row=3, stick=tk.E)
+
+    def restore_json(self):
+        original_json = util.get_path("docs") / ".catalog_names.json"
+        new_json = util.catalog_file()
+        shutil.copy(original_json, new_json)
+        messagebox.showinfo(message="done!")
 
     @property
     def test_env(self):
