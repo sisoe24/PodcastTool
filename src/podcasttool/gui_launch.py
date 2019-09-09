@@ -89,7 +89,8 @@ class MainPage(tk.Tk):
         _page_audio = ttk.Frame(window_main, width=1000, height=600)
         _page_audio.grid(column=0, row=0)
         _page_audio.grid_propagate(False)
-        window_main.add(_page_audio, text='Audio Export')
+        window_main.add(_page_audio, text='Audio options')
+        AudioIntro(_page_audio).grid(column=0, row=0)
 
         # catalogo page frame
         _page_catalog = ttk.Frame(window_main, width=1000, height=600)
@@ -107,8 +108,8 @@ class MainPage(tk.Tk):
         self.dev = DevFrame(_page_dev)
         self.dev.grid(column=0, row=0)
 
-        self.audio = AudioFrame(_page_audio)
-        self.audio.grid(column=0, row=0)
+        self.audio = AudioExport(_page_audio)
+        self.audio.grid(column=1, row=0, sticky=tk.N, padx=5)
 
         self.html = HtmlFrame(_page_main)
         self.html.place(x=390, y=0)
