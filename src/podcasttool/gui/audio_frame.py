@@ -68,7 +68,7 @@ class AudioIntro(tk.Frame):
 
         ttk.Button(create_frame, text="Crea audio",
                    command=self.text_to_audio).grid(column=1, row=1, sticky=tk.E,
-                                                pady=5, padx=5)
+                                                    pady=5, padx=5)
 
         ttk.Label(create_frame, text="lang:").grid(column=0, row=1,
                                                    sticky=tk.W)
@@ -87,7 +87,7 @@ class AudioIntro(tk.Frame):
                                 lang=self._lang_select.get())
 
     def add_combobox(self):
-        """Add new combobox widget."""
+        """Add new combobox widget if user wants."""
         ttk.Combobox(self._audio_list_frame, value=self.const_vars(),
                      width=40).grid(column=1, row=self.list_len)
         self.list_len += 1
@@ -98,8 +98,8 @@ class AudioIntro(tk.Frame):
             ttk.Label(self._audio_list_frame, text=index +
                       1).grid(column=0, row=index)
 
-            combo = ttk.Combobox(
-                self._audio_list_frame, value=self.const_vars(), width=40)
+            combo = ttk.Combobox(self._audio_list_frame, width=40,
+                                 value=self.const_vars())
             combo.grid(column=1, row=index, sticky=tk.W)
 
             if element not in self.const_vars():
@@ -107,23 +107,34 @@ class AudioIntro(tk.Frame):
             combo.set(element)
 
     def parse_frame(self):
-        """Parse intro_frame frame for combobox widgets."""
+        """Parse audio list frame for combobox widgets and get their values."""
         for widget in self._audio_list_frame.winfo_children():
             if "combobox" in widget.winfo_name():
                 widget_data = widget.get()
                 if widget_data:
                     yield widget_data
 
-    def new_audio(self, current_catalog):
+    def new_audio(self, current_intro):
+        """Get the elements in the audio.
+
+        Get the audio list frame and check if there are new names.
+
+        Arguments:
+            current_intro [list] - the current audio intro list.
+        """
         for name in self.parse_frame():
-            if name not in current_catalog:
+            if name not in current_intro:
                 yield name
 
-    def generate_new_audio(self, current_catalog):
-        """Gnerate new audio files for the intro."""
+    def generate_new_audio(self, audio_list):
+        """Gnerate new audio files for the intro.
+
+        Arguments:
+            audio_list {list/tuple} - iterable variable to generate new audio
+        """
         path = util.get_path("include/audio") / "new_intro"
 
-        for index, name in enumerate(current_catalog, 10):
+        for index, name in enumerate(audio_list, 10):
 
             msg = f"Generating audio for: {name}"
             ttk.Label(self._audio_frame, text=msg).grid(column=0, row=index)
@@ -131,33 +142,46 @@ class AudioIntro(tk.Frame):
             util.generate_audio(text=name, path=path)
 
     def new_intro(self):
-        """Generate new audio files and modify the json catalog."""
+        """Check if audio intro was modified."""
         current_catalog = self._catalog["intro"]
-        self.audio_catalog["intro"] = list(self.parse_frame())
+        new_catalog = self.audio_catalog["intro"] = list(self.parse_frame())
+        new_intro_list = self.new_audio(current_catalog)
 
-        if current_catalog != self.audio_catalog["intro"]:
-            self.generate_new_audio(self.new_audio(current_catalog))
-            self.save_new()
-        else:
-            messagebox.showinfo(message="Nessuna modifica?", icon="question")
+        self.compare_current(current_catalog, new_catalog, new_intro_list)
 
     def new_watermark(self):
+        """Check if current watermark was modified."""
         current_watermark = self._catalog["watermark"]
-        self.audio_catalog["watermark"] = self.watermark.get()
+        new_watermark = self.audio_catalog["watermark"] = self.watermark.get()
 
-        if current_watermark != self.audio_catalog["watermark"]:
-            self.generate_new_audio([self.watermark.get()])
+        self.compare_current(current_watermark, new_watermark, [new_watermark])
+
+    def compare_current(self, current_value, new_value, audio_list):
+        """Compare if current_value catalog was modified.
+        If yes then create new audio from list and save into catalog.
+
+        Arguments:
+            current_value - value of catalog dictionary to be compared
+            new_value - value of catalog dictionary to be compared
+            audio_list {list} - a list from where to generate the new audio
+        """
+        if current_value != new_value:
+            self.generate_new_audio(audio_list)
             self.save_new()
         else:
             messagebox.showinfo(message="Nessuna modifica?", icon="question")
 
     def save_new(self):
+        """Save modifications in catalog json file."""
         with open(util.catalog_file(), "w") as f:
             json.dump(self.audio_catalog, f, indent=True)
         messagebox.showinfo(title="Done", message="Done!", icon="info")
 
     @staticmethod
     def const_vars():
+        """Return a list of string placeholders for variables names that
+        can be used in the audio intro.
+        """
         return ["$VAR{course_name}", "$VAR{teacher_name}",
                 "$VAR{lesson_number}", "$VAR{part_number}",
                 "$VAR{day}", "$VAR{month}", "$VAR{year}"]
