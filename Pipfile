@@ -26,6 +26,7 @@ pillow = "*"
 gtts = "*"
 tinytag = "*"
 python-dotenv = "*"
+py2app = "*"
 
 [requires]
 python_version = "3.7"
