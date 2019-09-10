@@ -15,7 +15,7 @@ from podcasttool import util
 class CatalogFrame(tk.Frame):
     """Catalog page of the gui."""
     _catalog_list = util.catalog_names()
-    _updated_names = {}
+    _updated_names = {"docenti": [], "corsi": []}
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -23,9 +23,9 @@ class CatalogFrame(tk.Frame):
         _catalog_frame = ttk.Frame(self, width=420, height=800)
         _catalog_frame.grid(column=0, row=0, rowspan=2)
 
-        _options_frame = ttk.Frame(self, width=300, height=500)
-        _options_frame.grid(column=1, row=0, sticky=tk.N)
-        _options_frame.grid_propagate(False)
+        self._options_frame = ttk.Frame(self, width=300, height=500)
+        self._options_frame.grid(column=1, row=0, sticky=tk.N)
+        self._options_frame.grid_propagate(False)
 
         self._tree_list = ttk.Treeview(_catalog_frame, height=24,
                                        columns=("names_short", "names_long"))
@@ -33,7 +33,7 @@ class CatalogFrame(tk.Frame):
         self._generate_tree_columns()
 
         # load list frame
-        _label_lista = ttk.LabelFrame(_options_frame, text="Liste nomi")
+        _label_lista = ttk.LabelFrame(self._options_frame, text="Liste nomi")
         _label_lista.grid(column=3, row=0, sticky=tk.NW)
 
         self._selected_catalog = ttk.Combobox(_label_lista,
@@ -45,7 +45,7 @@ class CatalogFrame(tk.Frame):
                    command=self._load_catalog).grid(column=1, row=0, padx=10)
 
         # insert new frame
-        _insert_frame = ttk.LabelFrame(_options_frame,
+        _insert_frame = ttk.LabelFrame(self._options_frame,
                                        text="Aggiungi nuovo nome")
         _insert_frame.grid(column=3, row=1, sticky=tk.N)
 
@@ -70,12 +70,12 @@ class CatalogFrame(tk.Frame):
                    command=self._insert_to_catalog).grid(column=1, row=3,
                                                          sticky=tk.E)
 
-        self._btn_save = ttk.Button(_options_frame, text="Salva modifiche",
+        self._btn_save = ttk.Button(self._options_frame, text="Salva modifiche",
                                     state="disabled",
                                     command=self._save_new_catalog)
         self._btn_save.grid(column=3, row=2, pady=15)
 
-        ttk.Button(_options_frame, text="Cancella nome selezionato",
+        ttk.Button(self._options_frame, text="Cancella nome selezionato",
                    command=self._delete_selected).grid(column=3, row=3)
 
     @property
@@ -93,7 +93,7 @@ class CatalogFrame(tk.Frame):
         """Return the language selected: it or eng."""
         return self._lang_select.get()
 
-    def _course_name_size(self, course_name):
+    def _check_name_size(self, course_name):
         """Check if name course is 3 letters long otherwise raise error."""
         if self.get_catalog == "corsi" and not len(course_name) == 3:
             raise ValueError("Course name has to be 3 letters long")
@@ -117,9 +117,15 @@ class CatalogFrame(tk.Frame):
     def _refresh_list(self):
         """Refresh (delete) list in treeview widget when loading other list."""
         self._tree_list.delete(*self._tree_list.get_children())
+    
+    def _reset_list(self):
+        """When loading catalog, reset modification that have not be saved."""
+        self._updated_names = {"docenti": [], "corsi": []}
+        self._catalog_list = util.catalog_names()
 
     def _load_catalog(self):
         """Load name list into treeview widget."""
+        self._reset_list()
         self._refresh_list()
 
         # self._btn_insert["state"] = "active"
@@ -190,7 +196,7 @@ class CatalogFrame(tk.Frame):
 
         try:
             short_name, long_name = self._get_new_names()
-            self._course_name_size(short_name)
+            self._check_name_size(short_name)
             self._tree_list.insert("", 0, short_name)
 
         except TypeError:
@@ -216,20 +222,29 @@ class CatalogFrame(tk.Frame):
                 self._catalog_list[self.get_catalog].update(
                     {short_name: {"course_name": long_name}})
 
-            self._updated_names[self.get_catalog] = [long_name, self._language]
+            self._updated_names[self.get_catalog].append(
+                [long_name, self._language])
             self.save_button = "active"
 
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
-        with open(util.catalog_file(), "w") as json_file:
-            json.dump(self._catalog_list, json_file, indent=True)
-        if self._updated_names:
+        modification = [_ for _ in self._updated_names.values() if _]
+        if modification:
+            with open(util.catalog_file(), "w") as json_file:
+                json.dump(self._catalog_list, json_file, indent=True)
+            self.update()
             self._update_audio_library()
-        messagebox.showinfo(title="", message="Modifiche salvate!")
-
+            messagebox.showinfo(message="Modifiche salvate!")
+        else:
+            messagebox.showinfo(message="Nessuna modifica?")
+    
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
-        for category, list_ in self._updated_names.items():
-            path = util.get_path("include/audio") / category
-            name, lang = list_
-            util.generate_audio(text=name, path=path, lang=lang)
+        for category, new_names in self._updated_names.items():
+            for index, new_name in enumerate(new_names, 20):
+                name, lang = new_name
+                msg = f"Generating audio for: \n[{name}]"
+                ttk.Label(self._options_frame, text=msg).grid(
+                    column=3, row=index)
+                path = util.get_path("include/audio") / category
+                util.generate_audio(text=name, path=path, lang=lang)
