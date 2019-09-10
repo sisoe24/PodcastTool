@@ -66,11 +66,11 @@ def get_date(file_path: str) -> str:
     return file_attr
 
 
-def _match_lesson(podcast_file):
-    """Search for same podcast lesson in the parent directory of argument
+def _extract_lesson(podcast_file):
+    """Extract the lesson number from the podcast file.
 
-    Argument:
-        podcast_file {str} - podcast file absolute path.
+        Return:
+            tuple - {pathlib obj} path of podcast file, {str} lesson number.
     """
     file_path = pathlib.Path(podcast_file)
     extract_lesson = "_".join(file_path.name.split('_')[4:6])
@@ -85,7 +85,16 @@ def _match_lesson(podcast_file):
             "if problem persist, remember that you can select multiple files")
         open_log("Nessun match in lezione\nControllare errors.log?")
         exit()
+    return file_path, lesson_num
 
+
+def _match_lesson(podcast_file):
+    """Search for same podcast lesson in parent directory of current podcast.
+
+    Argument:
+        podcast_file {str} - podcast file absolute path.
+    """
+    file_path, lesson_num = _extract_lesson(podcast_file)
     compare_date = get_date(file_path)["creation"]
 
     for file in sorted(file_path.parent.glob('*wav')):
@@ -97,7 +106,6 @@ def _match_lesson(podcast_file):
         if match_lesson and not file_vecchio:
 
             file_date = get_date(file)["creation"]
-            compare_date = get_date(file_path)["creation"]
 
             if file_date == compare_date:
                 LOGGER.debug('matching date of creation: %s', file.name)
