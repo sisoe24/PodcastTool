@@ -11,6 +11,7 @@ try:
     subprocess.check_output(["which", "ffmpeg"])
 except Exception as error:
     messagebox.showinfo(message="ffmpeg doesnt appear to be installed?")
+    exit()
 
 
 if platform.system() == 'Darwin':
