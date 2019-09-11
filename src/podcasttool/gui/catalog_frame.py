@@ -80,16 +80,6 @@ class CatalogFrame(tk.Frame):
         ttk.Button(self._options_frame, text="Cancella nome selezionato",
                    command=self._delete_selected).grid(column=3, row=3)
 
-    @property
-    def save_button(self):
-        """Get save button state."""
-        return self._btn_save["state"]
-
-    @save_button.setter
-    def save_button(self, value):
-        """Set save button state."""
-        self._btn_save["state"] = value
-
     def _course_path(self):
         """Add course path to new courses."""
         value = ["ALP", "ELM", "EMP", "TTS"]
@@ -183,7 +173,7 @@ class CatalogFrame(tk.Frame):
         if confirm:
             self._tree_list.delete(selected_item)
             self._delete_from_catalog(selected_item)
-            self.save_button = "active"
+            self._btn_save["state"] = "active"
 
     def _delete_from_catalog(self, delete_key):
         """Delete key from class catalog list."""
@@ -250,7 +240,7 @@ class CatalogFrame(tk.Frame):
 
             self._updated_names[self.get_catalog].append(
                 [long_name, self._language])
-            self.save_button = "active"
+            self._btn_save["state"] = "active"
 
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
