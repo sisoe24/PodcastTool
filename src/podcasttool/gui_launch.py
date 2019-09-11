@@ -170,6 +170,8 @@ class MainPage(tk.Tk):
         podcasttools.TKINTER = self
 
         for file in self.main_class.proccesed_files():
+            if util.DEV_MODE:
+                self.main_class.log_frame.display_msg("dev mode ON")
             file_path = os.path.join(self.podcast_obj.path, file)
             podcast = PodcastFile(file_path)
             podcast.generate_podcast(bitrate=self.audio.bitrate,
