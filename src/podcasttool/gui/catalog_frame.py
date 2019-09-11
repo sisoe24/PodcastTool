@@ -45,33 +45,35 @@ class CatalogFrame(tk.Frame):
                    command=self._load_catalog).grid(column=1, row=0, padx=10)
 
         # insert new frame
-        _insert_frame = ttk.LabelFrame(self._options_frame,
-                                       text="Aggiungi nuovo nome")
-        _insert_frame.grid(column=3, row=1, sticky=tk.N)
+        self._insert_frame = ttk.LabelFrame(self._options_frame,
+                                            text="Aggiungi nuovo nome")
+        self._insert_frame.grid(column=3, row=1, sticky=tk.N)
 
-        ttk.Label(_insert_frame, text="abbr.").grid(column=0, row=1,
-                                                    sticky=tk.W)
-        self._short_name = ttk.Entry(_insert_frame)
+        ttk.Label(self._insert_frame, text="abbr.").grid(column=0, row=1,
+                                                         sticky=tk.W)
+        self._short_name = ttk.Entry(self._insert_frame)
         self._short_name.grid(column=1, row=1)
 
-        ttk.Label(_insert_frame, text="intero").grid(column=0, row=2,
-                                                     sticky=tk.W)
-        self._long_name = ttk.Entry(_insert_frame)
+        ttk.Label(self._insert_frame, text="intero").grid(column=0, row=2,
+                                                          sticky=tk.W)
+        self._long_name = ttk.Entry(self._insert_frame)
         self._long_name.grid(column=1, row=2)
 
-        ttk.Label(_insert_frame, text="lang").grid(column=0, row=3,
-                                                   sticky=tk.W)
-        self._lang_select = ttk.Combobox(_insert_frame, value=["it", "en"],
-                                         state="readonly", width=5)
-        self._lang_select.grid(column=1, row=3, sticky=tk.W)
+        self._course = None
+
+        ttk.Label(self._insert_frame, text="lang").grid(column=0, row=4,
+                                                        sticky=tk.W)
+        self._lang_select = ttk.Combobox(self._insert_frame, state="readonly",
+                                         value=["it", "eng"], width=5)
+        self._lang_select.grid(column=1, row=4, sticky=tk.W)
         self._lang_select.current(0)
 
-        ttk.Button(_insert_frame, text="Aggiungi",
-                   command=self._insert_to_catalog).grid(column=1, row=3,
+        ttk.Button(self._insert_frame, text="Aggiungi",
+                   command=self._insert_to_catalog).grid(column=1, row=4,
                                                          sticky=tk.E)
 
-        self._btn_save = ttk.Button(self._options_frame, text="Salva modifiche",
-                                    state="disabled",
+        self._btn_save = ttk.Button(self._options_frame,
+                                    text="Salva modifiche", state="disabled",
                                     command=self._save_new_catalog)
         self._btn_save.grid(column=3, row=2, pady=15)
 
@@ -87,6 +89,25 @@ class CatalogFrame(tk.Frame):
     def save_button(self, value):
         """Set save button state."""
         self._btn_save["state"] = value
+
+    def _course_path(self):
+        """Add course path to new courses."""
+        value = ["ALP", "ELM", "EMP", "TTS"]
+        if self._selected_catalog.get() == "corsi":
+
+            ttk.Label(self._insert_frame, text="corso",
+                      name="corse_l").grid(column=0, row=3)
+
+            self._course = ttk.Combobox(self._insert_frame, value=value,
+                                        state="readonly", width=5,
+                                        name="corse_p")
+            self._course.grid(column=1, row=3, sticky=tk.E)
+            # self._course = course.get()
+
+        if self._selected_catalog.get() == "docenti":
+            for widget in self._insert_frame.winfo_children():
+                if "corse" in widget.winfo_name():
+                    widget.destroy()
 
     @property
     def _language(self):
@@ -117,7 +138,7 @@ class CatalogFrame(tk.Frame):
     def _refresh_list(self):
         """Refresh (delete) list in treeview widget when loading other list."""
         self._tree_list.delete(*self._tree_list.get_children())
-    
+
     def _reset_list(self):
         """When loading catalog, reset modification that have not be saved."""
         self._updated_names = {"docenti": [], "corsi": []}
@@ -127,6 +148,7 @@ class CatalogFrame(tk.Frame):
         """Load name list into treeview widget."""
         self._reset_list()
         self._refresh_list()
+        self._course_path()
 
         # self._btn_insert["state"] = "active"
 
@@ -193,11 +215,9 @@ class CatalogFrame(tk.Frame):
 
     def _insert_to_catalog(self):
         """Insert new name into treeview widget."""
-
         try:
             short_name, long_name = self._get_new_names()
             self._check_name_size(short_name)
-            self._tree_list.insert("", 0, short_name)
 
         except TypeError:
             messagebox.showinfo(title="Errore",
@@ -211,16 +231,22 @@ class CatalogFrame(tk.Frame):
                 title="nome corso",
                 message="Nome del corso dovrebbe avere solo 3 lettere")
         else:
-            self._tree_list.set(short_name, 'names_short', short_name)
-            self._tree_list.set(short_name, 'names_long', long_name)
-
             if self.get_catalog == "docenti":
                 self._catalog_list[self.get_catalog].update(
                     {short_name: long_name})
 
             else:
+                course_path = self._course.get()
+                if not course_path:
+                    messagebox.showerror(message="manca codice corso")
+                    return
                 self._catalog_list[self.get_catalog].update(
-                    {short_name: {"course_name": long_name}})
+                    {short_name: {"course_name": long_name,
+                                  "course_path": course_path}})
+
+            self._tree_list.insert("", 0, short_name)
+            self._tree_list.set(short_name, 'names_short', short_name)
+            self._tree_list.set(short_name, 'names_long', long_name)
 
             self._updated_names[self.get_catalog].append(
                 [long_name, self._language])
@@ -237,7 +263,7 @@ class CatalogFrame(tk.Frame):
             messagebox.showinfo(message="Modifiche salvate!")
         else:
             messagebox.showinfo(message="Nessuna modifica?")
-    
+
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
         for category, new_names in self._updated_names.items():
