@@ -7,6 +7,12 @@ from . import util
 from . import podcasttools
 from .podcasttools import PodcastFile, generate_html, upload_to_server
 
+try:
+    subprocess.check_output(["which", "ffmpeg"])
+except Exception as error:
+    messagebox.showinfo(message="ffmpeg doesnt appear to be installed?")
+
+
 if platform.system() == 'Darwin':
     OS_SYSTEM = 'Mac'
 elif platform.system() == 'Linux':
