@@ -30,7 +30,7 @@ from podcasttool import PodcastFile, upload_to_server, generate_html
 
 
 LOGGER = logging.getLogger('podcast_tool.gui')
-INFO_LOGGER = logging.getLogger('status_app.gui')
+# INFO_LOGGER = logging.getLogger('status_app.gui')
 
 
 def _set_directory():
@@ -47,16 +47,10 @@ def _set_directory():
     else:
         initial_dir = os.path.join(pathlib.Path(
             os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
+
+    LOGGER.debug("gui initial directory: %s", initial_dir)
+
     return initial_dir
-
-
-def align_windows():
-    """Align terminal window on linux with wmctrl."""
-    try:
-        subprocess.run(
-            ['wmctrl', '-r', 'Terminale', '-e', '0,800,0,600,600'])
-    except FileNotFoundError:
-        INFO_LOGGER.error('you are probably on mac and this doesnt work')
 
 
 class MainPage(tk.Tk):
@@ -138,7 +132,7 @@ class MainPage(tk.Tk):
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
                                       command=self.files_select)
-        self._select_btn.invoke()
+        # self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=5, y=65)
 
@@ -153,8 +147,11 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
-        # open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        open_files = (os.environ["TEST_FILE"],)
+        open_files = filedialog.askopenfilenames(initialdir=_set_directory())
+        LOGGER.debug("selected files: %s", open_files)
+
+        # open_files = (os.environ["TEST_FILE"],)
+
         self.podcast_obj = SelectPodcast(open_files)
         if open_files:
             self.main_class.podcast_obj = self.podcast_obj

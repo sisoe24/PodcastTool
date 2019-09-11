@@ -29,14 +29,11 @@ from podcasttool import util
 
 
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
-INFO_LOGGER = logging.getLogger('status_app.generate_podcast')
 
 COURSES_NAMES = None
 TEACHERS_NAMES = None
 ERROR_FRAME = None
 TKINTER = None
-
-print('--> DEBUG THIS IS PODCAST COPY--')
 
 
 def gui_log(msg):
@@ -45,7 +42,7 @@ def gui_log(msg):
         ERROR_FRAME.display_msg(msg)
         TKINTER.update()
     except Exception as error:
-        INFO_LOGGER.debug(error)
+        LOGGER.debug(error)
 
 
 def upload_to_server(uploading_file, server_path, test_env=False):
@@ -59,7 +56,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
     test_server_path = os.environ['FONDERIE_VIRGILTEST']
 
     server_path = server_path if not test_env else test_server_path
-    INFO_LOGGER.debug("server path: %s", server_path)
+    LOGGER.debug("server path: %s", server_path)
 
     with ftplib.FTP(os.environ['FONDERIE_HOST'],
                     os.environ['FONDERIE_USER'],
@@ -67,8 +64,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
         try:
             ftp.cwd(server_path)
         except ftplib.error_perm as ftp_error:
-            print(f'--> DEBUG error ftp: {ftp_error} <--')
-            INFO_LOGGER.info("error ftp connessione: %s", ftp_error)
+            LOGGER.critical("error ftp connessione: %s", ftp_error)
 
             user_prompt = messagebox.askyesno(
                 title='PodcastTool',
@@ -87,23 +83,21 @@ def upload_to_server(uploading_file, server_path, test_env=False):
                 exit('Exit App')
 
         with open(uploading_file, 'rb') as upload:
-            INFO_LOGGER.info('Carico podcast sul server'
-                             '... ci puo volere un po ... ')
-            gui_log('Carico podcast sul server... ci puo volere un po ... ')
+            LOGGER.debug('uploading file on server: %s', uploading_file)
+            gui_log('Carico podcast sul server... ci puo volere un po...')
+
             # check if user is me. if yes then app will NOT upload to server
             if not util.DEV_MODE:
                 file_name = os.path.basename(uploading_file)
                 status = ftp.storbinary(f'STOR {file_name}', upload)
-                # clean status messages
                 status_sub = regex.sub(
                     r'226|-|\(measured here\)|\n', '', str(status))
-                INFO_LOGGER.info(status_sub)
                 gui_log(f"status: {status_sub}")
+                LOGGER.info(status_sub)
                 LOGGER.debug('status: %s', status_sub)
                 LOGGER.debug('uploaded file to server: %s', file_name)
             else:
-                print('<-test uploading->'.upper(),
-                      f"{uploading_file} in {ftp.pwd()}")
+                LOGGER.info('FAKE UPLOAD: %s in %s', uploading_file, ftp.pwd())
 
 
 class PodcastFile:
@@ -124,7 +118,6 @@ class PodcastFile:
 
     def __init__(self, raw_podcast: str):
         LOGGER.debug('Initialize PodcastFile class ->')
-        INFO_LOGGER.debug('Initialize PodcastFile class ->')
 
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
@@ -186,22 +179,20 @@ class PodcastFile:
             {int} - return in ms of the lenght audio
 
         """
-        INFO_LOGGER.debug("dentro len")
         try:
             with wave.open(self.__abspath, 'rb') as wave_file:
                 nframe = wave_file.getnframes()
                 rframe = wave_file.getframerate()
         except Exception as error:
             LOGGER.critical('%s - probably not a wave file!', error)
-            INFO_LOGGER.critical('Controlla log/errors.log')
             exit()
 
         # amount in seconds
         total_float_seconds = nframe / rframe
         total_ms = math.ceil(total_float_seconds * 1000)
 
-        INFO_LOGGER.debug("total_ms %d", total_ms)
-        INFO_LOGGER.debug("total_float_seconds %f", total_float_seconds)
+        LOGGER.debug("total_ms %d", total_ms)
+        LOGGER.debug("total_float_seconds %f", total_float_seconds)
         return total_ms
 
     @staticmethod
@@ -218,7 +209,7 @@ class PodcastFile:
                     parte_\d\.wav   # part number
                     ''', filename, regex.I | regex.X)
         if not valid_file:
-            INFO_LOGGER.info("Sembra un file invalido? %s", filename)
+            LOGGER.info("Sembra un file invalido? %s", filename)
             exit()
 
     @property
@@ -295,6 +286,7 @@ class PodcastFile:
     @property
     def course_path(self):
         """Get the parent folder of the podcast course."""
+        LOGGER.debug("course path: %s", self._course_path)
         return os.environ['FONDERIE_PODCAST'] + self._course_path
 
     @property
@@ -312,15 +304,12 @@ class PodcastFile:
             r'(\d{4})(\d{1,2})(\d{1,2})', r'\1 \2 \3', date).split(' ')
         LOGGER.debug('year, month, day: %s %s %s', year, month, day)
 
-        # date in numeric form 12.12.2012 (if needed)
-        # numeric_date = f'{day}/{month}/{year}'
-
         month_name = util.convert_month_name()[month]
         complete_date = f'{day}/{month_name}/{year}'
         LOGGER.debug('formatted registration date: %s', complete_date)
 
         self.html_page['registration_date'] = complete_date
-        # return complete_date
+
         return {"day": day, "month": month_name, "year": year}
 
     @property
@@ -389,14 +378,13 @@ class PodcastFile:
             self.name.encode('utf-8')).hexdigest()
 
         new_name = f'{upload_name}_{secret_token}.mp3'
+        LOGGER.debug('uploading name: %s for %s', new_name, self.name)
 
         server_filepath = f"http://{self.course_path}/{new_name}"
+        LOGGER.debug("server file path: %s", server_filepath)
 
         self.add_html_parts(
             {"server_path": self.course_path, "link": server_filepath})
-
-        LOGGER.debug('uploading name: %s for %s', new_name, self.name)
-
         return new_name
 
     def add_html_parts(self, update_dict: dict):
@@ -416,10 +404,11 @@ class PodcastFile:
     def set_audio_intro(self):
         """Set the intro audio from the list in the catalog_names json file."""
         self.audio_intro = util.catalog_names()["intro"]
+        LOGGER.debug("audio intro files: %s", self.audio_intro)
 
     @property
     def audio_intro(self) -> list:
-        """Opening intro audio to be merged with the podcast."""
+        """Audio intro list to be merged with the podcast."""
         return self._audio_intro
 
     @audio_intro.setter
@@ -456,12 +445,12 @@ class PodcastFile:
 
         """
         tmp_dir_path = f'{self.directory}/.tmp_{self.name}'
+        LOGGER.debug('creating temporary folder: %s', tmp_dir_path)
 
-        # LOGGER.debug('creating temporary folder: %s', tmp_dir_path)
         try:
             os.mkdir(tmp_dir_path)
         except FileExistsError:
-            LOGGER.warning('tmp folder exists already ')
+            LOGGER.warning('tmp directory exists already')
 
         return tmp_dir_path
 
@@ -479,9 +468,13 @@ class PodcastFile:
 
         def _split_raw_podcast():
             watermark = util.catalog_names()["watermark"]
+            LOGGER.debug("watermark audio: %s", watermark)
+
             podcast = pydub.AudioSegment.from_wav(self.abspath)
             cuts = (util.calculate_cuts(len(podcast))
                     if not num_cuts else num_cuts)
+            LOGGER.debug("splitting podcast in: [%s] parts", cuts)
+
             cut_each = math.ceil(len(podcast) / cuts)
             podcast_parts = podcast[::cut_each]
 
@@ -498,6 +491,7 @@ class PodcastFile:
 
         def _copy_audio_intro():
             """Copy the opening theme files from the audio library."""
+            LOGGER.debug("Copying the audio intro files from the library")
             library = util.audio_library()
             for index, audio in enumerate(self._audio_intro):
 
@@ -513,11 +507,9 @@ class PodcastFile:
         @util.profile
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
-            INFO_LOGGER.info(
-                'Unisco e converto i file audio per creare podcast finale...')
-            gui_log('Unisco e converto i file per creare podcast finale...')
-            gui_log('...ci puo volere un po (da 30 a 50 secondi)\n')
-            INFO_LOGGER.info('...ci puo volere un po (da 30 a 50 secondi)')
+            LOGGER.info("merging all the audio files into the final file")
+            gui_log('Unisco e converto i file per creare podcast finale...\n'
+                    '...ci puo volere un po (da 30 a 50 secondi)\n')
 
             # see pydub documentation of what is empty()
             podcast_segment = pydub.AudioSegment.empty()
@@ -538,7 +530,6 @@ class PodcastFile:
                                                    "artist":
                                                    f"{self.teacher_name}"})
             shutil.rmtree(tmp_dir)
-            # self.data["files_to_upload"].append(podcast.name)
             self.add_html_parts({"path": podcast.name})
             LOGGER.debug('Final Podcast File: %s', podcast.name)
 
@@ -554,6 +545,7 @@ class PodcastFile:
         def _mp3_path() -> str:
             """Get the mp3 folder path."""
             mp3_path = pathlib.Path(self.abspath).parent / 'mp3'
+            LOGGER.debug("mp3 folder path: %s", mp3_path)
             return mp3_path
 
         _split_raw_podcast()
@@ -621,7 +613,7 @@ def generate_html(html_data):
             file.write(text)
 
     page = yattag.indent(doc.getvalue())
-    INFO_LOGGER.info('Pagina html generata')
+    LOGGER.debug('html page generated')
     gui_log('\nPagina html generata')
     generate_archive(page)
 

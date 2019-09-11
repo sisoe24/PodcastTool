@@ -13,6 +13,7 @@ FORMATTER = logging.Formatter(
     '%(filename)-20s %(funcName)-25s %(levelname)-10s %(message)s')
 CH_FORMATTER = logging.Formatter(
     '[%(levelname)s] - %(module)s:%(lineno)d:%(funcName)s() - %(message)s')
+CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
 
 LOG_PATH = util.get_path('log')
 
@@ -26,17 +27,17 @@ DEBUG_LOW.setLevel(logging.DEBUG)
 DEBUG_LOW.setFormatter(FORMATTER)
 LOGGER.addHandler(DEBUG_LOW)
 
-# status app logging
-if util.DEV_MODE:
-    LEVEL = logging.DEBUG
-else:
-    LEVEL = logging.INFO
-
-INFO_LOGGER = logging.getLogger('status_app')
-INFO_LOGGER.setLevel(LEVEL)
-CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
-
 CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
-CONSOLE_LOG.setLevel(LEVEL)
+CONSOLE_LOG.setLevel(logging.INFO)
 CONSOLE_LOG.setFormatter(CONSOLE)
-INFO_LOGGER.addHandler(CONSOLE_LOG)
+LOGGER.addHandler(CONSOLE_LOG)
+
+# status app logging
+# if util.DEV_MODE:
+#     LEVEL = logging.DEBUG
+# else:
+#     LEVEL = logging.INFO
+
+# INFO_LOGGER = logging.getLogger('status_app')
+# INFO_LOGGER.setLevel(LEVEL)
+# CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
