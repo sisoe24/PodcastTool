@@ -12,7 +12,15 @@ from tkinter import messagebox
 from tkinter import filedialog
 
 
-from podcasttool.gui import *
+from podcasttool.gui import (
+    SelectPodcast,
+    HtmlFrame,
+    AudioExport,
+    AudioIntro,
+    CatalogFrame,
+    MainFrame,
+    DevFrame,
+)
 
 from podcasttool import util
 from podcasttool import OS_SYSTEM
