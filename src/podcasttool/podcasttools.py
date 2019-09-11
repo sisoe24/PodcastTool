@@ -98,6 +98,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
                 status_sub = regex.sub(
                     r'226|-|\(measured here\)|\n', '', str(status))
                 INFO_LOGGER.info(status_sub)
+                gui_log(f"status: {status_sub}")
                 LOGGER.debug('status: %s', status_sub)
                 LOGGER.debug('uploaded file to server: %s', file_name)
             else:
