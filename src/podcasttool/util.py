@@ -88,8 +88,9 @@ def get_path(directory: str) -> str:
     Get path of the argument string directory if is in root PodcastTool folder.
     """
     file_path = pathlib.Path(os.path.dirname(__file__))
+    directories = ["PodcastTool", "Resources"]
     for path in file_path.parents:
-        if path.parts[-1] == 'PodcastTool':
+        if path.parts[-1] in directories:
             new_path = path.joinpath(directory)
             break
     if directory in ['archive', 'log'] and not os.path.exists(new_path):
