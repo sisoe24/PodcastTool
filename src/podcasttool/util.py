@@ -204,11 +204,11 @@ def dev_mode(bypass=False):
     if bypass:
         ask = input("You have bypassed dev_mode! are you sure? y/n\n> ")
         if ask == "y":
-            subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
+            subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
             return None
     try:
         if str(pathlib.Path().home()) == os.environ["HOME_DIR"]:
-            subprocess.call(['/bin/zsh', '-i', '-c', 'deltmp'])
+            subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
             return True
     except KeyError:
         # means that .env file hasnt been updated to include HOME_DIR yet
