@@ -13,7 +13,7 @@ from dotenv import load_dotenv, find_dotenv
 
 # from podcasttool import logger
 
-load_dotenv(find_dotenv())
+load_dotenv(".env")
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
 
