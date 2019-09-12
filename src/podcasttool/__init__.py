@@ -1,17 +1,22 @@
 import platform
 import subprocess
-from tkinter import messagebox
+from tkinter import messagebox, TkVersion
 
 from . import logger
 from . import util
 from . import podcasttools
 from .podcasttools import PodcastFile, generate_html, upload_to_server
 
+if TkVersion <= 8.5:
+    messagebox.showinfo(message=f"your tcl-tk version {TkVersion} has some serious bugs!"
+                        "please update to the last version: 8.6")
+    exit("tk version is old")
+
 try:
     subprocess.check_output(["which", "ffmpeg"])
 except Exception as error:
     messagebox.showinfo(message="ffmpeg doesnt appear to be installed?")
-    exit()
+    exit("ffmpeg is not installed")
 
 
 if platform.system() == 'Darwin':
