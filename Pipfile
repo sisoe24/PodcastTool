@@ -27,6 +27,7 @@ gtts = "*"
 tinytag = "*"
 python-dotenv = "*"
 py2app = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.7"

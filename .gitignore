@@ -72,3 +72,4 @@ send_separately
 TODO.md
 .vscode/tasks.json
 .vscode/.editorconfig
+build.sh
