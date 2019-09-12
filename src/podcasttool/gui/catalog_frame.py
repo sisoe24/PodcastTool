@@ -64,7 +64,7 @@ class CatalogFrame(tk.Frame):
         ttk.Label(self._insert_frame, text="lang").grid(column=0, row=4,
                                                         sticky=tk.W)
         self._lang_select = ttk.Combobox(self._insert_frame, state="readonly",
-                                         value=["it", "eng"], width=5)
+                                         value=["it", "en"], width=5)
         self._lang_select.grid(column=1, row=4, sticky=tk.W)
         self._lang_select.current(0)
 
