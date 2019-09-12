@@ -538,7 +538,7 @@ class PodcastFile:
             path = pathlib.Path(tmp_dir).iterdir()
             LOGGER.debug('combining audio files in folder: %s', tmp_dir)
             for item in sorted(path):
-                if regex.search(r'(.mp3|.wav)$', str(item)):
+                if regex.search(r'(\.mp3|\.wav)$', str(item)):
                     LOGGER.debug('merging audio: %s', os.path.basename(item))
                     yield pydub.AudioSegment.from_file(str(item))
 
