@@ -256,11 +256,11 @@ class CatalogFrame(tk.Frame):
 
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
-        for category, new_names in self._updated_names.items():
+        for _, new_names in self._updated_names.items():
             for index, new_name in enumerate(new_names, 20):
                 name, lang = new_name
                 msg = f"Generating audio for: \n[{name}]"
                 ttk.Label(self._options_frame, text=msg).grid(
                     column=3, row=index)
-                path = util.get_path("include/audio") / category
+                path = util.get_path("include/audio/new_audio")
                 util.generate_audio(text=name, path=path, lang=lang)
