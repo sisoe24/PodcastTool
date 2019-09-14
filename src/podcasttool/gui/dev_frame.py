@@ -50,9 +50,14 @@ class DevFrame(tk.Frame):
 
     def restore_json(self):
         original_json = util.get_path("docs") / ".catalog_names.json"
-        new_json = util.catalog_file()
-        shutil.copy(original_json, new_json)
-        messagebox.showinfo(message="done!")
+        user = messagebox.askyesno(
+            message="new audio folder will be deleted. are you sure?")
+        if user:
+            new_json = util.catalog_file()
+            shutil.copy(original_json, new_json)
+            new_audio_dir = util.get_path("include/audio/new_audio")
+            [os.remove(audio) for audio in new_audio_dir.iterdir()]
+            messagebox.showinfo(message="done!")
 
     @property
     def test_env(self):
