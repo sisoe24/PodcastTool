@@ -132,7 +132,7 @@ class AudioIntro(tk.Frame):
         Arguments:
             audio_list {list/tuple} - iterable variable to generate new audio
         """
-        path = util.get_path("include/audio") / "new_intro"
+        path = util.get_path("include/audio/new_audio")
 
         for index, name in enumerate(audio_list, 10):
 
