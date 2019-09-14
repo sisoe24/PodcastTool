@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import regex
-from PIL import Image, ImageTk
+# from PIL import Image, ImageTk
 
 from podcasttool import util
 from podcasttool import OS_SYSTEM
@@ -91,8 +91,8 @@ class LogFrame(tk.Frame):
         self._log_label = None
 
         self._label_img = ttk.Label(self._log_frame, name='logo', width=500)
-        self._label_img.place(x=150, y=10)
-        self.insert_img(get_image("warning"))
+        # self._label_img.place(x=150, y=10)
+        # self.insert_img(get_image("warning"))
 
     def insert_img(self, img):
         """Insert image in error frame."""
@@ -378,12 +378,12 @@ class MainFrame(tk.Frame):
         if no then enable confirm button and proceed further.
         """
         if self._text_errors():
-            self.log_frame.insert_img(get_image("x"))
+            # self.log_frame.insert_img(get_image("x"))
             self._refresh_frame()
         else:
             self.log_frame.refresh_widgets("errori")
             self.text_widget["state"] = "disabled"
-            self.log_frame.insert_img(get_image("ok"))
+            # self.log_frame.insert_img(get_image("ok"))
             self.confirm_button["state"] = "active"
 
     def _refresh_frame(self):
