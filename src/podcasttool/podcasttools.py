@@ -154,13 +154,13 @@ class PodcastFile:
         ]
         return iter(all_data)
 
-    def __str__(self):
-        """Return podcast file name."""
-        return self.__name
+    # def __str__(self):
+    #     """Return podcast file name."""
+    #     return self.__name
 
-    def __repr__(self):
-        """Return creation podcast class."""
-        return f'PodcastFile("{self.__abspath}")'
+    # def __repr__(self):
+    #     """Return creation podcast class."""
+    #     return f'PodcastFile("{self.__abspath}")'
 
     def __len__(self):
         """Get the lenght of the audio in milliseconds.
