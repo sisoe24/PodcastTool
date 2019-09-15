@@ -3,14 +3,13 @@ import os
 import logging
 import pathlib
 import subprocess
-
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
-
 
 from podcasttool.gui import (
     SelectPodcast,
@@ -132,7 +131,7 @@ class MainPage(tk.Tk):
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
                                       command=self.files_select)
-        # self._select_btn.invoke()
+        self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=5, y=65)
 
@@ -147,10 +146,10 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
-        open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        LOGGER.debug("selected files: %s", open_files)
+        # open_files = filedialog.askopenfilenames(initialdir=_set_directory())
+        open_files = (os.environ["TEST_FILE"],)
 
-        # open_files = (os.environ["TEST_FILE"],)
+        LOGGER.debug("selected files: %s", open_files)
 
         self.podcast_obj = SelectPodcast(open_files)
         if open_files:
@@ -163,8 +162,55 @@ class MainPage(tk.Tk):
         """Run the podcastool main script when button is pressed."""
         self._rename_files()
 
+        display_msg = self.main_class.log_frame.display_msg
+
+        if util.DEV_MODE:
+            display_msg("dev mode ON")
+
+        display_msg("Creazione podcast in corso...")
+
+        with ThreadPoolExecutor() as executor:
+            for file in self.main_class.proccesed_files():
+                self.update()
+
+                display_msg(file)
+
+                file_path = os.path.join(self.podcast_obj.path, file)
+                f1 = executor.submit(PodcastFile, file_path)
+                podcast = f1.result()
+                executor.submit(podcast.generate_podcast,)
+
+            self.update()
+
+        display_msg("Fatto!\n\nCaricamento podcast su server...")
+
+        with ThreadPoolExecutor() as executor:
+            for file in podcast.files_to_upload():
+                self.update()
+                display_msg(os.path.basename(file['path']))
+                executor.submit(upload_to_server,
+                                file["path"], file["server_path"],
+                                self.dev.test_env)
+        self.update()
+        display_msg("Fatto!\n\nPagina html generata")
+
+        generate_html(podcast.html_page)
+
+        self._conferm_btn["state"] = 'disable'
+
+        self.html.copy_button = "normal"
+        self.html.preview_button = "normal"
+        self.html.status('Pronto', 'green')
+
+        messagebox.showinfo(title="Done!", message="Done!", icon="info")
+
+    def _run1(self):
+        """Run the podcastool main script when button is pressed."""
+        self._rename_files()
+
         podcasttools.ERROR_FRAME = self.main_class.log_frame
         podcasttools.TKINTER = self
+        podcasttools.TEST = self.after
 
         for file in self.main_class.proccesed_files():
             if util.DEV_MODE:
