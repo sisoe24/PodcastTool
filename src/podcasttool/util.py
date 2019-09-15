@@ -10,9 +10,8 @@ import subprocess
 
 import regex
 import gtts
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 
-# from podcasttool import logger
 
 load_dotenv(".env")
 LOGGER = logging.getLogger('podcast_tool.utlity')
@@ -77,7 +76,7 @@ def generate_audio(text, path, filename="", lang='it'):
         filename = name.replace(" ", "_")
     else:
         filename = filename.replace(" ", "_")
-        
+
     path = get_path(path)
     speak = gtts.gTTS(text=name, lang=lang)
     speak.save(f'{path}/{filename}.mp3')
