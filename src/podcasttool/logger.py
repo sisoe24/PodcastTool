@@ -22,7 +22,7 @@ CRITICAL_LOG.setLevel(logging.WARNING)
 CRITICAL_LOG.setFormatter(CH_FORMATTER)
 LOGGER.addHandler(CRITICAL_LOG)
 
-DEBUG_LOW = logging.FileHandler(f'{LOG_PATH}/debug_low.log', 'w')
+DEBUG_LOW = logging.FileHandler(f'{LOG_PATH}/debug.log', 'w')
 DEBUG_LOW.setLevel(logging.DEBUG)
 DEBUG_LOW.setFormatter(FORMATTER)
 LOGGER.addHandler(DEBUG_LOW)
