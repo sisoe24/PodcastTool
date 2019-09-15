@@ -58,8 +58,7 @@ def upload_to_server(uploading_file, server_path, test_env=False):
             user_prompt = messagebox.askyesno(
                 title='PodcastTool',
                 message=(f'Cartella {os.path.basename(server_path)} '
-                         'non esiste sul server'
-                         '\nVuoi crearla?'))
+                         'non esiste sul server\nVuoi crearla?'))
             if user_prompt:
                 LOGGER.debug('creating directory: %s', server_path)
                 ftp.mkd(server_path)
