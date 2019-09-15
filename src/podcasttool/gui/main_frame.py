@@ -11,10 +11,9 @@ import regex
 # from PIL import Image, ImageTk
 
 from podcasttool import util
-from podcasttool import OS_SYSTEM
+from podcasttool import OS_SYSTEM, open_log
 
 LOGGER = logging.getLogger('podcast_tool.gui.main')
-INFO_LOGGER = logging.getLogger('status_app.gui.main')
 
 
 def get_similar_words(wrong_name: str, catalog: str) -> str:
@@ -206,7 +205,7 @@ class MainFrame(tk.Frame):
             except Exception as error:
                 LOGGER.critical('no suggestion error: %s',
                                 error, exc_info=True)
-                open_log(message="Impossibile riconoscere nome")
+                open_log("Impossibile riconoscere nome")
 
         self.check_errors()
 
