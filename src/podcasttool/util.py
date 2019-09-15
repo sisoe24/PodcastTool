@@ -181,7 +181,7 @@ def catalog_names(value="") -> dict:
             json_data = json.load(json_file)
 
     except FileNotFoundError:
-        LOGGER.critical('No json catalog file found: %s', json_file)
+        LOGGER.critical('No json catalog file found', exc_info=True)
         sys.exit()
 
     else:
