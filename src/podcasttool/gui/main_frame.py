@@ -157,7 +157,7 @@ class MainFrame(tk.Frame):
         """Create text tags with colors for the text widget."""
         tag_color = self.text_widget.tag_configure
         tag_color(f'c{line_num}', background='tomato')
-        tag_color(f'e{line_num}', background='DodgerBlue2')
+        # tag_color(f'e{line_num}', background='DodgerBlue2')
         tag_color(f'd{line_num}', background='khaki2')
         tag_color(f't{line_num}', background='indian red')
         tag_color(f'l{line_num}', background='turquoise1')
@@ -253,6 +253,7 @@ class MainFrame(tk.Frame):
                     (?=_)''', filename, regex.I | regex.X)
         tag = f"e{line_num}"
         if not edition_match:
+            self._tag_errors((3, 4), line_num, tag)
             self.log_frame.display_msg(f"- ? manca edizione corso")
         else:
             self._tag_remove(tag)
