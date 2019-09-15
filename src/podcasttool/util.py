@@ -1,5 +1,6 @@
 """Reusable utility functions."""
 import os
+import sys
 import json
 import time
 import pathlib
@@ -97,7 +98,7 @@ def get_path(directory: str) -> str:
         os.mkdir(new_path)
     elif not os.path.exists(new_path):
         LOGGER.critical('path not found: %s', new_path)
-        exit()
+        sys.exit()
     return new_path
 
 
@@ -174,7 +175,7 @@ def catalog_names() -> dict:
     except FileNotFoundError:
         print('no json file found!', json_file)
         LOGGER.warning('No json file found: %s', json_file)
-        exit()
+        sys.exit()
 
 
 def convert_month_name():

@@ -9,6 +9,7 @@ The name of the file is always formatted like this:
     SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav.
 """
 import os
+import sys
 import math
 import wave
 import ftplib
@@ -170,7 +171,7 @@ class PodcastFile:
                 rframe = wave_file.getframerate()
         except Exception as error:
             LOGGER.critical('%s - probably not a wave file!', error)
-            exit()
+            sys.exit()
 
         # amount in seconds
         total_float_seconds = nframe / rframe
@@ -195,7 +196,7 @@ class PodcastFile:
                     ''', filename, regex.I | regex.X)
         if not valid_file:
             LOGGER.info("Sembra un file invalido? %s", filename)
-            exit()
+            sys.exit()
 
     @property
     def name(self):

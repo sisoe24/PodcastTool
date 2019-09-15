@@ -14,6 +14,7 @@ in the suggestion section of the gui when the date written by user is wrong.
 """
 
 import os
+import sys
 import pathlib
 import logging
 
@@ -84,7 +85,7 @@ def _extract_lesson(podcast_file):
         LOGGER.critical(
             "if problem persist, remember that you can select multiple files")
         open_log("Nessun match in lezione\nControllare errors.log?")
-        exit()
+        sys.exit()
     return file_path, lesson_num
 
 
