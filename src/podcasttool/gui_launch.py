@@ -2,14 +2,15 @@
 import os
 import logging
 import pathlib
-import subprocess
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
-from tkinter import filedialog
+from tkinter import (
+    ttk,
+    messagebox,
+    filedialog
+)
 
 from podcasttool.gui import (
     SelectPodcast,
@@ -21,15 +22,17 @@ from podcasttool.gui import (
     DevFrame,
 )
 
-from podcasttool import util
-from podcasttool import OS_SYSTEM
-from podcasttool import open_log
-from podcasttool import podcasttools
-from podcasttool import PodcastFile, upload_to_server, generate_html
+from podcasttool import (
+    util,
+    OS_SYSTEM,
+    open_log,
+    PodcastFile,
+    upload_to_server,
+    generate_html
+)
 
 
 LOGGER = logging.getLogger('podcast_tool.gui')
-# INFO_LOGGER = logging.getLogger('status_app.gui')
 
 
 def _set_directory():
@@ -203,8 +206,6 @@ class MainPage(tk.Tk):
         self.html.status('Pronto', 'green')
 
         messagebox.showinfo(title="Done!", message="Done!", icon="info")
-
-
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
