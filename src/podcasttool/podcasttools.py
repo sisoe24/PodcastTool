@@ -31,9 +31,6 @@ from podcasttool import util
 
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
-COURSES_NAMES = None
-TEACHERS_NAMES = None
-
 
 def upload_to_server(uploading_file, server_path, test_env=False):
     """Upload podcast file to server.
@@ -259,7 +256,8 @@ class PodcastFile:
 
         LOGGER.debug('codice corso, edizione: %s, %s', course_code, edition)
 
-        course_info = COURSES_NAMES[course_code]
+        courses_names = util.catalog_names("corsi")
+        course_info = courses_names[course_code]
         self._course_path = f"{course_info['course_path']}/{code}"
 
         course = course_info['course_name']
@@ -309,7 +307,8 @@ class PodcastFile:
         short_name = '_'.join(self._splitted_name[2:4])
         LOGGER.debug('teacher name from file: %s', short_name)
 
-        full_name = TEACHERS_NAMES[short_name]
+        teacher_names = util.catalog_names("docenti")
+        full_name = teacher_names[short_name]
         LOGGER.debug('teacher full name: %s', full_name)
 
         self.html_page['teacher_name'] = full_name

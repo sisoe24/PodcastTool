@@ -12,10 +12,6 @@ import regex
 
 from podcasttool import util
 from podcasttool import OS_SYSTEM
-from podcasttool import CATALOG_NAMES
-
-COURSES_NAMES = CATALOG_NAMES['corsi'].keys()
-TEACHERS_NAMES = CATALOG_NAMES['docenti'].keys()
 
 LOGGER = logging.getLogger('podcast_tool.gui.main')
 INFO_LOGGER = logging.getLogger('status_app.gui.main')
@@ -34,9 +30,9 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
 
     """
     if catalog == 'c':
-        check_list = COURSES_NAMES
+        check_list = util.catalog_names('corsi').keys()
     elif catalog == 't':
-        check_list = TEACHERS_NAMES
+        check_list = util.catalog_names('docenti').keys()
 
     similar_name = get_close_matches(wrong_name, check_list, cutoff=0.6)
     possibile_names = [i for i in similar_name]
@@ -237,7 +233,7 @@ class MainFrame(tk.Frame):
         """
         course_match = regex.search(r'^[A-Z]{3}', filename, regex.I)
         tag = f"c{line_num}"
-        if course_match.group() not in COURSES_NAMES:
+        if course_match.group() not in util.catalog_names('corsi').keys():
             self._tag_errors(course_match.span(), line_num, tag)
             self.log_frame.display_msg(
                 get_similar_words(course_match.group(), "c"),
@@ -304,7 +300,7 @@ class MainFrame(tk.Frame):
 
         tag = f"t{line_num}"
 
-        if teacher_match.group() not in TEACHERS_NAMES:
+        if teacher_match.group() not in util.catalog_names('docenti').keys():
             self._tag_errors(teacher_match.span(), line_num, tag)
             self.log_frame.display_msg(
                 get_similar_words(teacher_match.group(), "t"),

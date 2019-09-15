@@ -164,17 +164,29 @@ def catalog_file():
     return os.path.join(os.path.dirname(__file__), 'catalog_names.json')
 
 
-def catalog_names() -> dict:
-    """Open json catalog of names to grab the teachers and courses names."""
+def catalog_names(value="") -> dict:
+    """Return catalog names dictionary.
+
+    Keyword Arguments:
+        value {str} -- can grab directly its value is passed (default: {""})
+
+    Returns:
+        dict -- catalog of names
+    """
     try:
         with open(catalog_file()) as json_file:
             LOGGER.debug('parsing json file: %s', json_file)
             json_data = json.load(json_file)
-            return json_data
+
     except FileNotFoundError:
-        print('no json file found!', json_file)
-        LOGGER.warning('No json file found: %s', json_file)
+        LOGGER.critical('No json catalog file found: %s', json_file)
         sys.exit()
+
+    else:
+        if value:
+            return json_data[value]
+
+    return json_data
 
 
 def convert_month_name():
@@ -220,4 +232,3 @@ def dev_mode(bypass=False):
 DEV_MODE = dev_mode(bypass=False)
 if __name__ == '__main__':
     pass
-    # print(a)

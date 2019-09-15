@@ -24,10 +24,6 @@ if platform.system() == 'Darwin':
 elif platform.system() == 'Linux':
     OS_SYSTEM = 'Linux'
 
-CATALOG_NAMES = util.catalog_names()
-podcasttools.COURSES_NAMES = CATALOG_NAMES['corsi']
-podcasttools.TEACHERS_NAMES = CATALOG_NAMES['docenti']
-
 
 def open_link(link):
     """Open a file path or a website link."""

@@ -24,10 +24,7 @@ import regex
 
 from podcasttool import open_log
 from podcasttool import OS_SYSTEM
-from podcasttool import CATALOG_NAMES
 
-COURSES_NAMES = CATALOG_NAMES['corsi'].keys()
-TEACHERS_NAMES = CATALOG_NAMES['docenti'].keys()
 
 LOGGER = logging.getLogger('podcast_tool.gui.select')
 INFO_LOGGER = logging.getLogger('status_app.gui.select')
