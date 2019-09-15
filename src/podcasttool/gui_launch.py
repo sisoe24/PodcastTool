@@ -134,7 +134,7 @@ class MainPage(tk.Tk):
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
                                       command=self.files_select)
-        self._select_btn.invoke()
+        # self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=5, y=65)
 
@@ -149,8 +149,8 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
-        # open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        open_files = (os.environ["TEST_FILE"],)
+        open_files = filedialog.askopenfilenames(initialdir=_set_directory())
+        # open_files = (os.environ["TEST_FILE"],)
 
         LOGGER.debug("selected files: %s", open_files)
 

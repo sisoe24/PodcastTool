@@ -8,7 +8,6 @@ an external module 'pyperclip'.
 
 import os
 import pathlib
-import subprocess
 from functools import partial
 
 import tkinter as tk

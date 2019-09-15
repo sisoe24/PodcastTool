@@ -67,7 +67,8 @@ class AudioIntro(tk.Frame):
         self.text_entry.grid(column=1, row=0)
 
         ttk.Button(create_frame, text="Crea audio",
-                   command=self.text_to_audio).grid(column=1, row=1, sticky=tk.E,
+                   command=self.text_to_audio).grid(column=1, row=1,
+                                                    sticky=tk.E,
                                                     pady=5, padx=5)
 
         ttk.Label(create_frame, text="lang:").grid(column=0, row=1,
@@ -173,8 +174,8 @@ class AudioIntro(tk.Frame):
 
     def save_new(self):
         """Save modifications in catalog json file."""
-        with open(util.catalog_file(), "w") as f:
-            json.dump(self.audio_catalog, f, indent=True)
+        with open(util.catalog_file(), "w") as json_file:
+            json.dump(self.audio_catalog, json_file, indent=True)
         messagebox.showinfo(title="Done", message="Done!", icon="info")
 
     @staticmethod
