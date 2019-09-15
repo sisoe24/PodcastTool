@@ -10,10 +10,11 @@ import subprocess
 
 import regex
 import gtts
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 
-load_dotenv(".env")
+load_dotenv(find_dotenv(raise_error_if_not_found=True))
+
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
 
