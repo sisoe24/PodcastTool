@@ -32,17 +32,6 @@ LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 COURSES_NAMES = None
 TEACHERS_NAMES = None
-ERROR_FRAME = None
-TKINTER = None
-
-
-def gui_log(msg):
-    """Show msg log into gui."""
-    try:
-        ERROR_FRAME.display_msg(msg)
-        TKINTER.update()
-    except Exception as error:
-        LOGGER.debug(error)
 
 
 def upload_to_server(uploading_file, server_path, test_env=False):
@@ -84,7 +73,6 @@ def upload_to_server(uploading_file, server_path, test_env=False):
 
         with open(uploading_file, 'rb') as upload:
             LOGGER.debug('uploading file on server: %s', uploading_file)
-            gui_log('Carico podcast sul server... ci puo volere un po...')
 
             # check if user is me. if yes then app will NOT upload to server
             if not util.DEV_MODE:
@@ -92,7 +80,6 @@ def upload_to_server(uploading_file, server_path, test_env=False):
                 status = ftp.storbinary(f'STOR {file_name}', upload)
                 status_sub = regex.sub(
                     r'226|-|\(measured here\)|\n', '', str(status))
-                gui_log(f"status: {status_sub}")
                 LOGGER.info(status_sub)
                 LOGGER.debug('status: %s', status_sub)
                 LOGGER.debug('uploaded file to server: %s', file_name)
@@ -121,7 +108,6 @@ class PodcastFile:
 
         self.__name, _ = os.path.splitext(os.path.basename(raw_podcast))
         self._check_valid_file(self.__name + ".wav")
-        gui_log(self.__name)
 
         # podcast names have always this structure:
         # ex: SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav
@@ -504,13 +490,9 @@ class PodcastFile:
 
                     shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
 
-        @util.profile
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
             LOGGER.info("merging all the audio files into the final file")
-            gui_log('Unisco e converto i file per creare podcast finale...\n'
-                    '...ci puo volere un po (da 30 a 50 secondi)\n')
-
             # see pydub documentation of what is empty()
             podcast_segment = pydub.AudioSegment.empty()
             for sound in _create_audiosegment():
@@ -614,7 +596,6 @@ def generate_html(html_data):
 
     page = yattag.indent(doc.getvalue())
     LOGGER.debug('html page generated')
-    gui_log('\nPagina html generata')
     generate_archive(page)
 
 
