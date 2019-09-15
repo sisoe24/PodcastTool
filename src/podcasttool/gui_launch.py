@@ -204,36 +204,7 @@ class MainPage(tk.Tk):
 
         messagebox.showinfo(title="Done!", message="Done!", icon="info")
 
-    def _run1(self):
-        """Run the podcastool main script when button is pressed."""
-        self._rename_files()
 
-        podcasttools.ERROR_FRAME = self.main_class.log_frame
-        podcasttools.TKINTER = self
-        podcasttools.TEST = self.after
-
-        for file in self.main_class.proccesed_files():
-            if util.DEV_MODE:
-                self.main_class.log_frame.display_msg("dev mode ON")
-            file_path = os.path.join(self.podcast_obj.path, file)
-            podcast = PodcastFile(file_path)
-            podcast.generate_podcast(bitrate=self.audio.bitrate,
-                                     sample_rate=self.audio.sample_rate,
-                                     num_cuts=self.audio.watermark_num)
-
-        for file in podcast.files_to_upload():
-            upload_to_server(file["path"], file["server_path"],
-                             test_env=self.dev.test_env)
-
-        generate_html(podcast.html_page)
-
-        self._conferm_btn["state"] = 'disable'
-
-        self.html.copy_button = "normal"
-        self.html.preview_button = "normal"
-        self.html.status('Pronto', 'green')
-
-        messagebox.showinfo(title="Done!", message="Done!", icon="info")
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
