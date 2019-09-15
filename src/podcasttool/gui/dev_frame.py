@@ -23,30 +23,35 @@ def delete_archive():
 class DevFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self.test_value = tk.BooleanVar()
 
+        self.test_value = tk.BooleanVar()
         test_btn = ttk.Checkbutton(parent, text='test env',
                                    variable=self.test_value)
         test_btn.grid(column=0, row=0, sticky=tk.W)
+
+        self._bypass = tk.BooleanVar()
+        bypass_dev = ttk.Checkbutton(parent, text="bypass dev",
+                                     variable=self._bypass)
+        bypass_dev.grid(column=0, row=1, sticky=tk.W)
 
         ttk.Label(parent, text='Upload file to test folder').grid(
             column=1, row=0, sticky=tk.W)
         self.delete_archive = ttk.Button(parent, text="Clean archive",
                                          command=delete_archive)
-        self.delete_archive.grid(column=0, row=1)
+        self.delete_archive.grid(column=0, row=2)
 
         n_archive = len(list(archive_files()))
         archive_msg = f"There are {n_archive} html files in the archive"
-        ttk.Label(parent, text=archive_msg).grid(column=1, row=1)
+        ttk.Label(parent, text=archive_msg).grid(column=1, row=2)
 
         ttk.Button(parent, text="Clean log",
-                   command=self.clean_log).grid(column=0, row=2, stick=tk.W)
+                   command=self.clean_log).grid(column=0, row=3, stick=tk.W)
 
         ttk.Button(parent, text="Reset json",
-                   command=self.restore_json).grid(column=0, row=3, stick=tk.W)
+                   command=self.restore_json).grid(column=0, row=4, stick=tk.W)
 
         ttk.Label(parent, text="restore json catalog to original form").grid(
-            column=1, row=3, stick=tk.E)
+            column=1, row=4, stick=tk.E)
 
     def restore_json(self):
         original_json = util.get_path("docs") / ".catalog_names.json"
@@ -62,6 +67,10 @@ class DevFrame(tk.Frame):
     @property
     def test_env(self):
         return self.test_value.get()
+
+    @property
+    def bypass_dev(self):
+        pass
 
     def clean_log(self):
         log_path = util.get_path("log")
