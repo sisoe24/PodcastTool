@@ -534,12 +534,13 @@ class PodcastFile:
         _merge_audio()
 
 
-def generate_html(html_data):
+def generate_html(html_data, test_env=False):
     """Generate html page using yattag module.
 
     Arguments:
         html_data - [dict] - a dictionary with all the information
         from the generated podcast.
+        test_env - [bool] - if True then changes path on html file to test path
 
     """
     LOGGER.debug('generating html page info from dict: %s', html_data)
@@ -583,6 +584,13 @@ def generate_html(html_data):
                     with tag('button', klass='virgil_button'):
                         text('Download')
 
+    def test_path(text):
+        """Substitute the current path with the test path."""
+        sub_path = regex.compile(
+            r"(?<=didattica/)PODCAST/[A-Z]{3}/[A-Z]{3,}(?=/Lezione)")
+        sub = sub_path.sub("virgil_test", text)
+        return sub
+
     def generate_archive(text):
         """Create a html file archive for later use."""
         today = datetime.today().strftime('%m.%d.%Y_%H:%M_')
@@ -591,6 +599,8 @@ def generate_html(html_data):
             util.get_path('archive'), today + podcast_name + '.html')
         LOGGER.debug('creating html archive: %s', file_path)
         with open(file_path, 'w') as file:
+            if test_env:
+                text = test_path(text)
             file.write(text)
 
     page = yattag.indent(doc.getvalue())
