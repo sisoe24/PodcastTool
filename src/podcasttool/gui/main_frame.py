@@ -13,7 +13,7 @@ import regex
 from podcasttool import util
 from podcasttool import OS_SYSTEM, open_log
 
-LOGGER = logging.getLogger('podcast_tool.gui.main')
+LOGGER = logging.getLogger('podcast_tool.gui.main_core')
 
 
 def get_similar_words(wrong_name: str, catalog: str) -> str:
