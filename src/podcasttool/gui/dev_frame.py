@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from podcasttool import util
+from podcasttool import util, open_link
 from .html_frame import archive_files
 
 
@@ -52,6 +52,12 @@ class DevFrame(tk.Frame):
 
         ttk.Label(parent, text="restore json catalog to original form").grid(
             column=1, row=4, stick=tk.E)
+
+        ttk.Button(parent, text='show debug',
+                   command=self.debug_status).grid(column=0, row=5)
+
+    def debug_status(self):
+        open_link(util.get_path("log") / "debug.log")
 
     def restore_json(self):
         original_json = util.get_path("docs") / ".catalog_names.json"

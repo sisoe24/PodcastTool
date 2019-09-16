@@ -24,7 +24,6 @@ from podcasttool.gui import (
 
 from podcasttool import (
     util,
-    open_link,
     OS_SYSTEM,
     open_log,
     PodcastFile,
@@ -124,9 +123,6 @@ class MainPage(tk.Tk):
 
         window_main.pack()
 
-        ttk.Button(_page_main, text='show debug',
-                   command=self.debug_status).place(x=5, y=35)
-
         self.podcast_obj = None
 
         self._conferm_btn = ttk.Button(_page_main, text='Conferma e procedi',
@@ -141,9 +137,6 @@ class MainPage(tk.Tk):
 
         self._labels_style()
         self.time()
-
-    def debug_status(self):
-        open_link(util.get_path("log") / "debug.log")
 
     def time(self):
         """Clock label for the gui."""
