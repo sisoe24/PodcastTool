@@ -208,12 +208,8 @@ def convert_month_name():
 
 
 def dev_mode(bypass=False):
-    """Check if user is me. if yes then perform some operations.
+    """Check if user is me. if yes dont upload to server.
 
-    Perform some operations like:
-        cleaning tmp folders and files
-        NOT uploading to server
-        enable debug console
     If I need to test uploading to the server then I must supply a value
     to bypass.
 
@@ -223,10 +219,8 @@ def dev_mode(bypass=False):
     if bypass:
         ask = input("You have bypassed dev_mode! are you sure? y/n\n> ")
         if ask == "y":
-            subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
             return None
     if "virgilsisoe" in str(pathlib.Path().home()):
-        subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
         return True
     return None
 
