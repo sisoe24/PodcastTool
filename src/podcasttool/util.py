@@ -8,14 +8,23 @@ import logging
 import datetime
 import subprocess
 
+from tkinter import messagebox
+
 import regex
 import gtts
-from dotenv import load_dotenv, find_dotenv
-
-
-load_dotenv(find_dotenv(raise_error_if_not_found=True))
+from dotenv import load_dotenv
 
 LOGGER = logging.getLogger('podcast_tool.utlity')
+
+ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
+try:
+    if not os.path.exists(ENV_FILE):
+        raise FileNotFoundError(".env file not found")
+except FileNotFoundError as error:
+    messagebox.showerror(message=error)
+    sys.exit()
+else:
+    load_dotenv(".env")
 
 
 def profile(func):
