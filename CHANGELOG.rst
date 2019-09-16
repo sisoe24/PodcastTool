@@ -7,7 +7,17 @@ Version 2.2.0
 
 [New Feature] :
 
+- Major overall speed increment by using multi-threading operations.
+- Ability to modify the existing catalog names.
+- Ability to modify the intro audio.
+- Ability to create custom text-to-speech audio files.
+- App status now displays in gui window instead of terminal.
+
 [other] :
+
+- Overall gui widget clean up.
+- Overall source code clean up.
+- new dev window for testint purposes
 
 [bug fix] :
 
