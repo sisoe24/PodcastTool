@@ -93,14 +93,9 @@ def get_path(directory: str) -> str:
     for path in file_path.parents:
         if path.parts[-1] in main_directories:
             new_path = path.joinpath(directory)
-            break
-    other_directories = ['archive', 'log', 'include/audio/new_audio']
-    if directory in other_directories and not os.path.exists(new_path):
-        os.mkdir(new_path)
-    elif not os.path.exists(new_path):
-        LOGGER.critical('path not found: %s', new_path)
-        sys.exit()
-    return new_path
+            if os.path.exists(new_path):
+                return new_path
+    raise FileNotFoundError(f"Directory not found: {new_path}")
 
 
 def audio_library():
