@@ -24,7 +24,7 @@ except FileNotFoundError as error:
     messagebox.showerror(message=error)
     sys.exit()
 else:
-    load_dotenv(".env")
+    load_dotenv(ENV_FILE, verbose=True)
 
 
 def profile(func):
@@ -225,13 +225,9 @@ def dev_mode(bypass=False):
         if ask == "y":
             subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
             return None
-    try:
-        if str(pathlib.Path().home()) == os.environ["HOME_DIR"]:
-            subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
-            return True
-    except KeyError:
-        # means that .env file hasnt been updated to include HOME_DIR yet
-        pass
+    if "virgilsisoe" in str(pathlib.Path().home()):
+        subprocess.call(['/bin/bash', '-i', '-c', 'deltmp'])
+        return True
     return None
 
 
