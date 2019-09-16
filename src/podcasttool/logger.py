@@ -31,13 +31,3 @@ CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
 CONSOLE_LOG.setLevel(logging.INFO)
 CONSOLE_LOG.setFormatter(CONSOLE)
 LOGGER.addHandler(CONSOLE_LOG)
-
-# status app logging
-# if util.DEV_MODE:
-#     LEVEL = logging.DEBUG
-# else:
-#     LEVEL = logging.INFO
-
-# INFO_LOGGER = logging.getLogger('status_app')
-# INFO_LOGGER.setLevel(LEVEL)
-# CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
