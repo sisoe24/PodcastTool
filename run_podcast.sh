@@ -15,7 +15,6 @@ else
   xdg-open $DIR/CHANGELOG.rst
 fi
 
-APP=$DIR/src/gui/main_gui.py
 # create log directory if doesnt already exists
 ! [ -d $DIR/log ] && mkdir $DIR/log
 
@@ -23,6 +22,7 @@ ERROR_LOG=$DIR/log/FATAL_ERROR.txt
 # if file exists already from last session then delete
 [ -f $ERROR_LOG ] && rm -f $ERROR_LOG
 
+APP=$DIR/src/main.py
 $( which python3.7 ) $APP 2> $ERROR_LOG
 
 # show fatal error that won't start the app
