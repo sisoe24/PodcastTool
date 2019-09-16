@@ -28,7 +28,8 @@ from podcasttool import (
     open_log,
     PodcastFile,
     upload_to_server,
-    generate_html
+    generate_html,
+    check_server_path
 )
 
 
@@ -45,7 +46,7 @@ def _set_directory():
     """
     if util.DEV_MODE:
         initial_dir = os.path.join(
-            os.environ['TEST_FILES_REAL'], 'ALP/MULO')
+            os.environ['TEST_DIR'], 'ALP/MULO')
     else:
         initial_dir = os.path.join(pathlib.Path(
             os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
@@ -131,7 +132,7 @@ class MainPage(tk.Tk):
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
                                       command=self.files_select)
-        # self._select_btn.invoke()
+        self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=5, y=65)
 
@@ -146,8 +147,8 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
-        open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        # open_files = (os.environ["TEST_FILE"],)
+        # open_files = filedialog.askopenfilenames(initialdir=_set_directory())
+        open_files = (os.environ["TEST_FILE"],)
 
         LOGGER.debug("selected files: %s", open_files)
 
@@ -184,13 +185,15 @@ class MainPage(tk.Tk):
 
         display_msg("Fatto!\n\nCaricamento podcast su server...")
 
+        check_path = list(podcast.files_to_upload())[0]["server_path"]
+        server_path = check_server_path(check_path, self.dev.test_env)
+
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
                 self.update()
                 display_msg(os.path.basename(file['path']))
-                executor.submit(upload_to_server,
-                                file["path"], file["server_path"],
-                                self.dev.test_env)
+                executor.submit(upload_to_server, file["path"], server_path)
+
         self.update()
         display_msg("Fatto!\n\nPagina html generata")
 

@@ -32,12 +32,11 @@ from podcasttool import util
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 
-def upload_to_server(uploading_file, server_path, test_env=False):
-    """Upload podcast file to server.
+def check_server_path(server_path, test_env=False):
+    """Check if path on server exists otherwise ask user to create new.
 
     Arguments:
-        uploading_file {str} -- path of the file to upload
-        server_path {[type]} -- path on the server where to upload the file
+        server_path {[type]} -- path on the server to check
         test_env {[type]} -- if test_env is True then upload to a test path
     """
     test_server_path = os.environ['FONDERIE_VIRGILTEST']
@@ -60,17 +59,28 @@ def upload_to_server(uploading_file, server_path, test_env=False):
             if user_prompt:
                 LOGGER.debug('creating directory: %s', server_path)
                 ftp.mkd(server_path)
-                ftp.cwd(server_path)
             else:
                 messagebox.showinfo(title='PodcastTool',
                                     message=('Impossibile procedere.'
                                              '\nCreare la cartella'
                                              '\nmanualmente e riprovare'))
-                exit('Exit App')
+                sys.exit('Exit App')
+    return server_path
 
+
+def upload_to_server(uploading_file, server_path):
+    """Upload podcast file to server.
+
+    Arguments:
+        uploading_file {str} -- path of the file to upload
+        server_path {[type]} -- path on the server where to upload the file
+    """
+    with ftplib.FTP(os.environ['FONDERIE_HOST'],
+                    os.environ['FONDERIE_USER'],
+                    os.environ['FONDERIE_PASSWORD']) as ftp:
+        ftp.cwd(server_path)
         with open(uploading_file, 'rb') as upload:
             LOGGER.debug('uploading file on server: %s', uploading_file)
-
             # check if user is me. if yes then app will NOT upload to server
             if not util.DEV_MODE:
                 file_name = os.path.basename(uploading_file)
@@ -229,7 +239,7 @@ class PodcastFile:
         return self._html_page
 
     def files_to_upload(self) -> dict:
-        """ Return a dictionary with the podcast parts information.
+        """ Return a dict_values iterator with the podcast parts information.
 
         Values of dictionary:
             link = link on the server where the file is going to be uploaded.

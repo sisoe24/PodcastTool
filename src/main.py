@@ -1,10 +1,16 @@
 """."""
+import os
 import pathlib
 import logging
 import concurrent.futures
 
 from podcasttool import gui_launch
-from podcasttool import PodcastFile, generate_html, upload_to_server
+from podcasttool import (
+    PodcastFile,
+    generate_html,
+    upload_to_server,
+    check_server_path
+)
 
 LOGGER = logging.getLogger('podcast_tool.main')
 
@@ -24,7 +30,8 @@ def run_cli(path, test_env=False):
             podcast.generate_podcast()
 
     for file in podcast.files_to_upload():
-        upload_to_server(file["path"], file["server_path"], test_env)
+        server_path = check_server_path(file["server_path"], test_env)
+        upload_to_server(file["path"], server_path)
 
     generate_html(podcast.html_page)
 
@@ -43,15 +50,29 @@ def multi_threading(path, test_env=False):
             podcast = f1.result()
             executor.submit(podcast.generate_podcast)
 
-    generate_html(podcast.html_page)
+    check_path = list(podcast.files_to_upload())[0]["server_path"]
+    print(f'==> DEBUG: check_path: {check_path}')
+    server_path = check_server_path(check_path, test_env)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for file in podcast.files_to_upload():
-            executor.submit(upload_to_server,
-                            file["path"], file["server_path"], test_env)
+            executor.submit(upload_to_server, file["path"], server_path)
+
+    generate_html(podcast.html_page)
+
+
+def class_test():
+    path = pathlib.Path(os.environ['TEST_DIR']).joinpath('ALP/MULO')
+    for file in path.glob("*wav"):
+        podcast = PodcastFile(file)
+        podcast.generate_podcast()
+    files = list(podcast.files_to_upload())[0]["server_path"]
+    # print(files[0]["server_path"])
+    print(files)
 
 
 if __name__ == '__main__':
-    # run_cli(path_long)
-    # multi_threading(path_short)
+    # class_test()
+    # run_cli()
+    # multi_threading(os.environ["TEST_DIR"])
     gui_launch.run()
