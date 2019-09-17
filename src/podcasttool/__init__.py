@@ -18,11 +18,11 @@ if TkVersion <= 8.5:
                         "please update to the last version: 8.6")
     sys.exit("tk version is old")
 
-# try:
-#     subprocess.check_output(["which", "ffmpeg"])
-# except Exception as error:
-#     messagebox.showinfo(message="ffmpeg doesnt appear to be installed?")
-#     sys. exit("ffmpeg is not installed")
+try:
+    subprocess.check_output(["which", "ffmpeg"])
+except Exception as error:
+    messagebox.showinfo(message="ffmpeg/ffprobe doesnt appear to be installed.\nTry sudo apt install ffmpeg in terminal")
+    sys.exit("ffmpeg is not installed")
 
 
 if platform.system() == 'Darwin':

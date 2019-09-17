@@ -59,4 +59,5 @@ tests/SECD*
 .env
 
 TODO.md
-podcast.code-workspace
+*.code-workspace
+*.spec
