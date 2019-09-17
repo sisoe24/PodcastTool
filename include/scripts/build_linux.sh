@@ -5,7 +5,7 @@
 
 pyinstaller src/main.py \
     --distpath $HOME \
-    --icon include/img/6_sorry512.png \
+    --icon include/img/app.png \
     --noconfirm \
     -n PodcastTool \
     -p src:podcasttool \
