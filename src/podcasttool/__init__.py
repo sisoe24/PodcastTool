@@ -50,10 +50,10 @@ def write_report():
     with open(report_file, "w") as report:
         for app in MISSING_DEPENDECIES:
             now = datetime.today().strftime("%x_%X")
-            msg = f"{now} - the following apps are required: {app}\n"
+            msg = f"{now} - the following packages are required: {app}\n"
             report.write(msg)
             if OS_SYSTEM == "Linux":
-                report.write(f"type in the terminal\nsudo apt install {app}")
+                report.write(f"type in the terminal:\nsudo apt install {app}\n")
             else:
                 report.write(dedent("""
                                     ffmpeg and ffprobe are required if you
