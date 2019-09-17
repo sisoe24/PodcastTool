@@ -7,7 +7,7 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 
-INCLUDE_DIR=INCLUDE_DIR="$(dirname $( cd "$(dirname "$0")" ; pwd -P ))"
+INCLUDE_DIR="$(dirname $( cd "$(dirname "$0")" ; pwd -P ))"
 
 echo "[Desktop Entry]
 Version=2.2
