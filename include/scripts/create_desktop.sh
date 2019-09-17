@@ -14,8 +14,10 @@ Version=2.2
 Name=PodcastTool
 Comment=app
 Exec=$HOME/PodcastTool/PodcastTool
-Icon=$HOME/$INCLUDE_DIR/5_megaphone.png
-Terminal=true
+Icon=$HOME/PodcastTool/include/img/app.png
+Terminal=false
 Type=Application
 Encoding=UTF-8
 StartupNotify=true" > /usr/share/applications/PodcastTool.desktop
+
+echo "shortcut app create in app launchpad!"
