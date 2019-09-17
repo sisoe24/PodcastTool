@@ -7,14 +7,14 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 
-INCLUDE_DIR="$( dirname $( dirname ${BASH_SOURCE[0]} ) )"
+INCLUDE_DIR=INCLUDE_DIR="$(dirname $( cd "$(dirname "$0")" ; pwd -P ))"
 
 echo "[Desktop Entry]
 Version=2.2
 Name=PodcastTool
 Comment=app
 Exec=$HOME/PodcastTool/PodcastTool
-Icon=$HOME/PodcastTool/include/img/app.png
+Icon=$INCLUDE_DIR/img/app.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
