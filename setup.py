@@ -8,7 +8,7 @@ Usage:
 from setuptools import setup
 
 APP = ['src/main.py']
-DATA_FILES = ["include", "docs", ".env"]
+DATA_FILES = ["include", "docs", "log", "archive"]
 OPTIONS = {
     "iconfile": "include/img/app.icns",
     "packages": ["podcasttool"],
