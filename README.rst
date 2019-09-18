@@ -22,7 +22,23 @@ Description
 The use of this script is made for a specific workflow, therefore it not usable
 for other purposes.
 
-Install on Linux:
+Install on Linux-Ubuntu:
+
+[Update] Download/Compile standalone:
+
+PodcastTool can now be downloaded or compiled as a (almost) standalone package
+from the github page.
+The app only requires ``ffmpeg`` and ``xsel`` to be installed.
+The version on which the app is build matters.
+e.g building on Ubuntu 17.10 wont work on Ubuntu 19.04 and vice-versa.
+
+To compile the standalone app ``pyinstaller`` is needed.
+Then just run the ``build_linux.sh`` script in ``include/scripts`` folder.
+This will create a standalone package in the home directory. The app includes
+a script to create a ``.desktop`` file shortcut inside ``include/scripts``.
+This will automatically create a .desktop file and place it in the
+``/usr/share/applications`` folder.
+
 
 In order to use the script on Linux platform there must be several steps to
 take before. A bash script will be provided for a quick setup, but to
@@ -31,12 +47,13 @@ summarize:
 The script needs the following packages. All of them are availibale to install
 thru the `sudo apt install command`:
 
-    * `python3.7`
-    * `python3-tk`
-    * `python3-pip`
-    * `libpython3.7-dev`
-    * `git`
-    * `ffmpeg`
+    * ``python3.7``
+    * ``python3-tk``
+    * ``python3-pip``
+    * ``libpython3.7-dev``
+    * ``git``
+    * ``ffmpeg``
+    * ``xsel``
 
 To launch the setup script that in the terminal
 
