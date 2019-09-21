@@ -19,7 +19,7 @@ LOGGER = logging.getLogger('podcast_tool.utlity')
 ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
 try:
     if not os.path.exists(ENV_FILE):
-        raise FileNotFoundError(".env file not found")
+        raise FileNotFoundError("credentials missing! contanct admin")
 except FileNotFoundError as error:
     messagebox.showerror(message=error)
     sys.exit()
