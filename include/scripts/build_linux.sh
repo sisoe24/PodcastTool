@@ -14,4 +14,3 @@ pyinstaller src/main.py \
     --add-data log:log \
     --add-data archive:archive \
     --add-data include:include \
-    --add-data src/podcasttool/.env:. \
