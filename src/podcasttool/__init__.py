@@ -55,10 +55,7 @@ def write_report():
             if OS_SYSTEM == "Linux":
                 report.write(f"type in the terminal:\nsudo apt install {app}\n")
             else:
-                report.write(dedent("""
-                                    ffmpeg and ffprobe are required if you
-                                    install ffmpeg manually from their website,
-                                    or you could install it with brew."""))
+                open_link("docs/.missing_ffmpeg.pdf")
     open_link(report_file)
 
 
