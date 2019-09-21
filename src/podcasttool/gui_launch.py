@@ -45,11 +45,9 @@ def _set_directory():
         {str} - path to which directory to open first at gui start.
     """
     if util.DEV_MODE:
-        initial_dir = os.path.join(
-            os.environ['TEST_DIR'], 'ALP/MULO')
+        initial_dir = os.path.join(os.environ['PODCAST_DIR'], 'ALP/MULO')
     else:
-        initial_dir = os.path.join(pathlib.Path(
-            os.path.dirname(__file__)).home(), 'Scrivania/Podcast')
+        initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
     LOGGER.debug("gui initial directory: %s", initial_dir)
 
