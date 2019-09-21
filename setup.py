@@ -11,6 +11,7 @@ APP = ['src/main.py']
 DATA_FILES = ["include", "docs", "log", "archive"]
 OPTIONS = {
     "iconfile": "include/img/app.icns",
+    "emulate_shell_environment": 1,
     "packages": ["podcasttool"],
 }
 
