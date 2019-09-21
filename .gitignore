@@ -51,6 +51,7 @@ MANIFEST
 # my folder
 .vscode/*
 other/
+scripts/
 src/.prototype
 tests/SECD*
 
