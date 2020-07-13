@@ -20,41 +20,77 @@ def delete_archive():
         messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
+def get_server_path():
+    return os.environ["FONDERIE_PODCAST"]
+
+
 class DevFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
+        dev_options = ttk.LabelFrame(parent,
+                                     text='Developer options (use with caution!)')
+        dev_options.grid(column=0, row=0, sticky=tk.W)
+
         self.test_value = tk.BooleanVar()
-        test_btn = ttk.Checkbutton(parent, text='test env',
+        test_btn = ttk.Checkbutton(dev_options, text='Enable test uploading',
                                    variable=self.test_value)
         test_btn.grid(column=0, row=0, sticky=tk.W)
 
         self._bypass = tk.BooleanVar()
-        bypass_dev = ttk.Checkbutton(parent, text="bypass dev",
+        bypass_dev = ttk.Checkbutton(dev_options, text="Bypass restriction",
                                      variable=self._bypass)
         bypass_dev.grid(column=0, row=1, sticky=tk.W)
 
-        ttk.Label(parent, text='Upload file to test folder').grid(
-            column=1, row=0, sticky=tk.W)
-        self.delete_archive = ttk.Button(parent, text="Clean archive",
+        dev_log = ttk.LabelFrame(parent, text='Log options')
+        dev_log.grid(column=0, row=1, sticky=tk.W)
+
+        self.delete_archive = ttk.Button(dev_log, text="Clean archive",
                                          command=delete_archive)
-        self.delete_archive.grid(column=0, row=2)
+        self.delete_archive.grid(column=0, row=0, sticky=tk.W)
 
         n_archive = len(list(archive_files()))
-        archive_msg = f"There are {n_archive} html files in the archive"
-        ttk.Label(parent, text=archive_msg).grid(column=1, row=2)
+        archive_msg = f" - There are {n_archive} html files in the archive"
+        ttk.Label(dev_log, text=archive_msg).grid(column=1, row=0)
 
-        ttk.Button(parent, text="Clean log",
-                   command=self.clean_log).grid(column=0, row=3, stick=tk.W)
+        ttk.Button(dev_log, text="Clean log",
+                   command=self.clean_log).grid(column=0, row=1, sticky=tk.W)
 
-        ttk.Button(parent, text="Reset json",
-                   command=self.restore_json).grid(column=0, row=4, stick=tk.W)
+        ttk.Button(dev_log, text="Reset json",
+                   command=self.restore_json).grid(column=0, row=2, sticky=tk.W)
 
-        ttk.Label(parent, text="restore json catalog to original form").grid(
-            column=1, row=4, stick=tk.E)
+        ttk.Label(dev_log, text="- Restore json catalog to original form").grid(
+            column=1, row=2, sticky=tk.E)
 
-        ttk.Button(parent, text='show debug',
-                   command=self.debug_status).grid(column=0, row=5)
+        ttk.Button(dev_log, text='Show debug log',
+                   command=self.debug_status).grid(column=0, row=4)
+
+        server_frame = ttk.LabelFrame(parent, text='Server (work in progress...)')
+        server_frame.grid(column=0, row=2, sticky=tk.W)
+
+        server_path = ttk.Label(
+            server_frame, text='Percorso server della cartella PODCAST: ')
+        server_path.grid(column=0, row=0,  sticky=tk.W)
+
+        self.path_entry = ttk.Entry(server_frame, width=60, state='readonly')
+        self.path_entry.grid(column=0, row=1)
+
+        self.path_entry.insert('0', get_server_path())
+
+        self.save_path = ttk.Button(server_frame, text='Salva nuovo percorso',
+                                    command=self.set_path, state='disabled')
+        self.save_path.grid(column=0, sticky=tk.E, row=2, pady=5, padx=5)
+
+    def set_path(self):
+        print('inside')
+        with open(util.ENV_FILE, 'r+') as env_file:
+            env_file.seek(0)
+            contents = env_file.read().replace(
+                get_server_path(), self.path_entry.get())
+            print(contents)
+            env_file.write(contents)
+            # env_file.truncate()
+        print('outside')
 
     def debug_status(self):
         open_link(util.get_path("log") / "debug.log")
