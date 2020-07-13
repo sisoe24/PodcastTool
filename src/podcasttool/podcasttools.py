@@ -24,20 +24,19 @@ from tkinter import messagebox
 import pydub
 import regex
 import yattag
-# import tinytag
 
 from podcasttool import util
-
 
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 
-def check_server_path(server_path, test_env=False):
+def check_server_path(server_path: str, test_env=False):
     """Check if path on server exists otherwise ask user to create new.
 
     Arguments:
-        server_path {[type]} -- path on the server to check
-        test_env {[type]} -- if test_env is True then upload to a test path
+
+        server_path (str) path on the server to check
+        test_env (bool)   if True, upload to test path
     """
     test_server_path = os.environ['FONDERIE_VIRGILTEST']
 
@@ -68,12 +67,13 @@ def check_server_path(server_path, test_env=False):
     return server_path
 
 
-def upload_to_server(uploading_file, server_path):
+def upload_to_server(uploading_file: str, server_path: str):
     """Upload podcast file to server.
 
     Arguments:
-        uploading_file {str} -- path of the file to upload
-        server_path {[type]} -- path on the server where to upload the file
+
+        str uploading_file path of the file to upload
+        str server_path    path on the server where to upload the file
     """
     with ftplib.FTP(os.environ['FONDERIE_HOST'],
                     os.environ['FONDERIE_USER'],
@@ -81,7 +81,7 @@ def upload_to_server(uploading_file, server_path):
         ftp.cwd(server_path)
         with open(uploading_file, 'rb') as upload:
             LOGGER.debug('uploading file on server: %s', uploading_file)
-            # check if user is me. if yes then app will NOT upload to server
+            # if user is me then app will NOT upload to server
             if not util.DEV_MODE:
                 file_name = os.path.basename(uploading_file)
                 status = ftp.storbinary(f'STOR {file_name}', upload)
@@ -98,9 +98,9 @@ class PodcastFile:
     """Construct method for the PodcastFile class.
 
         Arguments:
+
             raw_podcast {string} -- full path like string of the podcast file.
     """
-
     _html_page = {
         "archive_name": "",
         "registration_date": "",
@@ -178,6 +178,7 @@ class PodcastFile:
                 rframe = wave_file.getframerate()
         except Exception as error:
             LOGGER.critical('%s - probably not a wave file!', error)
+            # TODO: need to show the message to user
             sys.exit()
 
         # amount in seconds
@@ -194,15 +195,17 @@ class PodcastFile:
         has a valid podcast structure.
         """
         valid_file = regex.match(r'''
-                    [A-Z]+(\d+)?_   # course name
-                    \d{8}_          # registration date
-                    [A-Z]_          # teacher initial letter
-                    [A-Za-z]+_      # teacher surname
-                    Lezione_\d_     # lesson number
-                    parte_\d\.wav   # part number
+                    [A-Z]+(\d+)?_        # course name
+                    \d{8}_               # registration date
+                    [A-Z]_               # teacher initial letter
+                    [A-Za-z]+_           # teacher surname
+                    Lezione_\d{1,2}_     # lesson number
+                    parte_\d{1,2}\.wav   # part number
                     ''', filename, regex.I | regex.X)
         if not valid_file:
-            LOGGER.info("Sembra un file invalido? %s", filename)
+            LOGGER.critical(
+                "La nomenclatura del file sembra invalida %s", filename)
+            # TODO: need to show the message to user
             sys.exit()
 
     @property
@@ -281,6 +284,7 @@ class PodcastFile:
     def course_path(self):
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
+        # TODO: might need to use os.path.join
         return os.environ['FONDERIE_PODCAST'] + self._course_path
 
     @property
@@ -375,6 +379,7 @@ class PodcastFile:
         new_name = f'{upload_name}_{secret_token}.mp3'
         LOGGER.debug('uploading name: %s for %s', new_name, self.name)
 
+        # TODO: update to https
         server_filepath = f"http://{self.course_path}/{new_name}"
         LOGGER.debug("server file path: %s", server_filepath)
 
@@ -436,7 +441,8 @@ class PodcastFile:
         Once the mp3 are merged, this directory should be delete.
 
         Returns:
-            {str} - - path like string of the tmp folder absolute path.
+
+            {str} - path like string of the tmp folder absolute path.
 
         """
         tmp_dir_path = f'{self.directory}/.tmp_{self.name}'
@@ -454,6 +460,7 @@ class PodcastFile:
         """Generate final file to be uploaded to the server.
 
         Keyword Arguments:
+
             bitrate {str} - - specify bitrate(default: {'64k'})
             sample_rate {str} - - specify sample rate(default: {'22050'})
             num_cuts {str} - - how many cuts in audio(default: {None})
@@ -586,7 +593,7 @@ def generate_html(html_data, test_env=False):
 
                 with tag('object', id="audioplayer1",
                          width="290", height="24",
-                         data="http://www.fonderiesonore.it/plugins/content/1pixelout/player.swf",
+                         data=os.environ['FONDERIE_AUDIO_PLUGIN'],
                          type="application/x-shockwave-flash"):
                     doc.stag('param', name="FlashVars",
                              value=f"playerID=1&soundFile={part_info['link']}")

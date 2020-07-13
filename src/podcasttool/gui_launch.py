@@ -104,7 +104,7 @@ class MainPage(tk.Tk):
         _page_dev = ttk.Frame(window_main, width=1000, height=600)
         _page_dev.grid(column=0, row=0)
         _page_dev.grid_propagate(False)
-        window_main.add(_page_dev, text='Dev')
+        window_main.add(_page_dev, text='Extra')
 
         CatalogFrame(_page_catalog).grid(column=0, row=0)
 
@@ -120,8 +120,10 @@ class MainPage(tk.Tk):
         self.main_class = MainFrame(_page_main, width=670, height=360)
         self.main_class.place(x=5, y=210)
 
+        # XXX: debug only
+        # window_main.select(_page_dev)
+        #
         window_main.pack()
-
         self.podcast_obj = None
 
         self._conferm_btn = ttk.Button(_page_main, text='Conferma e procedi',
