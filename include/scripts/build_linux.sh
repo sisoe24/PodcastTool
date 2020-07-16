@@ -4,7 +4,7 @@
 # https://pyinstaller.readthedocs.io/en/stable/usage.html
 
 pyinstaller src/main.py \
-    --distpath $HOME \
+    --distpath "$HOME" \
     --icon include/img/app.png \
     --noconfirm \
     -n PodcastTool \
