@@ -59,7 +59,7 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('PodcastTool 2.2')
+        self.title('PodcastTool 2.2.1')
 
         app_x = 685
         app_y = 600
@@ -120,9 +120,8 @@ class MainPage(tk.Tk):
         self.main_class = MainFrame(_page_main, width=670, height=360)
         self.main_class.place(x=5, y=210)
 
-        # XXX: debug only
-        # window_main.select(_page_dev)
-        #
+        # window_main.select(_page_dev) # XXX: debug only
+
         window_main.pack()
         self.podcast_obj = None
 
