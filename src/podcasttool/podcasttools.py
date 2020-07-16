@@ -284,8 +284,7 @@ class PodcastFile:
     def course_path(self):
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
-        # TODO: might need to use os.path.join
-        return os.environ['FONDERIE_PODCAST'] + self._course_path
+        return os.path.join(os.environ['FONDERIE_PODCAST'], self._course_path)
 
     @property
     def registration_date(self):
@@ -379,8 +378,7 @@ class PodcastFile:
         new_name = f'{upload_name}_{secret_token}.mp3'
         LOGGER.debug('uploading name: %s for %s', new_name, self.name)
 
-        # TODO: update to https
-        server_filepath = f"http://{self.course_path}/{new_name}"
+        server_filepath = os.path.join(self.course_path, new_name)
         LOGGER.debug("server file path: %s", server_filepath)
 
         self.add_html_parts(
