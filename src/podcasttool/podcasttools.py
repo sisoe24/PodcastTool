@@ -541,6 +541,9 @@ class PodcastFile:
         def _mp3_path() -> str:
             """Get the mp3 folder path."""
             mp3_path = pathlib.Path(self.abspath).parent / 'mp3'
+            if not mp3_path.exists():
+                LOGGER.debug("mp3 folder not found...creating one.")
+                os.mkdir(mp3_path)
             LOGGER.debug("mp3 folder path: %s", mp3_path)
             return mp3_path
 
