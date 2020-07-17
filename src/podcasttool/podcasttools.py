@@ -41,6 +41,9 @@ def check_server_path(server_path: str, test_env=False):
     test_server_path = os.environ['FONDERIE_VIRGILTEST']
 
     server_path = server_path if not test_env else test_server_path
+
+    # when checking path with ftp, https will cause error so it has be deleted
+    server_path = server_path.replace("https://", "")
     LOGGER.debug("server path: %s", server_path)
 
     with ftplib.FTP(os.environ['FONDERIE_HOST'],
