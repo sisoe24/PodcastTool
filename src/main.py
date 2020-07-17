@@ -51,7 +51,6 @@ def multi_threading(path, test_env=False):
             executor.submit(podcast.generate_podcast)
 
     check_path = list(podcast.files_to_upload())[0]["server_path"]
-    # print(f'==> DEBUG: check_path: {check_path}')
     server_path = check_server_path(check_path, test_env)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
