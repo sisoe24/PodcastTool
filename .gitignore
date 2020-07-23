@@ -49,23 +49,17 @@ MANIFEST
 .venv*/
 
 # my folder
-# audio_library/
-archive/
-src/.prototype
-.vscode/settings.json
+.vscode/*
 other/
+scripts/
+src/.prototype
+tests/SECD*
+patch*/*
 
 # my files
 .DS_Store
-podcast.code*
-tests/SECD*
-TODO.txt
 .env
-fonderie_env.zsh
 
-src/gui/.server_credentials.json
-
-# only temporary
-src/podcasttool/create_audio_library.py
-send_separately
-
+TODO.md
+*.code-workspace
+*.spec
