@@ -54,6 +54,7 @@ other/
 scripts/
 src/.prototype
 tests/SECD*
+patch*/*
 
 # my files
 .DS_Store
