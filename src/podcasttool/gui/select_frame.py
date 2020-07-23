@@ -74,7 +74,7 @@ def _extract_lesson(podcast_file):
     extract_lesson = "_".join(file_path.name.split('_')[4:6])
     try:
         lesson_num = regex.search(
-            r'(?<=[L|l]\w+_)(\d)', extract_lesson).group()
+            r'(?<=[L|l]\w+_)(\d{1,2})', extract_lesson).group()
 
     except AttributeError:
         LOGGER.critical('no lesson match found: %s',
