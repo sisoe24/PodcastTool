@@ -70,7 +70,7 @@ class MainPage(tk.Tk):
 
         self._test_upload = tk.BooleanVar(False)
         if util.is_dev_mode():
-            title += '- Developer mode'.upper()
+            title += ' - Developer mode'.upper()
             _test_check = ttk.Checkbutton(window_main, variable=self._test_upload,
                                           text='Upload to server virgil_test')
             _test_check.place(x=10, y=60)
@@ -174,9 +174,8 @@ class MainPage(tk.Tk):
 
             self.update()
 
-        print("➡ podcast :", list(podcast.files_to_upload()))
         display_msg("Fatto!\n\nCaricamento podcast su server...")
-        print('diao')
+
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
