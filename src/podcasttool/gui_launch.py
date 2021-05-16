@@ -15,11 +15,10 @@ from tkinter import (
 from podcasttool.gui import (
     SelectPodcast,
     HtmlFrame,
-    AudioExport,
     AudioIntro,
     CatalogFrame,
     MainFrame,
-    DevFrame,
+    MenuBar
 )
 
 from podcasttool import (
@@ -39,11 +38,10 @@ LOGGER = logging.getLogger('podcast_tool.gui')
 def _set_directory():
     """Set which folder to open.
 
-    If user is me then open in test files directory.
-
     Return:
         {str} - path to which directory to open first at gui start.
     """
+    # If user is me then open in test files directory.
     if util.DEV_MODE:
         initial_dir = os.path.join(os.environ['PODCAST_DIR'], 'ELM/MAE6')
     else:
@@ -59,7 +57,15 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('PodcastTool 2.2.1')
+        title = 'PodcastTool 2.2.1'
+
+        if util.DEV_MODE:
+            title += '- Developer mode'.upper()
+
+        self.title(title)
+
+        self.menubar = MenuBar()
+        self.config(menu=self.menubar)
 
         app_x = 685
         app_y = 600
@@ -68,11 +74,6 @@ class MainPage(tk.Tk):
         position_height = self.winfo_screenheight() // 2 - (app_y // 2)
         # position_width = self.winfo_screenwidth() // 2 - (app_y // 2)
         self.geometry(f'{app_x}x{app_y}-{100}+{position_height}')
-
-        # >>>> on linux I have decided to put the app on the top right corner
-        # because it needs the terminal to be open at the same time:
-        # position_width = self.winfo_screenwidth()
-        # self.geometry(f'{app_x}x{app_y}-{position_width}+{0}')
 
         self.resizable(width=False, height=False)
 
@@ -101,26 +102,13 @@ class MainPage(tk.Tk):
         _page_catalog.grid_propagate(False)
         window_main.add(_page_catalog, text='Catalogo Nomi')
 
-        _page_dev = ttk.Frame(window_main, width=1000, height=600)
-        _page_dev.grid(column=0, row=0)
-        _page_dev.grid_propagate(False)
-        window_main.add(_page_dev, text='Extra')
-
         CatalogFrame(_page_catalog).grid(column=0, row=0)
-
-        self.dev = DevFrame(_page_dev)
-        self.dev.grid(column=0, row=0)
-
-        self.audio = AudioExport(_page_audio)
-        self.audio.grid(column=1, row=0, sticky=tk.N, padx=5)
 
         self.html = HtmlFrame(_page_main)
         self.html.place(x=390, y=0)
 
         self.main_class = MainFrame(_page_main, width=670, height=360)
         self.main_class.place(x=5, y=210)
-
-        # window_main.select(_page_dev) # XXX: debug only
 
         window_main.pack()
         self.podcast_obj = None
@@ -146,8 +134,8 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
+
         open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        # open_files = (os.environ["TEST_FILE"],)
 
         LOGGER.debug("selected files: %s", open_files)
 
@@ -164,9 +152,6 @@ class MainPage(tk.Tk):
 
         display_msg = self.main_class.log_frame.display_msg
 
-        if util.DEV_MODE:
-            display_msg("dev mode ON")
-
         display_msg("Creazione podcast in corso...")
 
         with ThreadPoolExecutor() as executor:
@@ -178,14 +163,14 @@ class MainPage(tk.Tk):
                 file_path = os.path.join(self.podcast_obj.path, file)
                 f1 = executor.submit(PodcastFile, file_path)
                 podcast = f1.result()
-                executor.submit(podcast.generate_podcast,)
+                executor.submit(podcast.generate_podcast)
 
             self.update()
 
         display_msg("Fatto!\n\nCaricamento podcast su server...")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
-        server_path = check_server_path(check_path, self.dev.test_env)
+        server_path = check_server_path(check_path, self.menubar.test_env())
 
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
@@ -196,7 +181,7 @@ class MainPage(tk.Tk):
         self.update()
         display_msg("Fatto!\n\nPagina html generata")
 
-        generate_html(podcast.html_page, self.dev.test_env)
+        generate_html(podcast.html_page, self.menubar.test_env())
 
         self._conferm_btn["state"] = 'disable'
 
@@ -217,7 +202,7 @@ class MainPage(tk.Tk):
                     new_name = os.path.join(self.podcast_obj.path, new)
                     os.rename(old_name, new_name)
 
-    @staticmethod
+    @ staticmethod
     def _labels_style():
         """Create style configuration for labels."""
         default_size = 17
