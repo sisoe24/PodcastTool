@@ -7,7 +7,7 @@ import pickle
 import pathlib
 import logging
 import datetime
-import subprocess
+import traceback
 
 from tkinter import messagebox
 
@@ -88,8 +88,14 @@ def generate_audio(text, path, filename="", lang='it'):
         filename = filename.replace(" ", "_")
 
     path = get_path(path)
-    speak = gtts.gTTS(text=name, lang=lang)
-    speak.save(f'{path}/{filename}.mp3')
+    try:
+        speak = gtts.gTTS(text=name, lang=lang)
+        speak.save(f'{path}/{filename}.mp3')
+    except Exception as error:
+        msg = 'gtts module had some problems creating audio'
+        LOGGER.critical('%s: %s', msg, traceback.format_exc())
+        messagebox.showerror(msg)
+        sys.exit()
 
 
 def get_path(directory: str) -> str:
