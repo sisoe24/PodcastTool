@@ -51,7 +51,7 @@ class FtpServer:
         return self._ftp
 
     def __exit__(self,  exc_type, exc_val, exc_tb):
-        print('closing ftp')
+        LOGGER.debug('Closing Ftp')
         self._ftp.close()
 
 
@@ -96,7 +96,7 @@ def check_server_path(server_path: str, test_env=False):
     return server_path
 
 
-def upload_to_server(uploading_file: str, server_path: str):
+def upload_to_server(uploading_file: str, server_path: str, test_env=False):
     """Upload podcast file to server.
 
     Arguments:
@@ -104,6 +104,7 @@ def upload_to_server(uploading_file: str, server_path: str):
         str uploading_file path of the file to upload
         str server_path    path on the server where to upload the file
     """
+
     with FtpServer(server_path) as ftp:
 
         ftp.cwd(server_path)
@@ -112,7 +113,7 @@ def upload_to_server(uploading_file: str, server_path: str):
             LOGGER.debug('uploading file on server: %s', uploading_file)
 
             # if user is me then app will NOT upload to server
-            if util.DEV_MODE:
+            if util.is_dev_mode(bypass=test_env):
                 LOGGER.info('FAKE UPLOAD: %s in %s', uploading_file, ftp.pwd())
                 return
 
