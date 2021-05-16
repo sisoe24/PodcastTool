@@ -13,7 +13,6 @@ flake8 = "*"
 rope = "*"
 pylint = "*"
 pydocstyle = "*"
-pipenv-to-requirements = "*"
 v = {editable = true,version = "*"}
 
 [packages]
@@ -22,8 +21,6 @@ yattag = "*"
 regex = "*"
 pyperclip = "*"
 gtts = "*"
-tinytag = "*"
-python-dotenv = "*"
 py2app = "*"
 pyinstaller = "*"
 
