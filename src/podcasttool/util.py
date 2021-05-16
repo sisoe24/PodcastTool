@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import time
+import pickle
 import pathlib
 import logging
 import datetime
@@ -10,21 +11,19 @@ import subprocess
 
 from tkinter import messagebox
 
-import regex
 import gtts
-from dotenv import load_dotenv
+import regex
 
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
-ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
-try:
-    if not os.path.exists(ENV_FILE):
-        raise FileNotFoundError("credentials missing! contanct admin")
-except FileNotFoundError as error:
-    messagebox.showerror(message=error)
-    sys.exit()
-else:
-    load_dotenv(ENV_FILE, verbose=True)
+CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
+os.makedirs(CONFIG_PATH, exist_ok=True)
+CONFIG_FILE = os.path.join(CONFIG_PATH, '.config')
+
+
+def credentials():
+    with open(CONFIG_FILE, 'rb') as file:
+        return pickle.load(file)
 
 
 def profile(func):
