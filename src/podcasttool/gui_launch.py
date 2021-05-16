@@ -42,7 +42,7 @@ def _set_directory():
         {str} - path to which directory to open first at gui start.
     """
     # If user is me then open in test files directory.
-    if util.DEV_MODE:
+    if util.is_dev_mode():
         initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP/ALP0')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
@@ -57,10 +57,22 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        window_main = ttk.Notebook(self, width=1000, height=600)
+
+        _page_main = ttk.Frame(window_main, width=1000, height=600)
+        _page_main.grid(column=0, row=0)
+        _page_main.grid_propagate(False)
+        window_main.add(_page_main, text='Main')
+
         title = 'PodcastTool 2.3'
 
-        if util.DEV_MODE:
+        self._test_upload = tk.BooleanVar(False)
+        if util.is_dev_mode():
             title += '- Developer mode'.upper()
+            _test_check = ttk.Checkbutton(window_main, variable=self._test_upload,
+                                          text='Upload to server virgil_test')
+            _test_check.place(x=10, y=60)
 
         self.title(title)
 
@@ -76,14 +88,7 @@ class MainPage(tk.Tk):
 
         self.resizable(width=False, height=False)
 
-        window_main = ttk.Notebook(self, width=1000, height=600)
         # window_main.grid_propagate(False)
-
-        # main page frame
-        _page_main = ttk.Frame(window_main, width=1000, height=600)
-        _page_main.grid(column=0, row=0)
-        _page_main.grid_propagate(False)
-        window_main.add(_page_main, text='Main')
 
         self.clock = ttk.Label(_page_main)
         self.clock.place(x=5, y=0)
@@ -153,6 +158,8 @@ class MainPage(tk.Tk):
 
         display_msg("Creazione podcast in corso...")
 
+        test_upload = self._test_upload.get()
+
         with ThreadPoolExecutor() as executor:
             for file in self.main_class.proccesed_files():
                 self.update()
@@ -169,18 +176,19 @@ class MainPage(tk.Tk):
         display_msg("Fatto!\n\nCaricamento podcast su server...")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
-        server_path = check_server_path(check_path, self.menubar.test_env())
+        server_path = check_server_path(check_path, test_upload)
 
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
                 self.update()
                 display_msg(os.path.basename(file['path']))
-                executor.submit(upload_to_server, file["path"], server_path)
+                executor.submit(upload_to_server,
+                                file["path"], server_path, test_upload)
 
         self.update()
         display_msg("Fatto!\n\nPagina html generata")
 
-        generate_html(podcast.html_page, self.menubar.test_env())
+        generate_html(podcast.html_page, test_upload)
 
         self._conferm_btn["state"] = 'disable'
 

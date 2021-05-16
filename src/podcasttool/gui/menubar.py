@@ -58,18 +58,6 @@ class OptionsMenu(tk.Menu):
                 title='Conferma', message='Archivio cancellato!')
 
 
-class DevMenu(tk.Menu):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self._test_env = tk.BooleanVar()
-        self._test_env.set(False)
-
-        self.add_checkbutton(label='Test Upload',
-                             onvalue=1, offvalue=0,
-                             variable=self._test_env)
-
-
 class CredentialsEntry(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -206,16 +194,11 @@ class MenuBar(tk.Menu):
 
         self.audio = AudioMenu()
         self.options = OptionsMenu()
-        self.dev = DevMenu()
         self._help = HelpMenu()
 
         self.add_cascade(label='Audio', menu=self.audio)
         self.add_cascade(label='Options', menu=self.options)
-        self.add_cascade(label='Developer', menu=self.dev)
         self.add_cascade(label='Help', menu=self._help)
-
-    def test_env(self):
-        return self.dev._test_env.get()
 
     def watermarks(self):
         return self.audio.watermarks_num.get()
