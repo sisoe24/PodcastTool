@@ -79,6 +79,7 @@ def generate_audio(text, path, filename="", lang='it'):
     Keyword Arguments:
         lang {str} - the language for the audio(default: 'it')
     """
+    # TODO: this might fail in the future so need to have a warning if it happens
     name = str(text).replace("_", " ")
 
     if not filename:
@@ -206,24 +207,21 @@ def convert_month_name():
             '10': 'Ottobre', '11': 'Novembre', '12': 'Dicembre'}
 
 
-def dev_mode(bypass=False):
+def is_dev_mode(bypass=False):
     """Check if user is me. if yes dont upload to server.
 
     If I need to test uploading to the server then I must supply a value
     to bypass.
 
     Argument:
-        bypass [bool] - if True, it nullifies the dev_mode - [default]: False
+        bypass [bool] - if True, it nullifies the is_dev_mode - [default]: False
     """
     if bypass:
-        ask = input("You have bypassed dev_mode! are you sure? y/n\n> ")
-        if ask == "y":
-            return None
+        return False
     if os.getenv('USER').startswith('virgil'):
         return True
-    return None
+    return False
 
 
-DEV_MODE = dev_mode(bypass=False)
 if __name__ == '__main__':
     pass
