@@ -243,7 +243,7 @@ def is_dev_mode(bypass=False):
     """
     if bypass:
         return False
-    if os.getenv('USER').startswith('virgil'):
+    if os.getenv('USER') in ['virgil', 'virgilsisoe', 'ubuntutest']:
         return True
     return False
 
