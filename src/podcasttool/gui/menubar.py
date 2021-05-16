@@ -61,7 +61,7 @@ class OptionsMenu(tk.Menu):
 class CredentialsEntry(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('Credentials')
+        self.title('Update Credentials')
 
         h = self.winfo_screenheight() // 2
         w = self.winfo_screenwidth() // 2
@@ -92,11 +92,12 @@ class CredentialsEntry(tk.Tk):
         self.save_credentials.grid(row=4, column=1, columnspan=2,
                                    sticky=tk.E, pady=5)
 
+        self.credentials = util.Credentials()
         self.load_credentials()
 
     def _save(self):
         data = {}
-        with open(util.CONFIG_FILE, 'wb') as config_file:
+        with open(self.credentials.file, 'wb') as config_file:
             data['host'] = self.host_entry.get()
             data['user'] = self.user_entry.get()
             data['pass'] = self.pass_entry.get()
@@ -113,12 +114,12 @@ class CredentialsEntry(tk.Tk):
 
             pickle.dump(data, config_file)
 
-        # self.destroy()
+        self.destroy()
         # self.close()
 
     def load_credentials(self):
-        if os.path.exists(util.CONFIG_FILE) and os.path.getsize(util.CONFIG_FILE) != 0:
-            with open(util.CONFIG_FILE, 'rb') as file:
+        if self.credentials.exists() and not self.credentials.is_empty():
+            with open(self.credentials.file, 'rb') as file:
                 data = pickle.load(file)
                 self.host_entry.insert(tk.END, data['host'])
                 self.user_entry.insert(tk.END, data['user'])
@@ -133,7 +134,7 @@ class HelpMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_command(label='Change credentials', command=CredentialsEntry)
+        self.add_command(label='Update credentials', command=CredentialsEntry)
 
         self.add_separator()
 

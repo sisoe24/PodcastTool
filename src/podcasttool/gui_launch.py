@@ -1,5 +1,6 @@
 """GUI interface of PodcastTool."""
 import os
+import sys
 import logging
 import pathlib
 from datetime import datetime
@@ -173,8 +174,9 @@ class MainPage(tk.Tk):
 
             self.update()
 
+        print("➡ podcast :", list(podcast.files_to_upload()))
         display_msg("Fatto!\n\nCaricamento podcast su server...")
-
+        print('diao')
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
@@ -227,16 +229,20 @@ class MainPage(tk.Tk):
 
 def run():
     """Run gui."""
+    credentials = util.Credentials()
+    if not credentials.exists() or credentials.is_empty():
+        app = CredentialsEntry()
+        app.mainloop()
+
+    if credentials.is_empty():
+        LOGGER.critical('Empty Credentials')
+        sys.exit('Exiting app! Empty Credentials')
+
     try:
         app = MainPage()
-
-        if not os.path.exists(util.CONFIG_FILE):
-            CredentialsEntry()
-            # messagebox.showerror('Error', 'Missing Credentials! Please Update')
-
         app.mainloop()
     except Exception as error:
-        LOGGER.critical(str(error), exc_info=True)
+        LOGGER.critical(str(error))
         open_log(msg="Errore app startup.\nControllare errors.log?")
 
 

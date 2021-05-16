@@ -37,9 +37,9 @@ class FtpServer:
 
     def __enter__(self):
         try:
-            self._ftp = ftplib.FTP(host=util.credentials()['host'],
-                                   user=util.credentials()['user'],
-                                   passwd=util.credentials()['pass'])
+            self._ftp = ftplib.FTP(host=util.Credentials().data['host'],
+                                   user=util.Credentials().data['user'],
+                                   passwd=util.Credentials().data['pass'])
         except Exception as error:
             messagebox.showerror(title='PodcastTool',
                                  message='Error. Credentials probably wrong')
@@ -63,7 +63,7 @@ def check_server_path(server_path: str, test_env=False):
         server_path (str) path on the server to check
         test_env (bool)   if True, upload to test path
     """
-    test_server_path = util.credentials()['test_url']
+    test_server_path = util.Credentials().data['test_url']
 
     server_path = server_path if not test_env else test_server_path
 
@@ -308,7 +308,7 @@ class PodcastFile:
     def course_path(self):
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
-        return os.path.join(util.credentials()['podcast_url'], self._course_path)
+        return os.path.join(util.Credentials().data['podcast_url'], self._course_path)
 
     @property
     def registration_date(self):
@@ -621,7 +621,7 @@ def generate_html(html_data, test_env=False):
 
                 with tag('object', id="audioplayer1",
                          width="290", height="24",
-                         data=util.credentials()['plugin_url'],
+                         data=util.Credentials().data['plugin_url'],
                          type="application/x-shockwave-flash"):
                     doc.stag('param', name="FlashVars",
                              value=f"playerID=1&soundFile={part_info['link']}")

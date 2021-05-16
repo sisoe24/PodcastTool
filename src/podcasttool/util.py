@@ -18,12 +18,32 @@ LOGGER = logging.getLogger('podcast_tool.utlity')
 
 CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
 os.makedirs(CONFIG_PATH, exist_ok=True)
-CONFIG_FILE = os.path.join(CONFIG_PATH, '.config')
 
 
-def credentials():
-    with open(CONFIG_FILE, 'rb') as file:
-        return pickle.load(file)
+class Credentials:
+    def __init__(self):
+        self._file = os.path.join(CONFIG_PATH, '.config')
+
+    @property
+    def file(self):
+        return self._file
+
+    @property
+    def data(self):
+        with open(self._file, 'rb') as file:
+            return pickle.load(file)
+
+    def is_empty(self):
+        values = [v for v in self.data.values() if v]
+        if len(values) != 8:
+            return True
+        return False
+
+    def get_size(self):
+        return os.path.getsize(self._file)
+
+    def exists(self):
+        return os.path.exists(self._file)
 
 
 def profile(func):
@@ -91,7 +111,7 @@ def generate_audio(text, path, filename="", lang='it'):
         speak = gtts.gTTS(text=name, lang=lang)
         speak.save(f'{path}/{filename}.mp3')
     except Exception as error:
-        msg = 'gtts module had some problems creating audio'
+        msg = 'gtts module had some problemis creating audio'
         LOGGER.critical('%s: %s', msg, traceback.format_exc())
         messagebox.showerror(title='PodcastTool', message=msg)
         sys.exit()
@@ -229,4 +249,4 @@ def is_dev_mode(bypass=False):
 
 
 if __name__ == '__main__':
-    pass
+    print(Credentials().is_empty())
