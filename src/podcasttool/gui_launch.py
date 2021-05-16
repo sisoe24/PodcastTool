@@ -18,7 +18,7 @@ from podcasttool.gui import (
     AudioIntro,
     CatalogFrame,
     MainFrame,
-    MenuBar
+    MenuBar, CredentialsEntry
 )
 
 from podcasttool import (
@@ -43,7 +43,7 @@ def _set_directory():
     """
     # If user is me then open in test files directory.
     if util.DEV_MODE:
-        initial_dir = os.path.join(os.environ['PODCAST_DIR'], 'ELM/MAE6')
+        initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP/ALP0')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
@@ -221,6 +221,11 @@ def run():
     """Run gui."""
     try:
         app = MainPage()
+
+        if not os.path.exists(util.CONFIG_FILE):
+            CredentialsEntry()
+            # messagebox.showerror('Error', 'Missing Credentials! Please Update')
+
         app.mainloop()
     except Exception as error:
         LOGGER.critical(str(error), exc_info=True)
