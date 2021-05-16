@@ -220,7 +220,7 @@ def dev_mode(bypass=False):
         ask = input("You have bypassed dev_mode! are you sure? y/n\n> ")
         if ask == "y":
             return None
-    if "virgilsisoe" in str(pathlib.Path().home()):
+    if os.getenv('USER').startswith('virgil'):
         return True
     return None
 
