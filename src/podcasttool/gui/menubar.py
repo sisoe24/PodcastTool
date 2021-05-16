@@ -1,8 +1,10 @@
 import os
 import shutil
+import pickle
 
 import tkinter as tk
-from tkinter import (messagebox)
+
+from tkinter import (messagebox, ttk)
 
 from .html_frame import archive_files
 from podcasttool import util, open_link
@@ -68,14 +70,82 @@ class DevMenu(tk.Menu):
                              variable=self._test_env)
 
 
+class CredentialsEntry(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title('Credentials')
+
+        h = self.winfo_screenheight() // 2
+        w = self.winfo_screenwidth() // 2
+        self.geometry(f'300x150+{w}+{h}')
+        self.resizable(width=False, height=False)
+
+        self._main = ttk.Frame(self, width=300, height=150)
+        self._main.grid(column=0, row=0)
+        self._main.grid_propagate(False)
+
+        ttk.Label(self._main, text='Host').grid(row=0)
+        ttk.Label(self._main, text='User').grid(row=1)
+        ttk.Label(self._main, text='Password').grid(row=2)
+        ttk.Label(self._main, text='Website').grid(row=3)
+
+        self.host_entry = ttk.Entry(self._main, width=25)
+        self.user_entry = ttk.Entry(self._main, width=25)
+        self.pass_entry = ttk.Entry(self._main, width=25, show="*")
+        self.web_entry = ttk.Entry(self._main, width=25)
+
+        self.host_entry.grid(row=0, column=1)
+        self.user_entry.grid(row=1, column=1)
+        self.pass_entry.grid(row=2, column=1)
+        self.web_entry.grid(row=3, column=1)
+
+        self.save_credentials = ttk.Button(self._main, text='Save',
+                                           command=self._save)
+        self.save_credentials.grid(row=4, column=1, columnspan=2,
+                                   sticky=tk.E, pady=5)
+
+        self.load_credentials()
+
+    def _save(self):
+        data = {}
+        with open(util.CONFIG_FILE, 'wb') as config_file:
+            data['host'] = self.host_entry.get()
+            data['user'] = self.user_entry.get()
+            data['pass'] = self.pass_entry.get()
+            data['web'] = self.web_entry.get()
+
+            web = data['web']
+            if web.endswith('/'):
+                web = web[:-1]
+
+            data['elearning_url'] = f'{web}/elearning'
+            data['test_url'] = f'{web}/images/didattica/virgil_test'
+            data['podcast_url'] = f'{web}/images/didattica/PODCAST'
+            data['plugin_url'] = f'{web}/plugins/content/1pixelout/player.swf'
+
+            pickle.dump(data, config_file)
+
+        # self.destroy()
+        # self.close()
+
+    def load_credentials(self):
+        if os.path.exists(util.CONFIG_FILE) and os.path.getsize(util.CONFIG_FILE) != 0:
+            with open(util.CONFIG_FILE, 'rb') as file:
+                data = pickle.load(file)
+                self.host_entry.insert(tk.END, data['host'])
+                self.user_entry.insert(tk.END, data['user'])
+                self.pass_entry.insert(tk.END, data['pass'])
+                self.web_entry.insert(tk.END, data['web'])
+
+    def update_credentials(self):
+        pass
+
+
 class HelpMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_command(
-            label='Change credentials',
-            command=lambda: self.open_file('src/podcasttool', '.env')
-        )
+        self.add_command(label='Change credentials', command=CredentialsEntry)
 
         self.add_separator()
 
