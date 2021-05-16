@@ -57,7 +57,7 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        title = 'PodcastTool 2.2.1'
+        title = 'PodcastTool 2.3'
 
         if util.DEV_MODE:
             title += '- Developer mode'.upper()
@@ -72,7 +72,6 @@ class MainPage(tk.Tk):
 
         # - position window center screen - #
         position_height = self.winfo_screenheight() // 2 - (app_y // 2)
-        # position_width = self.winfo_screenwidth() // 2 - (app_y // 2)
         self.geometry(f'{app_x}x{app_y}-{100}+{position_height}')
 
         self.resizable(width=False, height=False)
