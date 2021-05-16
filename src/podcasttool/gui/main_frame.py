@@ -153,8 +153,8 @@ class MainFrame(tk.Frame):
     def _parse_lines(self):
         """Iterate over each file name and check for syntax errors if any."""
         for index, file in enumerate(self._get_lines, 1):
-            self.log_frame.create_label_frame(row=index + 1,
-                                              text=f'Linea {index}:')
+            self.log_frame.create_label_frame(row=index + 1)
+                                            #   text=f'Linea {index}:')
             self.tag_text(index)
             try:
                 self._check_course_errors(file, index)
