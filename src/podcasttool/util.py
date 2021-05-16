@@ -93,7 +93,7 @@ def generate_audio(text, path, filename="", lang='it'):
     except Exception as error:
         msg = 'gtts module had some problems creating audio'
         LOGGER.critical('%s: %s', msg, traceback.format_exc())
-        messagebox.showerror(msg)
+        messagebox.showerror(title='PodcastTool', message=msg)
         sys.exit()
 
 
