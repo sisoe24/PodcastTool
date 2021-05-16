@@ -456,15 +456,14 @@ class PodcastFile:
 
         return tmp_dir_path
 
-    def generate_podcast(self, bitrate='64k', sample_rate='22050',
-                         num_cuts=None):
+    def generate_podcast(self, bitrate='64k', sample_rate='22050', num_cuts='Auto'):
         """Generate final file to be uploaded to the server.
 
         Keyword Arguments:
 
             bitrate {str} - - specify bitrate(default: {'64k'})
             sample_rate {str} - - specify sample rate(default: {'22050'})
-            num_cuts {str} - - how many cuts in audio(default: {None})
+            num_cuts {str} - - how many cuts in audio(default: {Auto})
         """
         tmp_dir = self._mkdir_tmp()
         self.set_audio_intro()
@@ -474,8 +473,12 @@ class PodcastFile:
             LOGGER.debug("watermark audio: %s", watermark)
 
             podcast = pydub.AudioSegment.from_wav(self.abspath)
-            cuts = (util.calculate_cuts(len(podcast))
-                    if not num_cuts else num_cuts)
+
+            if num_cuts == 'Auto':
+                cuts = util.calculate_cuts(len(podcast))
+            else:
+                cuts = int(num_cuts)
+
             LOGGER.debug("splitting podcast in: [%s] parts", cuts)
 
             cut_each = math.ceil(len(podcast) / cuts)
