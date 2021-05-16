@@ -79,7 +79,6 @@ def generate_audio(text, path, filename="", lang='it'):
     Keyword Arguments:
         lang {str} - the language for the audio(default: 'it')
     """
-    # TODO: this might fail in the future so need to have a warning if it happens
     name = str(text).replace("_", " ")
 
     if not filename:
