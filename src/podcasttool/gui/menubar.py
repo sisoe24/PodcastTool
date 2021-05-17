@@ -31,15 +31,14 @@ class OptionsMenu(tk.Menu):
 
     @staticmethod
     def restore_json():
-        original_json = os.path.join(
-            util.get_path("docs"), ".catalog_names.json")
 
         user = messagebox.askyesno(
             message="Newly created audio files will be deleted. Are you sure?")
         if user:
-            new_json = util.catalog_file()
-            shutil.copy(original_json, new_json)
-            new_audio_dir = util.get_path("include/audio/new_audio")
+            original_json = os.path.join(util.get_path('src/podcasttool'),
+                                         "catalog_names.json")
+            shutil.copy(original_json, util.catalog_file())
+            new_audio_dir = util.get_path(util.USER_AUDIO)
 
             for audio in new_audio_dir.glob('*mp3'):
                 os.remove(audio)
