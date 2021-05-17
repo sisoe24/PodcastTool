@@ -23,7 +23,7 @@ os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
 os.makedirs(USER_AUDIO, exist_ok=True)
 
 
-class Credentials:
+class UserConfig:
     def __init__(self):
         self._file = os.path.join(SYS_CONFIG_PATH, '.config')
 

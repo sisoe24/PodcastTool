@@ -91,7 +91,7 @@ class CredentialsEntry(tk.Tk):
         self.save_credentials.grid(row=4, column=1, columnspan=2,
                                    sticky=tk.E, pady=5)
 
-        self.credentials = util.Credentials()
+        self.credentials = util.UserConfig()
         self.load_credentials()
 
     def _save(self):

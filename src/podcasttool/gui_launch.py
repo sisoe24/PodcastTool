@@ -227,7 +227,7 @@ class MainPage(tk.Tk):
 
 def run():
     """Run gui."""
-    credentials = util.Credentials()
+    credentials = util.UserConfig()
     if not credentials.exists() or credentials.is_empty():
         app = CredentialsEntry()
         app.mainloop()
