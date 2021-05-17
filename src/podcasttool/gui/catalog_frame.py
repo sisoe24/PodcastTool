@@ -3,6 +3,7 @@
 From here you can modify the name catalog by adding and deleting other names.
 The module will create the audio files for the newly created names.
 """
+import os
 import json
 
 import tkinter as tk
@@ -164,10 +165,10 @@ class CatalogFrame(tk.Frame):
         try:
             selected_item = self._tree_list.selection()[0]
         except IndexError:
-            messagebox.showinfo(title="Cancella",
+            messagebox.showinfo(title="PodcastTool",
                                 message="Nessun nome selezionato")
             return
-        confirm = messagebox.askyesno(title="Cancella selezione",
+        confirm = messagebox.askyesno(title="PodcastTool",
                                       message=(f"Cancellare: {selected_item}?")
                                       )
         if confirm:
@@ -177,7 +178,7 @@ class CatalogFrame(tk.Frame):
 
     def _delete_from_catalog(self, delete_key):
         """Delete key from class catalog list."""
-        # TODO: currently not deleting the file on disk?
+        # TODO: currently not deleting the audio files
         self._catalog_list[self.get_catalog].pop(delete_key)
 
     def _get_new_names(self):
@@ -245,14 +246,11 @@ class CatalogFrame(tk.Frame):
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
         modification = [_ for _ in self._updated_names.values() if _]
-        if modification:
-            with open(util.catalog_file(), "w") as json_file:
-                json.dump(self._catalog_list, json_file, indent=True)
-            self.update()
-            self._update_audio_library()
-            messagebox.showinfo(message="Modifiche salvate!")
-        else:
-            messagebox.showinfo(message="Nessuna modifica?")
+        with open(util.catalog_file(), "w") as json_file:
+            json.dump(self._catalog_list, json_file, indent=True)
+        self.update()
+        self._update_audio_library()
+        messagebox.showinfo(message="Modifiche salvate!")
 
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
@@ -262,5 +260,5 @@ class CatalogFrame(tk.Frame):
                 msg = f"Generating audio for: \n[{name}]"
                 ttk.Label(self._options_frame, text=msg).grid(
                     column=3, row=index)
-                path = util.get_path("include/audio/new_audio")
-                util.generate_audio(text=name, path=path, lang=lang)
+
+                util.generate_audio(text=name, path=util.USER_AUDIO, lang=lang)
