@@ -5,6 +5,7 @@ import json
 import time
 import pickle
 import pathlib
+import shutil
 import logging
 import datetime
 import traceback
@@ -16,13 +17,15 @@ import regex
 
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
-CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
-os.makedirs(CONFIG_PATH, exist_ok=True)
+SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
+USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
+os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
+os.makedirs(USER_AUDIO, exist_ok=True)
 
 
 class Credentials:
     def __init__(self):
-        self._file = os.path.join(CONFIG_PATH, '.config')
+        self._file = os.path.join(SYS_CONFIG_PATH, '.config')
 
     @property
     def file(self):
@@ -139,12 +142,15 @@ def audio_library():
         [dict] - - dictionary with key files names and values paths.
 
     """
-    library_path = get_path('include/audio')
     library_dict = {}
-    for dirpath, _, filenames in os.walk(library_path):
-        for filename in filenames:
-            if filename.endswith('mp3'):
-                library_dict[filename] = dirpath
+
+    parse_path = [USER_AUDIO, get_path('include/audio')]
+
+    for path in parse_path:
+        for dirpath, _, filenames in os.walk(path):
+            for filename in filenames:
+                if filename.endswith('mp3'):
+                    library_dict[filename] = dirpath
     return library_dict
 
 
@@ -192,7 +198,14 @@ def catalog_file():
 
     File should always be in the same directory where the src code is.
     """
-    return os.path.join(os.path.dirname(__file__), 'catalog_names.json')
+    file = 'catalog_names.json'
+    user_catalog = os.path.join(SYS_CONFIG_PATH, file)
+
+    if not os.path.exists(user_catalog):
+        default_catalog = os.path.join(os.path.dirname(__file__), file)
+        shutil.copy(default_catalog, user_catalog)
+
+    return user_catalog
 
 
 def catalog_names(value="") -> dict:
@@ -249,4 +262,5 @@ def is_dev_mode(bypass=False):
 
 
 if __name__ == '__main__':
-    print(Credentials().is_empty())
+
+    print(catalog_file())
