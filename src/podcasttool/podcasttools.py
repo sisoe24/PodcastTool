@@ -473,7 +473,7 @@ class PodcastFile:
         try:
             os.mkdir(tmp_dir_path)
         except FileExistsError:
-            LOGGER.warning('tmp directory exists already')
+            LOGGER.debug('tmp directory exists already')
 
         return tmp_dir_path
 
@@ -530,6 +530,9 @@ class PodcastFile:
                     dst_name = f'{pad_fill}_{item_name}'
 
                     shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
+                else:
+                    if item_name != 'podcast_segment.mp3':
+                        LOGGER.warning('missing audio file for: %s', item_name)
 
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
