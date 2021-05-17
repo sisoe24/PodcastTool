@@ -21,17 +21,26 @@ class CatalogFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
-        _catalog_frame = ttk.Frame(self, width=420, height=800)
+        _catalog_frame = ttk.Frame(self, width=400, height=800)
         _catalog_frame.grid(column=0, row=0, rowspan=2)
 
-        self._options_frame = ttk.Frame(self, width=300, height=500)
-        self._options_frame.grid(column=1, row=0, sticky=tk.N)
-        self._options_frame.grid_propagate(False)
+        self.vertical_scrollbar = ttk.Scrollbar(_catalog_frame)
 
         self._tree_list = ttk.Treeview(_catalog_frame, height=24,
+                                       selectmode='browse',
+                                       yscrollcommand=self.vertical_scrollbar.set,
                                        columns=("names_short", "names_long"))
         self._tree_list.grid(column=0, row=0, columnspan=3, rowspan=3)
         self._generate_tree_columns()
+
+        self.vertical_scrollbar.config(command=self._tree_list.yview)
+
+        self.vertical_scrollbar.grid(
+            column=3, row=0, rowspan=3,  sticky=tk.N + tk.S)
+
+        self._options_frame = ttk.Frame(self, width=300, height=500)
+        self._options_frame.grid(column=2, row=0, sticky=tk.N)
+        self._options_frame.grid_propagate(False)
 
         # load list frame
         _label_lista = ttk.LabelFrame(self._options_frame, text="Liste nomi")
@@ -162,6 +171,7 @@ class CatalogFrame(tk.Frame):
 
     def _delete_selected(self):
         """Delete selected element from treeview widget."""
+
         try:
             selected_item = self._tree_list.selection()[0]
         except IndexError:
