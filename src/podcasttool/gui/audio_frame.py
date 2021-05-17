@@ -133,14 +133,13 @@ class AudioIntro(tk.Frame):
         Arguments:
             audio_list {list/tuple} - iterable variable to generate new audio
         """
-        path = util.get_path("include/audio/new_audio")
 
         for index, name in enumerate(audio_list, 10):
 
             msg = f"Generating audio for: {name}"
             ttk.Label(self._audio_frame, text=msg).grid(column=0, row=index)
             self.update()
-            util.generate_audio(text=name, path=path)
+            util.generate_audio(text=name, path=util.USER_AUDIO)
 
     def new_intro(self):
         """Check if audio intro was modified."""
@@ -176,7 +175,7 @@ class AudioIntro(tk.Frame):
         """Save modifications in catalog json file."""
         with open(util.catalog_file(), "w") as json_file:
             json.dump(self.audio_catalog, json_file, indent=True)
-        messagebox.showinfo(title="Done", message="Done!", icon="info")
+        messagebox.showinfo(title="PodcastTool", message="Done!", icon="info")
 
     @staticmethod
     def const_vars():
