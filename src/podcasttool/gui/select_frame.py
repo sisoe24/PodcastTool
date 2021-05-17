@@ -5,9 +5,8 @@ GUI can select or or more file at once. If selection is only 1 file, then its
 going to check for other podcast in the same directory comparing the file
 modification date.
 
-# TODO: should update this could do better
-# It also check whetever the folder from where the file comes
-# is correct since it uses that folder name to find the server path.
+It also check whetever the folder from where the file comes
+is correct since it uses that folder name to find the server path.
 
 The class also returns a dictionary with the date from the file that is used
 in the suggestion section of the gui when the date written by user is wrong.
