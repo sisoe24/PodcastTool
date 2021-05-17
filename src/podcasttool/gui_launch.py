@@ -94,20 +94,19 @@ class MainPage(tk.Tk):
         self.clock = ttk.Label(_page_main)
         self.clock.place(x=5, y=0)
 
-        # audio page frame
-        _page_audio = ttk.Frame(window_main, width=1000, height=600)
-        _page_audio.grid(column=0, row=0)
-        _page_audio.grid_propagate(False)
-        window_main.add(_page_audio, text='Audio options')
-        AudioIntro(_page_audio).grid(column=0, row=0)
-
         # catalogo page frame
         _page_catalog = ttk.Frame(window_main, width=1000, height=600)
         _page_catalog.grid(column=0, row=0)
         _page_catalog.grid_propagate(False)
         window_main.add(_page_catalog, text='Catalogo Nomi')
-
         CatalogFrame(_page_catalog).grid(column=0, row=0)
+
+        # audio page frame
+        _page_audio = ttk.Frame(window_main, width=1000, height=600)
+        _page_audio.grid(column=0, row=0)
+        _page_audio.grid_propagate(False)
+        window_main.add(_page_audio, text='Audio')
+        AudioIntro(_page_audio).grid(column=0, row=0)
 
         self.html = HtmlFrame(_page_main)
         self.html.place(x=390, y=0)
