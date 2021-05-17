@@ -3,28 +3,50 @@ import os
 import sys
 import json
 import time
+import pickle
 import pathlib
+import shutil
 import logging
 import datetime
-import subprocess
+import traceback
 
 from tkinter import messagebox
 
-import regex
 import gtts
-from dotenv import load_dotenv
+import regex
 
 LOGGER = logging.getLogger('podcast_tool.utlity')
 
-ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
-try:
-    if not os.path.exists(ENV_FILE):
-        raise FileNotFoundError("credentials missing! contanct admin")
-except FileNotFoundError as error:
-    messagebox.showerror(message=error)
-    sys.exit()
-else:
-    load_dotenv(ENV_FILE, verbose=True)
+SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
+USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
+os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
+os.makedirs(USER_AUDIO, exist_ok=True)
+
+
+class Credentials:
+    def __init__(self):
+        self._file = os.path.join(SYS_CONFIG_PATH, '.config')
+
+    @property
+    def file(self):
+        return self._file
+
+    @property
+    def data(self):
+        with open(self._file, 'rb') as file:
+            return pickle.load(file)
+
+    def is_empty(self):
+        values = [v for v in self.data.values() if v]
+        if len(values) != 8:
+            return True
+        return False
+
+    def get_size(self):
+        return os.path.getsize(self._file)
+
+    def exists(self):
+        return os.path.exists(self._file)
 
 
 def profile(func):
@@ -88,8 +110,14 @@ def generate_audio(text, path, filename="", lang='it'):
         filename = filename.replace(" ", "_")
 
     path = get_path(path)
-    speak = gtts.gTTS(text=name, lang=lang)
-    speak.save(f'{path}/{filename}.mp3')
+    try:
+        speak = gtts.gTTS(text=name, lang=lang)
+        speak.save(f'{path}/{filename}.mp3')
+    except Exception as error:
+        msg = 'gtts module had some problemis creating audio'
+        LOGGER.critical('%s: %s', msg, traceback.format_exc())
+        messagebox.showerror(title='PodcastTool', message=msg)
+        sys.exit()
 
 
 def get_path(directory: str) -> str:
@@ -114,12 +142,15 @@ def audio_library():
         [dict] - - dictionary with key files names and values paths.
 
     """
-    library_path = get_path('include/audio')
     library_dict = {}
-    for dirpath, _, filenames in os.walk(library_path):
-        for filename in filenames:
-            if filename.endswith('mp3'):
-                library_dict[filename] = dirpath
+
+    parse_path = [USER_AUDIO, get_path('include/audio')]
+
+    for path in parse_path:
+        for dirpath, _, filenames in os.walk(path):
+            for filename in filenames:
+                if filename.endswith('mp3'):
+                    library_dict[filename] = dirpath
     return library_dict
 
 
@@ -167,7 +198,14 @@ def catalog_file():
 
     File should always be in the same directory where the src code is.
     """
-    return os.path.join(os.path.dirname(__file__), 'catalog_names.json')
+    file = 'catalog_names.json'
+    user_catalog = os.path.join(SYS_CONFIG_PATH, file)
+
+    if not os.path.exists(user_catalog):
+        default_catalog = os.path.join(os.path.dirname(__file__), file)
+        shutil.copy(default_catalog, user_catalog)
+
+    return user_catalog
 
 
 def catalog_names(value="") -> dict:
@@ -207,24 +245,22 @@ def convert_month_name():
             '10': 'Ottobre', '11': 'Novembre', '12': 'Dicembre'}
 
 
-def dev_mode(bypass=False):
+def is_dev_mode(bypass=False):
     """Check if user is me. if yes dont upload to server.
 
     If I need to test uploading to the server then I must supply a value
     to bypass.
 
     Argument:
-        bypass [bool] - if True, it nullifies the dev_mode - [default]: False
+        bypass [bool] - if True, it nullifies the is_dev_mode - [default]: False
     """
     if bypass:
-        ask = input("You have bypassed dev_mode! are you sure? y/n\n> ")
-        if ask == "y":
-            return None
-    if "virgilsisoe" in str(pathlib.Path().home()):
+        return False
+    if os.getenv('USER') in ['virgil', 'virgilsisoe', 'ubuntutest']:
         return True
-    return None
+    return False
 
 
-DEV_MODE = dev_mode(bypass=False)
 if __name__ == '__main__':
-    pass
+
+    print(catalog_file())

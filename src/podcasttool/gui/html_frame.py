@@ -123,7 +123,7 @@ class HtmlFrame(tk.Frame):
     def _open_link(page: str):
         """Open website or preview html page."""
         if page == 'web':
-            link = os.environ["FONDERIE_ELEARNING"]
+            link = util.Credentials().data['elearning_url']
         elif page == 'preview':
             link = last_archive_created()
         open_link(link)

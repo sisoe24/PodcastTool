@@ -8,7 +8,6 @@ import tkinter as tk
 from tkinter import ttk
 
 import regex
-# from PIL import Image, ImageTk
 
 from podcasttool import util
 from podcasttool import OS_SYSTEM, open_log
@@ -39,36 +38,6 @@ def get_similar_words(wrong_name: str, catalog: str) -> str:
     return choice
 
 
-def images_path() -> tuple():
-    """Get images path from image directory.
-
-    Returns:
-        [tuple] - tuple list of images absolute path
-
-    """
-    img_directory = util.get_path("include/img")
-    img_list = pathlib.Path(os.path.join(img_directory)).glob('*png')
-    return [i for i in sorted(img_list)]
-
-
-def get_image(img, get_path=False):
-    """Get ImageTK object with image.
-    Arguments:
-        img {str} - the name of the image to get.
-                    (warning, x, ok, logo, icon, sorry)
-        get_path {bool} - if True then returns only the path not the object
-                        [default] : False.
-    """
-    images = {
-        "warning": "", "x": "", "ok": "", "logo": "", "icon": "", "sorry": ""
-    }
-    for name, path in zip(images.keys(), images_path()):
-        images[name] = path
-    if get_path:
-        return images[img]
-    return ImageTk.PhotoImage(Image.open(images[img]))
-
-
 class LogFrame(tk.Frame):
     """Log section of the gui."""
     _row_number = 0
@@ -86,13 +55,6 @@ class LogFrame(tk.Frame):
         self._log_label = None
 
         self._label_img = ttk.Label(self._log_frame, name='logo', width=500)
-        # self._label_img.place(x=150, y=10)
-        # self.insert_img(get_image("warning"))
-
-    def insert_img(self, img):
-        """Insert image in error frame."""
-        self._label_img.configure(image=img)
-        self._label_img.image = img
 
     def row_increment(self):
         """Increment row number from the same error label frame.
@@ -191,8 +153,8 @@ class MainFrame(tk.Frame):
     def _parse_lines(self):
         """Iterate over each file name and check for syntax errors if any."""
         for index, file in enumerate(self._get_lines, 1):
-            self.log_frame.create_label_frame(row=index + 1,
-                                              text=f'Linea {index}:')
+            self.log_frame.create_label_frame(row=index + 1)
+                                            #   text=f'Linea {index}:')
             self.tag_text(index)
             try:
                 self._check_course_errors(file, index)
@@ -374,12 +336,10 @@ class MainFrame(tk.Frame):
         if no then enable confirm button and proceed further.
         """
         if self._text_errors():
-            # self.log_frame.insert_img(get_image("x"))
             self._refresh_frame()
         else:
             self.log_frame.refresh_widgets("errori")
             self.text_widget["state"] = "disabled"
-            # self.log_frame.insert_img(get_image("ok"))
             self.confirm_button["state"] = "active"
 
     def _refresh_frame(self):

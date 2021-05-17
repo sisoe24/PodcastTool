@@ -17,6 +17,7 @@ import shutil
 import hashlib
 import pathlib
 import logging
+import traceback
 
 from datetime import datetime
 from tkinter import messagebox
@@ -30,6 +31,30 @@ from podcasttool import util
 LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 
 
+class FtpServer:
+    def __init__(self, server_path):
+        self._server_path = server_path
+
+    def __enter__(self):
+        try:
+            self._ftp = ftplib.FTP(host=util.Credentials().data['host'],
+                                   user=util.Credentials().data['user'],
+                                   passwd=util.Credentials().data['pass'])
+        except Exception as error:
+            messagebox.showerror(title='PodcastTool',
+                                 message='Error. Credentials probably wrong')
+            LOGGER.critical('Problem connecting %s', traceback.format_exc())
+            sys.exit('Exit App')
+
+        # self._ftp.login()
+
+        return self._ftp
+
+    def __exit__(self,  exc_type, exc_val, exc_tb):
+        LOGGER.debug('Closing Ftp')
+        self._ftp.close()
+
+
 def check_server_path(server_path: str, test_env=False):
     """Check if path on server exists otherwise ask user to create new.
 
@@ -38,17 +63,17 @@ def check_server_path(server_path: str, test_env=False):
         server_path (str) path on the server to check
         test_env (bool)   if True, upload to test path
     """
-    test_server_path = os.environ['FONDERIE_VIRGILTEST']
+    test_server_path = util.Credentials().data['test_url']
 
     server_path = server_path if not test_env else test_server_path
 
     # when checking path with ftp, https will cause error so it has be deleted
     server_path = server_path.replace("https://", "")
+
     LOGGER.debug("server path: %s", server_path)
 
-    with ftplib.FTP(os.environ['FONDERIE_HOST'],
-                    os.environ['FONDERIE_USER'],
-                    os.environ['FONDERIE_PASSWORD']) as ftp:
+    with FtpServer(server_path) as ftp:
+
         try:
             ftp.cwd(server_path)
         except ftplib.error_perm as ftp_error:
@@ -62,15 +87,16 @@ def check_server_path(server_path: str, test_env=False):
                 LOGGER.debug('creating directory: %s', server_path)
                 ftp.mkd(server_path)
             else:
-                messagebox.showinfo(title='PodcastTool',
-                                    message=('Impossibile procedere.'
-                                             '\nCreare la cartella'
-                                             '\nmanualmente e riprovare'))
+                messagebox.showerror(title='PodcastTool',
+                                     message=('Impossibile procedere.'
+                                              '\nCreare la cartella'
+                                              '\nmanualmente e riprovare'))
                 sys.exit('Exit App')
+
     return server_path
 
 
-def upload_to_server(uploading_file: str, server_path: str):
+def upload_to_server(uploading_file: str, server_path: str, test_env=False):
     """Upload podcast file to server.
 
     Arguments:
@@ -78,23 +104,26 @@ def upload_to_server(uploading_file: str, server_path: str):
         str uploading_file path of the file to upload
         str server_path    path on the server where to upload the file
     """
-    with ftplib.FTP(os.environ['FONDERIE_HOST'],
-                    os.environ['FONDERIE_USER'],
-                    os.environ['FONDERIE_PASSWORD']) as ftp:
+
+    with FtpServer(server_path) as ftp:
+
         ftp.cwd(server_path)
+
         with open(uploading_file, 'rb') as upload:
             LOGGER.debug('uploading file on server: %s', uploading_file)
+
             # if user is me then app will NOT upload to server
-            if not util.DEV_MODE:
-                file_name = os.path.basename(uploading_file)
-                status = ftp.storbinary(f'STOR {file_name}', upload)
-                status_sub = regex.sub(
-                    r'226|-|\(measured here\)|\n', '', str(status))
-                LOGGER.info(status_sub)
-                LOGGER.debug('status: %s', status_sub)
-                LOGGER.debug('uploaded file to server: %s', file_name)
-            else:
+            if util.is_dev_mode(bypass=test_env):
                 LOGGER.info('FAKE UPLOAD: %s in %s', uploading_file, ftp.pwd())
+                return
+
+            file_name = os.path.basename(uploading_file)
+            status = ftp.storbinary(f'STOR {file_name}', upload)
+            status_sub = regex.sub(
+                r'226|-|\(measured here\)|\n', '', str(status))
+            LOGGER.info(status_sub)
+            LOGGER.debug('status: %s', status_sub)
+            LOGGER.debug('uploaded file to server: %s', file_name)
 
 
 class PodcastFile:
@@ -149,14 +178,6 @@ class PodcastFile:
             self.directory
         ]
         return iter(all_data)
-
-    # def __str__(self):
-    #     """Return podcast file name."""
-    #     return self.__name
-
-    # def __repr__(self):
-    #     """Return creation podcast class."""
-    #     return f'PodcastFile("{self.__abspath}")'
 
     def __len__(self):
         """Get the lenght of the audio in milliseconds.
@@ -287,7 +308,7 @@ class PodcastFile:
     def course_path(self):
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
-        return os.path.join(os.environ['FONDERIE_PODCAST'], self._course_path)
+        return os.path.join(util.Credentials().data['podcast_url'], self._course_path)
 
     @property
     def registration_date(self):
@@ -452,19 +473,18 @@ class PodcastFile:
         try:
             os.mkdir(tmp_dir_path)
         except FileExistsError:
-            LOGGER.warning('tmp directory exists already')
+            LOGGER.debug('tmp directory exists already')
 
         return tmp_dir_path
 
-    def generate_podcast(self, bitrate='64k', sample_rate='22050',
-                         num_cuts=None):
+    def generate_podcast(self, bitrate='64k', sample_rate='22050', num_cuts='Auto'):
         """Generate final file to be uploaded to the server.
 
         Keyword Arguments:
 
             bitrate {str} - - specify bitrate(default: {'64k'})
             sample_rate {str} - - specify sample rate(default: {'22050'})
-            num_cuts {str} - - how many cuts in audio(default: {None})
+            num_cuts {str} - - how many cuts in audio(default: {Auto})
         """
         tmp_dir = self._mkdir_tmp()
         self.set_audio_intro()
@@ -474,8 +494,12 @@ class PodcastFile:
             LOGGER.debug("watermark audio: %s", watermark)
 
             podcast = pydub.AudioSegment.from_wav(self.abspath)
-            cuts = (util.calculate_cuts(len(podcast))
-                    if not num_cuts else num_cuts)
+
+            if num_cuts == 'Auto':
+                cuts = util.calculate_cuts(len(podcast))
+            else:
+                cuts = int(num_cuts)
+
             LOGGER.debug("splitting podcast in: [%s] parts", cuts)
 
             cut_each = math.ceil(len(podcast) / cuts)
@@ -506,6 +530,9 @@ class PodcastFile:
                     dst_name = f'{pad_fill}_{item_name}'
 
                     shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
+                else:
+                    if item_name != 'podcast_segment.mp3':
+                        LOGGER.warning('missing audio file for: %s', item_name)
 
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
@@ -597,7 +624,7 @@ def generate_html(html_data, test_env=False):
 
                 with tag('object', id="audioplayer1",
                          width="290", height="24",
-                         data=os.environ['FONDERIE_AUDIO_PLUGIN'],
+                         data=util.Credentials().data['plugin_url'],
                          type="application/x-shockwave-flash"):
                     doc.stag('param', name="FlashVars",
                              value=f"playerID=1&soundFile={part_info['link']}")

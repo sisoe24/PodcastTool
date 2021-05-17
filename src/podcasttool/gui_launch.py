@@ -1,5 +1,6 @@
 """GUI interface of PodcastTool."""
 import os
+import sys
 import logging
 import pathlib
 from datetime import datetime
@@ -15,11 +16,10 @@ from tkinter import (
 from podcasttool.gui import (
     SelectPodcast,
     HtmlFrame,
-    AudioExport,
     AudioIntro,
     CatalogFrame,
     MainFrame,
-    DevFrame,
+    MenuBar, CredentialsEntry
 )
 
 from podcasttool import (
@@ -39,13 +39,12 @@ LOGGER = logging.getLogger('podcast_tool.gui')
 def _set_directory():
     """Set which folder to open.
 
-    If user is me then open in test files directory.
-
     Return:
         {str} - path to which directory to open first at gui start.
     """
-    if util.DEV_MODE:
-        initial_dir = os.path.join(os.environ['PODCAST_DIR'], 'ELM/MAE6')
+    # If user is me then open in test files directory.
+    if util.is_dev_mode():
+        initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP/ALP0')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
@@ -59,68 +58,61 @@ class MainPage(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('PodcastTool 2.2.1')
+
+        window_main = ttk.Notebook(self, width=1000, height=600)
+
+        _page_main = ttk.Frame(window_main, width=1000, height=600)
+        _page_main.grid(column=0, row=0)
+        _page_main.grid_propagate(False)
+        window_main.add(_page_main, text='Main')
+
+        title = 'PodcastTool 2.3'
+
+        self._test_upload = tk.BooleanVar(False)
+        if util.is_dev_mode():
+            title += ' - Developer mode'.upper()
+            _test_check = ttk.Checkbutton(window_main, variable=self._test_upload,
+                                          text='Upload to server virgil_test')
+            _test_check.place(x=10, y=60)
+
+        self.title(title)
+
+        self.menubar = MenuBar()
+        self.config(menu=self.menubar)
 
         app_x = 685
         app_y = 600
 
         # - position window center screen - #
         position_height = self.winfo_screenheight() // 2 - (app_y // 2)
-        # position_width = self.winfo_screenwidth() // 2 - (app_y // 2)
         self.geometry(f'{app_x}x{app_y}-{100}+{position_height}')
-
-        # >>>> on linux I have decided to put the app on the top right corner
-        # because it needs the terminal to be open at the same time:
-        # position_width = self.winfo_screenwidth()
-        # self.geometry(f'{app_x}x{app_y}-{position_width}+{0}')
 
         self.resizable(width=False, height=False)
 
-        window_main = ttk.Notebook(self, width=1000, height=600)
         # window_main.grid_propagate(False)
-
-        # main page frame
-        _page_main = ttk.Frame(window_main, width=1000, height=600)
-        _page_main.grid(column=0, row=0)
-        _page_main.grid_propagate(False)
-        window_main.add(_page_main, text='Main')
 
         self.clock = ttk.Label(_page_main)
         self.clock.place(x=5, y=0)
-
-        # audio page frame
-        _page_audio = ttk.Frame(window_main, width=1000, height=600)
-        _page_audio.grid(column=0, row=0)
-        _page_audio.grid_propagate(False)
-        window_main.add(_page_audio, text='Audio options')
-        AudioIntro(_page_audio).grid(column=0, row=0)
 
         # catalogo page frame
         _page_catalog = ttk.Frame(window_main, width=1000, height=600)
         _page_catalog.grid(column=0, row=0)
         _page_catalog.grid_propagate(False)
         window_main.add(_page_catalog, text='Catalogo Nomi')
-
-        _page_dev = ttk.Frame(window_main, width=1000, height=600)
-        _page_dev.grid(column=0, row=0)
-        _page_dev.grid_propagate(False)
-        window_main.add(_page_dev, text='Extra')
-
         CatalogFrame(_page_catalog).grid(column=0, row=0)
 
-        self.dev = DevFrame(_page_dev)
-        self.dev.grid(column=0, row=0)
-
-        self.audio = AudioExport(_page_audio)
-        self.audio.grid(column=1, row=0, sticky=tk.N, padx=5)
+        # audio page frame
+        _page_audio = ttk.Frame(window_main, width=1000, height=600)
+        _page_audio.grid(column=0, row=0)
+        _page_audio.grid_propagate(False)
+        window_main.add(_page_audio, text='Audio')
+        AudioIntro(_page_audio).grid(column=0, row=0)
 
         self.html = HtmlFrame(_page_main)
         self.html.place(x=390, y=0)
 
         self.main_class = MainFrame(_page_main, width=670, height=360)
         self.main_class.place(x=5, y=210)
-
-        # window_main.select(_page_dev) # XXX: debug only
 
         window_main.pack()
         self.podcast_obj = None
@@ -146,8 +138,8 @@ class MainPage(tk.Tk):
 
     def files_select(self):
         """Select the podcast file to parse."""
+
         open_files = filedialog.askopenfilenames(initialdir=_set_directory())
-        # open_files = (os.environ["TEST_FILE"],)
 
         LOGGER.debug("selected files: %s", open_files)
 
@@ -164,10 +156,9 @@ class MainPage(tk.Tk):
 
         display_msg = self.main_class.log_frame.display_msg
 
-        if util.DEV_MODE:
-            display_msg("dev mode ON")
-
         display_msg("Creazione podcast in corso...")
+
+        test_upload = self._test_upload.get()
 
         with ThreadPoolExecutor() as executor:
             for file in self.main_class.proccesed_files():
@@ -178,25 +169,26 @@ class MainPage(tk.Tk):
                 file_path = os.path.join(self.podcast_obj.path, file)
                 f1 = executor.submit(PodcastFile, file_path)
                 podcast = f1.result()
-                executor.submit(podcast.generate_podcast,)
+                executor.submit(podcast.generate_podcast)
 
             self.update()
 
         display_msg("Fatto!\n\nCaricamento podcast su server...")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
-        server_path = check_server_path(check_path, self.dev.test_env)
+        server_path = check_server_path(check_path, test_upload)
 
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
                 self.update()
                 display_msg(os.path.basename(file['path']))
-                executor.submit(upload_to_server, file["path"], server_path)
+                executor.submit(upload_to_server,
+                                file["path"], server_path, test_upload)
 
         self.update()
         display_msg("Fatto!\n\nPagina html generata")
 
-        generate_html(podcast.html_page, self.dev.test_env)
+        generate_html(podcast.html_page, test_upload)
 
         self._conferm_btn["state"] = 'disable'
 
@@ -217,7 +209,7 @@ class MainPage(tk.Tk):
                     new_name = os.path.join(self.podcast_obj.path, new)
                     os.rename(old_name, new_name)
 
-    @staticmethod
+    @ staticmethod
     def _labels_style():
         """Create style configuration for labels."""
         default_size = 17
@@ -235,11 +227,20 @@ class MainPage(tk.Tk):
 
 def run():
     """Run gui."""
+    credentials = util.Credentials()
+    if not credentials.exists() or credentials.is_empty():
+        app = CredentialsEntry()
+        app.mainloop()
+
+    if credentials.is_empty():
+        LOGGER.critical('Empty Credentials')
+        sys.exit('Exiting app! Empty Credentials')
+
     try:
         app = MainPage()
         app.mainloop()
     except Exception as error:
-        LOGGER.critical(str(error), exc_info=True)
+        LOGGER.critical(str(error))
         open_log(msg="Errore app startup.\nControllare errors.log?")
 
 
