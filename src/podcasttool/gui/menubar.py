@@ -1,10 +1,11 @@
 import os
 import shutil
 import pickle
+from pprint import pprint
 
 import tkinter as tk
 
-from tkinter import (messagebox, ttk)
+from tkinter import messagebox, ttk
 
 from .html_frame import archive_files
 from podcasttool import util, open_link
@@ -14,6 +15,17 @@ class OptionsMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self._html_media = tk.BooleanVar()
+
+        use_mediaplayer = util.UserConfig().value('html_mediaplayer', False)
+        self._html_media.set(use_mediaplayer)
+
+        self.add_checkbutton(label='Use HTML Mediaplayer',
+                             variable=self._html_media,
+                             command=self._update_config)
+
+        self.add_separator()
+
         self.add_command(label='Clean Log', command=self.clean_log)
         self.add_command(label='Clean Archive', command=self.delete_archive)
 
@@ -21,7 +33,15 @@ class OptionsMenu(tk.Menu):
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
 
-    @staticmethod
+    def _update_config(self):
+
+        data = util.UserConfig().data
+        data.update({'html_mediaplayer': self._html_media.get()})
+
+        with util.UserConfig(mode='wb') as file:
+            pickle.dump(data, file)
+
+    @ staticmethod
     def clean_log():
         log_path = util.get_path("log")
         for file in log_path.glob('*.log'):
@@ -29,7 +49,7 @@ class OptionsMenu(tk.Menu):
             with open(file_path, "w") as _:
                 pass
 
-    @staticmethod
+    @ staticmethod
     def restore_json():
 
         user = messagebox.askyesno(
@@ -45,7 +65,7 @@ class OptionsMenu(tk.Menu):
 
             messagebox.showinfo(message="done!")
 
-    @staticmethod
+    @ staticmethod
     def delete_archive():
         """Delete all the html archive files."""
         prompt = messagebox.askyesno(
@@ -91,42 +111,36 @@ class CredentialsEntry(tk.Tk):
         self.save_credentials.grid(row=4, column=1, columnspan=2,
                                    sticky=tk.E, pady=5)
 
-        self.credentials = util.UserConfig()
+        self.config = util.UserConfig()
         self.load_credentials()
 
     def _save(self):
         data = {}
-        with open(self.credentials.file, 'wb') as config_file:
-            data['host'] = self.host_entry.get()
-            data['user'] = self.user_entry.get()
-            data['pass'] = self.pass_entry.get()
-            data['web'] = self.web_entry.get()
 
-            web = data['web']
-            if web.endswith('/'):
-                web = web[:-1]
+        data['host'] = self.host_entry.get()
+        data['user'] = self.user_entry.get()
+        data['pass'] = self.pass_entry.get()
+        data['web'] = self.web_entry.get()
 
-            data['elearning_url'] = f'{web}/elearning'
-            data['test_url'] = f'{web}/images/didattica/virgil_test'
-            data['podcast_url'] = f'{web}/images/didattica/PODCAST'
-            data['plugin_url'] = f'{web}/plugins/content/1pixelout/player.swf'
+        web = data['web']
+        if web.endswith('/'):
+            web = web[:-1]
 
+        data['elearning_url'] = f'{web}/elearning'
+        data['test_url'] = f'{web}/images/didattica/virgil_test'
+        data['podcast_url'] = f'{web}/images/didattica/PODCAST'
+        data['plugin_url'] = f'{web}/plugins/content/1pixelout/player.swf'
+
+        with util.UserConfig(mode='wb') as config_file:
             pickle.dump(data, config_file)
 
         self.destroy()
-        # self.close()
 
     def load_credentials(self):
-        if self.credentials.exists() and not self.credentials.is_empty():
-            with open(self.credentials.file, 'rb') as file:
-                data = pickle.load(file)
-                self.host_entry.insert(tk.END, data['host'])
-                self.user_entry.insert(tk.END, data['user'])
-                self.pass_entry.insert(tk.END, data['pass'])
-                self.web_entry.insert(tk.END, data['web'])
-
-    def update_credentials(self):
-        pass
+        self.host_entry.insert(tk.END, self.config.value('host'))
+        self.user_entry.insert(tk.END, self.config.value('user'))
+        self.pass_entry.insert(tk.END, self.config.value('pass'))
+        self.web_entry.insert(tk.END, self.config.value('web'))
 
 
 class HelpMenu(tk.Menu):
@@ -142,7 +156,7 @@ class HelpMenu(tk.Menu):
             command=lambda: self.open_file("log", "debug.log")
         )
 
-    @staticmethod
+    @ staticmethod
     def open_file(_dir, file):
         open_link(os.path.join(util.get_path(_dir), file))
 
@@ -151,9 +165,12 @@ class AudioMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_cascade(label='Waterkmarks', menu=self._get_watermarks())
-        self.add_cascade(label='Bitrate', menu=self._get_bitrate())
-        self.add_cascade(label='Sample Rate', menu=self._get_sample_rate())
+        self.add_cascade(label='Waterkmarks', menu=self._get_watermarks(),
+                         state='disabled')
+        self.add_cascade(label='Bitrate', menu=self._get_bitrate(),
+                         state='disabled')
+        self.add_cascade(label='Sample Rate', menu=self._get_sample_rate(),
+                         state='disabled')
 
     def _get_sample_rate(self):
         self._sample_rate = tk.StringVar()
@@ -196,7 +213,7 @@ class MenuBar(tk.Menu):
         self.options = OptionsMenu()
         self._help = HelpMenu()
 
-        self.add_cascade(label='Audio', menu=self.audio)
+        self.add_cascade(label='Audio Export', menu=self.audio)
         self.add_cascade(label='Options', menu=self.options)
         self.add_cascade(label='Help', menu=self._help)
 
