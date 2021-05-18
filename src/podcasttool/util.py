@@ -8,7 +8,6 @@ import pathlib
 import shutil
 import logging
 import datetime
-import traceback
 
 from tkinter import messagebox
 
@@ -19,13 +18,27 @@ LOGGER = logging.getLogger('podcast_tool.utlity')
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
 USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
+USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
+
+if not os.path.exists(USER_CONFIG):
+    with open(USER_CONFIG, 'wb') as _:
+        pass
+
 os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
 os.makedirs(USER_AUDIO, exist_ok=True)
 
 
 class UserConfig:
-    def __init__(self):
-        self._file = os.path.join(SYS_CONFIG_PATH, '.config')
+    def __init__(self, mode='rb'):
+        self._mode = mode
+        self._file = USER_CONFIG
+
+    def __enter__(self):
+        self._open = open(self._file, self._mode)
+        return self._open
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._open.close()
 
     @property
     def file(self):
@@ -33,20 +46,31 @@ class UserConfig:
 
     @property
     def data(self):
-        with open(self._file, 'rb') as file:
-            return pickle.load(file)
+        if self.get_size() > 0:
+            with open(self._file, 'rb') as file:
+                return pickle.load(file)
+
+    def value(self, key, default=''):
+        try:
+            value = self.data[key]
+        except (KeyError, TypeError):
+            return default
+        else:
+            if value:
+                return value
+            return default
 
     def is_empty(self):
-        values = [v for v in self.data.values() if v]
-        if len(values) != 8:
+        if self.get_size() <= 0:
             return True
+        for key, value in self.data.items():
+            if key in ['host', 'user', 'pass', 'web']:
+                if not value:
+                    return True
         return False
 
     def get_size(self):
         return os.path.getsize(self._file)
-
-    def exists(self):
-        return os.path.exists(self._file)
 
 
 def profile(func):
@@ -114,10 +138,9 @@ def generate_audio(text, path, filename="", lang='it'):
         speak = gtts.gTTS(text=name, lang=lang)
         speak.save(f'{path}/{filename}.mp3')
     except Exception as error:
-        msg = 'gtts module had some problemis creating audio'
-        LOGGER.critical('%s: %s', msg, traceback.format_exc())
+        msg = 'gTTS had some problems creating audio! check log file.'
+        LOGGER.critical('%s', msg, exc_info=True)
         messagebox.showerror(title='PodcastTool', message=msg)
-        sys.exit()
 
 
 def get_path(directory: str) -> str:
