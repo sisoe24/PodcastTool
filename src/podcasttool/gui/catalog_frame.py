@@ -5,6 +5,8 @@ The module will create the audio files for the newly created names.
 """
 import os
 import json
+import logging
+import pathlib
 
 import tkinter as tk
 from tkinter import ttk
@@ -12,11 +14,14 @@ from tkinter import messagebox
 
 from podcasttool import util
 
+LOGGER = logging.getLogger('podcasttool.catalog')
+
 
 class CatalogFrame(tk.Frame):
     """Catalog page of the gui."""
     _catalog_list = util.catalog_names()
     _updated_names = {"docenti": [], "corsi": []}
+    _delete_audio = []
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -90,6 +95,13 @@ class CatalogFrame(tk.Frame):
         ttk.Button(self._options_frame, text="Cancella nome selezionato",
                    command=self._delete_selected).grid(column=3, row=3)
 
+        # ttk.Button(self._options_frame, text="Get Selected",
+        #            command=self.get_selected).grid(column=3, row=4)
+
+    def get_selected(self):
+        item = self._tree_list.item(self._tree_list.selection())
+        print(item)
+
     def _course_path(self):
         """Add course path to new courses."""
         value = ["ALP", "ELM", "EMP", "TTS"]
@@ -109,7 +121,7 @@ class CatalogFrame(tk.Frame):
                 if "corse" in widget.winfo_name():
                     widget.destroy()
 
-    @property
+    @ property
     def _language(self):
         """Return the language selected: it or eng."""
         return self._lang_select.get()
@@ -153,7 +165,11 @@ class CatalogFrame(tk.Frame):
         # self._btn_insert["state"] = "active"
 
         row_colors = ["oddrow", "evenrow"]
-        catalog_names = sorted(self._catalog_list[self.get_catalog].items())
+        try:
+            catalog_names = sorted(
+                self._catalog_list[self.get_catalog].items())
+        except KeyError:
+            return
         for index, names in enumerate(catalog_names):
             if index % 2 == 0:
                 self._tree_list.insert('', index, names[0],
@@ -182,13 +198,16 @@ class CatalogFrame(tk.Frame):
                                       message=(f"Cancellare: {selected_item}?")
                                       )
         if confirm:
+            item = self._tree_list.item(self._tree_list.selection())
+            audio_name = item['values'][1].replace(' ', '_')
+            self._delete_audio.append(f'{audio_name}.mp3')
+
             self._tree_list.delete(selected_item)
             self._delete_from_catalog(selected_item)
             self._btn_save["state"] = "active"
 
     def _delete_from_catalog(self, delete_key):
         """Delete key from class catalog list."""
-        # TODO: currently not deleting the audio files
         self._catalog_list[self.get_catalog].pop(delete_key)
 
     def _get_new_names(self):
@@ -260,7 +279,16 @@ class CatalogFrame(tk.Frame):
             json.dump(self._catalog_list, json_file, indent=True)
         self.update()
         self._update_audio_library()
+        if self._delete_audio:
+            self._delete_new_audio()
         messagebox.showinfo(message="Modifiche salvate!")
+
+    def _delete_new_audio(self):
+        print("➡ self._delete_audio :", self._delete_audio)
+        for file in pathlib.Path(util.USER_AUDIO).glob('*mp3'):
+            if file.name in self._delete_audio:
+                LOGGER.debug('Deleting file: %s', file)
+                os.remove(file)
 
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
