@@ -114,6 +114,12 @@ class MainPage(tk.Tk):
         self.main_class = MainFrame(_page_main, width=670, height=360)
         self.main_class.place(x=5, y=210)
 
+        # self.status_msg = tk.StringVar()
+        # self.statusbar = ttk.Label(_page_main, textvariable=self.status_msg,
+        #                            width=75, borderwidth=1, relief='sunken',
+        #                            anchor=tk.W)
+        # self.statusbar.place(x=3, y=555)
+
         window_main.pack()
         self.podcast_obj = None
 
@@ -122,7 +128,7 @@ class MainPage(tk.Tk):
         self._conferm_btn.place(x=105, y=65)
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
-                                      command=self.files_select)
+                                      command=self.check_credentials)
         # self._select_btn.invoke()
         self._select_btn.focus_set()
         self._select_btn.place(x=5, y=65)
@@ -135,6 +141,14 @@ class MainPage(tk.Tk):
         date = datetime.now().strftime("%d/%m %H:%M:%S")
         self.clock.config(text=date, style="clock.TLabel")
         self.clock.after(1000, self.time)
+
+    def check_credentials(self):
+        if util.UserConfig().is_empty():
+
+            messagebox.showwarning(title='PodcastTool',
+                                   message='Update Credentials first!')
+        else:
+            self.files_select()
 
     def files_select(self):
         """Select the podcast file to parse."""
@@ -169,10 +183,14 @@ class MainPage(tk.Tk):
                 file_path = os.path.join(self.podcast_obj.path, file)
                 f1 = executor.submit(PodcastFile, file_path)
                 podcast = f1.result()
+                # TODO: add audio export options arguments
                 executor.submit(podcast.generate_podcast)
 
             self.update()
 
+        if podcast.missing_audio:
+            display_msg(f'! Audio file non trovati: {podcast.missing_audio}',
+                        'yellow')
         display_msg("Fatto!\n\nCaricamento podcast su server...")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
@@ -185,10 +203,8 @@ class MainPage(tk.Tk):
                 executor.submit(upload_to_server,
                                 file["path"], server_path, test_upload)
 
-        self.update()
-        display_msg("Fatto!\n\nPagina html generata")
-
         generate_html(podcast.html_page, test_upload)
+        display_msg("Fatto!\n\nPagina html generata")
 
         self._conferm_btn["state"] = 'disable'
 
@@ -196,7 +212,9 @@ class MainPage(tk.Tk):
         self.html.preview_button = "normal"
         self.html.status('Pronto', 'green')
 
-        messagebox.showinfo(title="Done!", message="Done!", icon="info")
+        self.update()
+        messagebox.showinfo(title="PodcastTool", message="Done!", icon="info")
+        # self.status_msg.set('Done')
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
@@ -227,20 +245,12 @@ class MainPage(tk.Tk):
 
 def run():
     """Run gui."""
-    credentials = util.UserConfig()
-    if not credentials.exists() or credentials.is_empty():
-        app = CredentialsEntry()
-        app.mainloop()
-
-    if credentials.is_empty():
-        LOGGER.critical('Empty Credentials')
-        sys.exit('Exiting app! Empty Credentials')
 
     try:
         app = MainPage()
         app.mainloop()
     except Exception as error:
-        LOGGER.critical(str(error))
+        LOGGER.critical(str(error), exc_info=True)
         open_log(msg="Errore app startup.\nControllare errors.log?")
 
 
