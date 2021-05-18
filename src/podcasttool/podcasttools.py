@@ -17,7 +17,6 @@ import shutil
 import hashlib
 import pathlib
 import logging
-import traceback
 
 from datetime import datetime
 from tkinter import messagebox
@@ -34,16 +33,17 @@ LOGGER = logging.getLogger('podcast_tool.generate_podcast')
 class FtpServer:
     def __init__(self, server_path):
         self._server_path = server_path
+        self.settings = util.UserConfig()
 
     def __enter__(self):
         try:
-            self._ftp = ftplib.FTP(host=util.UserConfig().data['host'],
-                                   user=util.UserConfig().data['user'],
-                                   passwd=util.UserConfig().data['pass'])
+            self._ftp = ftplib.FTP(host=self.settings.value('host', 'x'),
+                                   user=self.settings.value('user', 'x'),
+                                   passwd=self.settings.value('pass', 'x'))
         except Exception as error:
             messagebox.showerror(title='PodcastTool',
-                                 message='Error. Credentials probably wrong')
-            LOGGER.critical('Problem connecting %s', traceback.format_exc())
+                                 message='Credentials probably wrong')
+            LOGGER.critical('Problem connecting %s', exc_info=True)
             sys.exit('Exit App')
 
         # self._ftp.login()
@@ -92,6 +92,11 @@ def check_server_path(server_path: str, test_env=False):
                                               '\nCreare la cartella'
                                               '\nmanualmente e riprovare'))
                 sys.exit('Exit App')
+        except Exception as error:
+            messagebox.showerror(
+                'PodcastTool', message='Unexpected error when changing dir in ftp')
+            LOGGER.critical('exception when cwd to ftp', exc_info=True)
+            sys.exit()
 
     return server_path
 
@@ -141,6 +146,7 @@ class PodcastFile:
         "lesson": "",
         "parts": {}
     }
+    missing_audio = set()
 
     def __init__(self, raw_podcast: str):
         LOGGER.debug('Initialize PodcastFile class ->')
@@ -486,6 +492,10 @@ class PodcastFile:
             sample_rate {str} - - specify sample rate(default: {'22050'})
             num_cuts {str} - - how many cuts in audio(default: {Auto})
         """
+        print("➡ num_cuts :", num_cuts)
+        print("➡ sample_rate :", sample_rate)
+        print("➡ bitrate :", bitrate)
+
         tmp_dir = self._mkdir_tmp()
         self.set_audio_intro()
 
@@ -517,7 +527,7 @@ class PodcastFile:
                 n_parts += 2
 
         def _copy_audio_intro():
-            """Copy the opening theme files from the audio library."""
+            # """Copy the opening theme files from the audio library."""
             LOGGER.debug("Copying the audio intro files from the library")
             library = util.audio_library()
             for index, audio in enumerate(self._audio_intro):
@@ -533,6 +543,7 @@ class PodcastFile:
                 else:
                     if item_name != 'podcast_segment.mp3':
                         LOGGER.warning('missing audio file for: %s', item_name)
+                        self.missing_audio.add(item_name)
 
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
@@ -622,12 +633,14 @@ def generate_html(html_data, test_env=False):
                 with tag('p'):
                     text(f'{part_num} | Durata {part_info["duration"]}')
 
-                with tag('object', id="audioplayer1",
-                         width="290", height="24",
-                         data=util.UserConfig().data['plugin_url'],
-                         type="application/x-shockwave-flash"):
-                    doc.stag('param', name="FlashVars",
-                             value=f"playerID=1&soundFile={part_info['link']}")
+                if util.UserConfig().value('html_mediaplayer'):
+                    with tag('object', id="audioplayer1",
+                             width="290", height="24",
+                             data=util.UserConfig().data['plugin_url'],
+                             type="application/x-shockwave-flash"):
+                        doc.stag('param', name="FlashVars",
+                                 value=f"playerID=1&soundFile={part_info['link']}")
+
                 with tag('a', "download", href=part_info["link"], target='_blank'):
                     with tag('button', klass='virgil_button'):
                         text('Download')
