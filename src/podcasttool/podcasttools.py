@@ -532,8 +532,12 @@ class PodcastFile:
             library = util.audio_library()
             for index, audio in enumerate(self._audio_intro):
 
+                if audio == 'podcast_segment':
+                    continue
+
                 pad_fill = str(index).zfill(2)
                 item_name = audio.replace(' ', '_') + '.mp3'
+                item_name = item_name.lower()
 
                 if item_name in library.keys():
                     src_file = os.path.join(library.get(item_name), item_name)
@@ -541,9 +545,24 @@ class PodcastFile:
 
                     shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
                 else:
-                    if item_name != 'podcast_segment.mp3':
-                        LOGGER.warning('missing audio file for: %s', item_name)
-                        self.missing_audio.add(item_name)
+                    self.missing_audio.add(item_name)
+
+            err = True
+
+            missing_files = list(self.missing_audio)
+
+            for missing_audio in missing_files:
+                file_name, _ = missing_audio.split('.')
+
+                if util.generate_audio(text=file_name, path=util.USER_AUDIO):
+                    self.missing_audio.remove(missing_audio)
+                    err = False
+                else:
+                    LOGGER.warning(
+                        'missing audio file for: %s', missing_audio)
+
+            if not err:
+                _copy_audio_intro()
 
         def _merge_audio():
             """Merge all the mp3 files from tmp folder."""
