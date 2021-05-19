@@ -23,6 +23,7 @@ pyperclip = "*"
 gtts = "*"
 py2app = "*"
 pyinstaller = "*"
+textblob = "*"
 
 [requires]
 python_version = "3.7"

@@ -2,7 +2,15 @@
 Changelog
 =========
 
-<<<<<<< HEAD
+Version 2.3
+==============
+
+[New Features] :
+
+- Menubar functionality.
+- Credentials system.
+- User custom audio/configuration
+
 Version 2.1.1
 ==============
 
@@ -11,35 +19,6 @@ Version 2.1.1
 - Firefox caused some errors if app was closed while Firefox was open.
 - Align window now should work properly and align both windows. (it does not
   work if a the app is doing a job already.)
-=======
-Version 2.2.0
-==============
-
-[New Feature] :
-
-- Major overall speed increment by using multi-threading operations.
-- Ability to modify the existing catalog names.
-- Ability to modify the intro audio.
-- Ability to create custom text-to-speech audio files.
-- App status now displays in gui window instead of terminal.
-- Can create Linux and MacOS standalone environment.
-
-[other] :
-
-- Overall gui widget clean up.
-- Overall source code clean up.
-- new dev window for testint purposes
-- pstats completly removed from app
-- html archive section completly disabled from app
-
-[known bugs] :
-- **[CRITICAL] MacOS Mojave 10.14.6 crashes when launchg app.**
-- Pillow.Image currently not working so no image will be shown in the app.
-- catalog_names.json won't retain modifications if update is being made.
-- shell environment needs to be set to ``zsh`` or it doesnt not find ffmpeg.
-
-[bug fix] :
->>>>>>> 2.2-master
 
 
 Version 2.1.0
