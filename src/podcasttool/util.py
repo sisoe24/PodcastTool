@@ -140,7 +140,8 @@ def generate_audio(text, path, filename="", lang='it'):
     except Exception as error:
         msg = 'gTTS had some problems creating audio! check log file.'
         LOGGER.critical('%s', msg, exc_info=True)
-        messagebox.showerror(title='PodcastTool', message=msg)
+        return False
+    return True
 
 
 def get_path(directory: str) -> str:
@@ -173,7 +174,7 @@ def audio_library():
         for dirpath, _, filenames in os.walk(path):
             for filename in filenames:
                 if filename.endswith('mp3'):
-                    library_dict[filename] = dirpath
+                    library_dict[filename.lower()] = dirpath
     return library_dict
 
 
