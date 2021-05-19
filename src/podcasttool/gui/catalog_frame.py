@@ -28,8 +28,6 @@ class CatalogFrame(tk.Frame):
 
         _catalog_frame = ttk.Frame(self, width=400, height=800)
         _catalog_frame.grid(column=0, row=0, rowspan=2)
-        
-
         self.vertical_scrollbar = ttk.Scrollbar(_catalog_frame)
 
         self._tree_list = ttk.Treeview(_catalog_frame, height=24,
@@ -297,7 +295,7 @@ class CatalogFrame(tk.Frame):
                 if util.generate_audio(text=name, path=util.USER_AUDIO, lang=lang):
                     msg = f"Generating audio for:\n{name}"
                 else:
-                    msg = f'Problems generating audio for:\n{name}'
+                    msg = f'Problems generating audio for:\n{name}\nPlease check log file'
 
                 ttk.Label(self._options_frame, text=msg).grid(
-                    column=3, row=index)
+                    column=3, row=index, sticky=tk.W, padx=5)
