@@ -83,9 +83,12 @@ class AudioIntro(tk.Frame):
         ask_user = filedialog.asksaveasfilename()
         if ask_user:
             path, filename = os.path.split(ask_user)
-            util.generate_audio(text=self.text_entry.get(),
-                                filename=filename, path=path,
-                                lang=self._lang_select.get())
+            if not util.generate_audio(text=self.text_entry.get(),
+                                       filename=filename, path=path,
+                                       lang=self._lang_select.get()):
+                messagebox.showerror(
+                    title='PodcastTool',
+                    message='Problem Creating Audio. Check log file')
 
     def add_combobox(self):
         """Add new combobox widget if user wants."""
@@ -136,10 +139,15 @@ class AudioIntro(tk.Frame):
 
         for index, name in enumerate(audio_list, 10):
 
-            msg = f"Generating audio for: {name}"
-            ttk.Label(self._audio_frame, text=msg).grid(column=0, row=index)
-            self.update()
-            util.generate_audio(text=name, path=util.USER_AUDIO)
+            if util.generate_audio(text=name, path=util.USER_AUDIO):
+                msg = f"Generating audio for: {name}"
+                ttk.Label(self._audio_frame, text=msg).grid(
+                    column=0, row=index)
+                self.update()
+            else:
+                messagebox.showerror(
+                    title='PodcastTool',
+                    message='Problem Creating Audio. Check log file')
 
     def new_intro(self):
         """Check if audio intro was modified."""
