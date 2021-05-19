@@ -28,6 +28,7 @@ class CatalogFrame(tk.Frame):
 
         _catalog_frame = ttk.Frame(self, width=400, height=800)
         _catalog_frame.grid(column=0, row=0, rowspan=2)
+        
 
         self.vertical_scrollbar = ttk.Scrollbar(_catalog_frame)
 
@@ -62,7 +63,7 @@ class CatalogFrame(tk.Frame):
         # insert new frame
         self._insert_frame = ttk.LabelFrame(self._options_frame,
                                             text="Aggiungi nuovo nome")
-        self._insert_frame.grid(column=3, row=1, sticky=tk.N)
+        self._insert_frame.grid(column=3, row=1,  ipady=5, sticky=tk.N)
 
         ttk.Label(self._insert_frame, text="abbr.").grid(column=0, row=1,
                                                          sticky=tk.W)
@@ -90,13 +91,11 @@ class CatalogFrame(tk.Frame):
         self._btn_save = ttk.Button(self._options_frame,
                                     text="Salva modifiche", state="disabled",
                                     command=self._save_new_catalog)
-        self._btn_save.grid(column=3, row=2, pady=15)
+        self._btn_save.grid(column=3, row=2, pady=15, sticky=tk.E)
 
         ttk.Button(self._options_frame, text="Cancella nome selezionato",
-                   command=self._delete_selected).grid(column=3, row=3)
-
-        # ttk.Button(self._options_frame, text="Get Selected",
-        #            command=self.get_selected).grid(column=3, row=4)
+                   command=self._delete_selected).grid(
+                       column=3, row=3, sticky=tk.E)
 
     def get_selected(self):
         item = self._tree_list.item(self._tree_list.selection())
@@ -135,7 +134,7 @@ class CatalogFrame(tk.Frame):
         """Generate columns for the treeview widget."""
         self._tree_list["show"] = "headings"
         self._tree_list.heading('names_short', text='Nome abbreviato')
-        self._tree_list.column('names_short', width=150)
+        self._tree_list.column('names_short', width=130)
         self._tree_list.heading('names_long', text='Nome intero')
         self._tree_list.column('names_long', width=300)
 
