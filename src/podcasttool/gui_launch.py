@@ -44,7 +44,7 @@ def _set_directory():
     """
     # If user is me then open in test files directory.
     if util.is_dev_mode():
-        initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP/ALP0')
+        initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
@@ -119,6 +119,9 @@ class MainPage(tk.Tk):
         #                            width=75, borderwidth=1, relief='sunken',
         #                            anchor=tk.W)
         # self.statusbar.place(x=3, y=555)
+
+        # XXX: debug only
+        window_main.select(_page_catalog)
 
         window_main.pack()
         self.podcast_obj = None
