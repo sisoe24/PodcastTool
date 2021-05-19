@@ -274,7 +274,7 @@ class CatalogFrame(tk.Frame):
 
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
-        modification = [_ for _ in self._updated_names.values() if _]
+        # modification = [_ for _ in self._updated_names.values() if _]
         with open(util.catalog_file(), "w") as json_file:
             json.dump(self._catalog_list, json_file, indent=True)
         self.update()
@@ -284,7 +284,6 @@ class CatalogFrame(tk.Frame):
         messagebox.showinfo(message="Modifiche salvate!")
 
     def _delete_new_audio(self):
-        print("➡ self._delete_audio :", self._delete_audio)
         for file in pathlib.Path(util.USER_AUDIO).glob('*mp3'):
             if file.name in self._delete_audio:
                 LOGGER.debug('Deleting file: %s', file)
@@ -295,8 +294,11 @@ class CatalogFrame(tk.Frame):
         for _, new_names in self._updated_names.items():
             for index, new_name in enumerate(new_names, 20):
                 name, lang = new_name
-                msg = f"Generating audio for: \n[{name}]"
+
+                if util.generate_audio(text=name, path=util.USER_AUDIO, lang=lang):
+                    msg = f"Generating audio for:\n{name}"
+                else:
+                    msg = f'Problems generating audio for:\n{name}'
+
                 ttk.Label(self._options_frame, text=msg).grid(
                     column=3, row=index)
-
-                util.generate_audio(text=name, path=util.USER_AUDIO, lang=lang)
