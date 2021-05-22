@@ -29,6 +29,6 @@ LOGGER.addHandler(DEBUG_LOW)
 
 CONSOLE_LOG = logging.StreamHandler(stream=sys.stdout)
 CONSOLE_LOG.setLevel(logging.INFO)
-CONSOLE = logging.Formatter('[%(levelname)s] - %(message)s')
+CONSOLE = logging.Formatter('[%(levelname)s line: %(lineno)d] - %(message)s')
 CONSOLE_LOG.setFormatter(CONSOLE)
 LOGGER.addHandler(CONSOLE_LOG)

@@ -213,7 +213,7 @@ class PodcastFile:
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
         web = util.UserConfig().value('podcast_url')
-        LOGGER.debug('web')
+
         return os.path.join(web, self._course_path)
 
     @property

@@ -1,5 +1,6 @@
 """Reusable utility functions."""
 import os
+import re
 import sys
 import time
 import pickle
@@ -11,9 +12,8 @@ import subprocess
 from tkinter import messagebox
 
 import gtts
-import regex
 
-from setup import OS_SYSTEM, USER_CONFIG
+from src.startup import OS_SYSTEM, USER_CONFIG
 
 LOGGER = logging.getLogger('podcasttool.util')
 
@@ -159,8 +159,8 @@ def audio_duration(file_length: int) -> str:
     """
     song_duration = str(datetime.timedelta(milliseconds=file_length))
 
-    format_duration = regex.sub(
-        r'^(\d{1,2}):(\d\d):(\d\d).+', r'\1h \2m \3s', song_duration)
+    format_duration = re.sub(
+        r'(\d{1,2}):(\d\d):(\d\d)', r'\1h \2m \3s', song_duration)
 
     return format_duration
 
@@ -225,16 +225,17 @@ def open_link(link):
         subprocess.run(['xdg-open', link])
 
 
-def open_log(msg, title="Error", icon="warning"):
+def open_log(msg, title="Error", icon="warning", _exit=True):
     """If fatal error ask user if wants to open log file."""
     msg += '\nOpen log file?'
     user = messagebox.askyesno(title=title, message=msg, icon=icon)
     if user:
         log_path = get_path("log") / "errors.log"
         open_link(log_path)
-    sys.exit()
+    if _exit:
+        sys.exit()
 
 
 if __name__ == '__main__':
-
-    print(catalog_file())
+    x = audio_duration(3123124)
+    print(x)
