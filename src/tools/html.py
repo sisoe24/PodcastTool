@@ -1,11 +1,13 @@
+import re
 import os
 import logging
+
 from datetime import datetime
 
-import regex
 import yattag
 
-from src import util
+from src.util import UserConfig
+from src.startup import PATH_PACKAGE
 
 LOGGER = logging.getLogger('podcasttool.html')
 
@@ -50,10 +52,11 @@ def generate_html(html_data, test_env=False):
                 with tag('p'):
                     text(f'{part_num} | Durata {part_info["duration"]}')
 
-                if util.UserConfig().value('html_mediaplayer'):
+                settings = UserConfig()
+                if settings.value('html_mediaplayer', False):
                     with tag('object', id="audioplayer1",
                              width="290", height="24",
-                             data=util.UserConfig().data['plugin_url'],
+                             data=settings.value('plugin_url'),
                              type="application/x-shockwave-flash"):
                         doc.stag('param', name="FlashVars",
                                  value=f"playerID=1&soundFile={part_info['link']}")
@@ -62,25 +65,33 @@ def generate_html(html_data, test_env=False):
                     with tag('button', klass='virgil_button'):
                         text('Download')
 
-    def test_path(text):
-        """Substitute the current path with the test path."""
-        sub_path = regex.compile(
-            r"(?<=didattica/)PODCAST/[A-Z]{3}/[A-Z]{3,}(?=/Lezione)")
-        sub = sub_path.sub("virgil_test", text)
-        return sub
-
     def generate_archive(text):
         """Create a html file archive for later use."""
-        today = datetime.today().strftime('%m.%d.%Y_%H:%M_')
+        today = datetime.today().strftime('%m.%d.%Y_%H:%M')
         podcast_name = html_data['archive_name']
-        file_path = os.path.join(
-            util.get_path('archive'), today + podcast_name + '.html')
+        html_file = f'{today}_{podcast_name}.html'
+
+        file_path = os.path.join(PATH_PACKAGE, 'archive', html_file)
         LOGGER.debug('creating html archive: %s', file_path)
+
         with open(file_path, 'w') as file:
             if test_env:
-                text = test_path(text)
+                text = _test_path(text)
             file.write(text)
 
     page = yattag.indent(doc.getvalue())
     LOGGER.debug('html page generated')
+
     generate_archive(page)
+
+
+def _test_path(text):
+    """Substitute the current path with the test path."""
+    text = re.sub(r'PODCAST\/[A-Z]{3}\/[A-Z]{3}\w{1,2}', 'virgil_test', text)
+    return text
+
+
+if __name__ == '__main__':
+    p = 'https://www.fonderiesonore.com/images/didattica/PODCAST/ALP/SECD/Lezione_4_Parte_1_530835b734b492344ee2f2dca5b76244.mp3'
+    x = test_path(p)
+    print(x)
