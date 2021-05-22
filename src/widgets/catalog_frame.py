@@ -14,7 +14,7 @@ from tkinter import messagebox
 
 
 from src import util
-from setup import USER_AUDIO
+from src.startup import USER_AUDIO
 from resources import catalog, _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
@@ -44,10 +44,10 @@ class CatalogFrame(tk.Frame):
         self.vertical_scrollbar.config(command=self._tree_list.yview)
 
         self.vertical_scrollbar.grid(
-            column=3, row=0, rowspan=3,  sticky=tk.N + tk.S)
+            column=3, row=0, rowspan=3, sticky=tk.N + tk.S)
 
         self._options_frame = ttk.Frame(self, width=300, height=500)
-        self._options_frame.grid(column=2, row=0, sticky=tk.N)
+        self._options_frame.grid(column=2, row=0, sticky=tk.N, padx=5)
         self._options_frame.grid_propagate(False)
 
         # load list frame

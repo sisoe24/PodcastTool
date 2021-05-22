@@ -22,7 +22,7 @@ import pydub
 import regex
 
 from src import util
-from setup import USER_AUDIO
+from src.startup import USER_AUDIO
 from resources import catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')
@@ -105,9 +105,9 @@ class PodcastFile:
                 nframe = wave_file.getnframes()
                 rframe = wave_file.getframerate()
         except Exception as error:
-            LOGGER.critical('%s - probably not a wave file!', error)
-            # TODO: need to show the message to user
-            sys.exit()
+            LOGGER.critical('%s - probably not a wave file!',
+                            error, exc_info=True)
+            util.open_log('Probably not a wave file.')
 
         # amount in seconds
         total_float_seconds = nframe / rframe
@@ -132,9 +132,9 @@ class PodcastFile:
                     ''', filename, regex.I | regex.X)
         if not valid_file:
             LOGGER.critical(
-                "La nomenclatura del file sembra invalida %s", filename)
-            # TODO: need to show the message to user
-            sys.exit()
+                "La nomenclatura del file sembra invalida %s",
+                filename, exc_info=True)
+            util.open_log('Error parsing podcast name cli.')
 
     @property
     def name(self):

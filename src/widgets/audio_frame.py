@@ -18,7 +18,7 @@ from tkinter import (
 )
 
 from src import util
-from setup import USER_AUDIO
+from src.startup import USER_AUDIO
 from resources import catalog, _catalog_file
 
 

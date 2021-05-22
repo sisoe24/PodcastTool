@@ -6,9 +6,9 @@ import pathlib
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-import util
-from setup import USER_AUDIO
-from widgets.html_frame import archive_files
+import src.util as util
+from src.startup import USER_AUDIO
+from src.widgets.html_frame import archive_files
 from resources import _system_catalog_path, _catalog_file
 
 

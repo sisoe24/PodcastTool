@@ -1,4 +1,4 @@
-from . import setup
+from . import startup
 from . import logger
 from . import util
-from widgets import *
+from .widgets import *

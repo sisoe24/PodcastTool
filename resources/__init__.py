@@ -3,7 +3,7 @@ import json
 import shutil
 import pathlib
 
-from src.setup import USER_CATALOG, USER_AUDIO
+from src.startup import USER_CATALOG, USER_AUDIO
 
 CURRENT_DIR = os.path.dirname(__file__)
 

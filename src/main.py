@@ -13,7 +13,7 @@ from tkinter import (
     filedialog
 )
 
-from setup import OS_SYSTEM
+from src.startup import OS_SYSTEM
 
 from src import (
     util,
@@ -28,7 +28,7 @@ from src.widgets import (
     SelectPodcast
 )
 
-from tools import (
+from src.tools import (
     PodcastFile,
     check_server_path,
     upload_to_server,

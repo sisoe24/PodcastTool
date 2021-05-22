@@ -24,8 +24,8 @@ import regex
 # from podcasttool import open_log
 # from podcasttool import OS_SYSTEM
 
-from util import open_log
-from setup import OS_SYSTEM
+from src.util import open_log
+from src.startup import OS_SYSTEM
 
 
 LOGGER = logging.getLogger('podcasttool.widgets.selectframe')

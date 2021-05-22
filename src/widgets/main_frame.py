@@ -12,7 +12,7 @@ import regex
 # from podcasttool import util
 # from podcasttool import OS_SYSTEM, open_log
 
-from setup import OS_SYSTEM
+from src.startup import OS_SYSTEM
 from src.util import open_log
 from resources import catalog
 
@@ -246,7 +246,7 @@ class MainFrame(tk.Frame):
             numbers_match = fallback.search(filename)
             self._tag_errors(numbers_match.span(), line_num, tag)
 
-            # TODO: this may fail because is not parsing the real podcast
+            # ? this may fail because is not parsing the real podcast
             # but just the variabile with the last podcast
             self.log_frame.display_msg(
                 f'- {numbers_match.group()} -> {self.podcast_obj.date}',
