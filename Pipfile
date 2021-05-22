@@ -4,16 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-pytest-cov = "*"
-autopep8 = "*"
-doc8 = "*"
-sphinx = "*"
-flake8 = "*"
-rope = "*"
-pylint = "*"
-pydocstyle = "*"
-v = {editable = true,version = "*"}
 
 [packages]
 pydub = "*"
