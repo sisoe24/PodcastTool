@@ -144,7 +144,7 @@ class AudioIntro(tk.Frame):
 
         for index, name in enumerate(audio_list, 10):
 
-            if util.generate_audio(text=name, path=USER_AUDIO):
+            if util.generate_audio(text=name.lower(), path=USER_AUDIO):
                 msg = f"Generating audio for: {name}"
                 ttk.Label(self._audio_frame, text=msg).grid(
                     column=0, row=index)
