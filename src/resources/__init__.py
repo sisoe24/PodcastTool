@@ -57,5 +57,5 @@ def audio_library():
         for dirpath, _, filenames in os.walk(path):
             for filename in filenames:
                 if filename.endswith('mp3'):
-                    library_dict[filename.lower()] = dirpath
+                    library_dict[filename] = dirpath
     return library_dict

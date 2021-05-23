@@ -7,7 +7,6 @@ from datetime import datetime
 
 from tkinter import messagebox, TkVersion
 
-print(sys.path)
 
 if TkVersion <= 8.5:
     messagebox.showinfo(

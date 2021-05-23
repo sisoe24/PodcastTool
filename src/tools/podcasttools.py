@@ -428,15 +428,16 @@ class PodcastFile:
 
                 pad_fill = str(index).zfill(2)
                 item_name = audio.replace(' ', '_') + '.mp3'
-                item_name = item_name.lower()
 
                 if item_name in library.keys():
                     src_file = os.path.join(library.get(item_name), item_name)
                     dst_name = f'{pad_fill}_{item_name}'
 
-                    shutil.copy2(src_file, f'{tmp_dir}/{dst_name}')
+                    shutil.copyfile(src_file, f'{tmp_dir}/{dst_name}')
                 else:
                     self.missing_audio.add(item_name)
+                    LOGGER.warning(
+                        'missing audio file for: %s', item_name)
 
             err = True
 
