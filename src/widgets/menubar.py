@@ -7,7 +7,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 from widgets.html_frame import archive_files
-import util
+
+from utils import util
 from startup import USER_AUDIO
 from resources import _system_catalog_path, _catalog_file
 

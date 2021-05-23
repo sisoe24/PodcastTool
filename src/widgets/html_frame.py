@@ -15,7 +15,7 @@ from tkinter import ttk
 
 import pyperclip
 
-import util
+from utils import util
 from startup import OS_SYSTEM
 
 

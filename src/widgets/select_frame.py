@@ -20,8 +20,8 @@ from datetime import datetime
 
 import regex
 
-from util import open_log
 from startup import OS_SYSTEM
+from utils.util import open_log
 
 
 LOGGER = logging.getLogger('podcasttool.widgets.selectframe')

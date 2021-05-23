@@ -20,7 +20,7 @@ import logging
 import pydub
 import regex
 
-import util
+from utils import util
 from startup import USER_AUDIO
 from resources import catalog, audio_library
 

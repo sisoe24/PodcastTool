@@ -7,7 +7,7 @@ from tkinter import ttk
 
 import regex
 
-from util import open_log
+from utils.util import open_log
 from startup import OS_SYSTEM
 from resources import catalog
 

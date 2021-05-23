@@ -1,9 +1,8 @@
 import os
 import json
 import shutil
-import pathlib
 
-from src.startup import USER_CATALOG, USER_AUDIO
+from startup import USER_CATALOG, USER_AUDIO
 
 CURRENT_DIR = os.path.dirname(__file__)
 

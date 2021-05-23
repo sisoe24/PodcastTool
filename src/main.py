@@ -12,7 +12,7 @@ from tkinter import (
     filedialog
 )
 
-import util
+from utils import util
 from startup import OS_SYSTEM
 
 from widgets import (

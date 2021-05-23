@@ -7,7 +7,7 @@ from datetime import datetime
 import yattag
 
 from startup import PATH_PACKAGE
-from util import UserConfig
+from utils.util import UserConfig
 
 LOGGER = logging.getLogger('podcasttool.html')
 
