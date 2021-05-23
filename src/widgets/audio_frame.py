@@ -17,8 +17,8 @@ from tkinter import (
     filedialog
 )
 
-from src import util
-from src.startup import USER_AUDIO
+import util
+from startup import USER_AUDIO
 from resources import catalog, _catalog_file
 
 

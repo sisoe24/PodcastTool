@@ -6,7 +6,7 @@ import logging
 
 from tkinter import messagebox
 
-from src import util
+import util
 
 LOGGER = logging.getLogger('podcasttool.server')
 

@@ -9,7 +9,6 @@ The name of the file is always formatted like this:
     SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav.
 """
 import os
-import sys
 import math
 import wave
 
@@ -21,8 +20,8 @@ import logging
 import pydub
 import regex
 
-from src import util
-from src.startup import USER_AUDIO
+import util
+from startup import USER_AUDIO
 from resources import catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')

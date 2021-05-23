@@ -1,5 +1,3 @@
-import os
-import pathlib
 import logging
 
 from difflib import get_close_matches
@@ -9,11 +7,8 @@ from tkinter import ttk
 
 import regex
 
-# from podcasttool import util
-# from podcasttool import OS_SYSTEM, open_log
-
-from src.startup import OS_SYSTEM
-from src.util import open_log
+from util import open_log
+from startup import OS_SYSTEM
 from resources import catalog
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')

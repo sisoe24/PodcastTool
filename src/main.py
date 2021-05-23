@@ -1,5 +1,4 @@
 """GUI interface of PodcastTool."""
-import concurrent
 import os
 import logging
 from datetime import datetime
@@ -13,13 +12,10 @@ from tkinter import (
     filedialog
 )
 
-from src.startup import OS_SYSTEM
+import util
+from startup import OS_SYSTEM
 
-from src import (
-    util,
-)
-
-from src.widgets import (
+from widgets import (
     MenuBar,
     HtmlFrame,
     MainFrame,
@@ -28,7 +24,7 @@ from src.widgets import (
     SelectPodcast
 )
 
-from src.tools import (
+from tools import (
     PodcastFile,
     check_server_path,
     upload_to_server,
@@ -199,12 +195,12 @@ class MainPage(tk.Tk):
             display_msg(
                 f'! Missing audio files: {podcast.missing_audio}', 'yellow'
             )
-
-        display_msg("Fatto!\n\nCaricamento podcast su server...")
+        display_msg("Fatto!\n")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
+        display_msg("Caricamento podcast su server...")
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
                 self.update()
@@ -220,8 +216,10 @@ class MainPage(tk.Tk):
                                     e, exc_info=True)
                     util.open_log('Error when uploading to server')
 
+        display_msg("Fatto!\n")
+
         generate_html(podcast.html_page, test_upload)
-        display_msg("Fatto!\n\nPagina html generata")
+        display_msg("Pagina html generata")
 
         self._conferm_btn["state"] = 'disable'
 

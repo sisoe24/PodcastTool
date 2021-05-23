@@ -13,19 +13,15 @@ in the suggestion section of the gui when the date written by user is wrong.
 """
 
 import os
-import sys
-import pathlib
 import logging
+import pathlib
 
 from datetime import datetime
 
 import regex
 
-# from podcasttool import open_log
-# from podcasttool import OS_SYSTEM
-
-from src.util import open_log
-from src.startup import OS_SYSTEM
+from util import open_log
+from startup import OS_SYSTEM
 
 
 LOGGER = logging.getLogger('podcasttool.widgets.selectframe')

@@ -13,8 +13,8 @@ from tkinter import ttk
 from tkinter import messagebox
 
 
-from src import util
-from src.startup import USER_AUDIO
+import util
+from startup import USER_AUDIO
 from resources import catalog, _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')

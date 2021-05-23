@@ -5,20 +5,21 @@ Usage:
     python setup.py py2app
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 APP = ['src/main.py']
-DATA_FILES = ["include", "docs", "log", "archive"]
+# DATA_FILES = ["log", "archive"]
 OPTIONS = {
     "iconfile": "include/img/app.icns",
     "emulate_shell_environment": 1,
-    "packages": ["podcasttool"],
+    "packages": find_packages(),
 }
 
 setup(
     app=APP,
+    version="2.3",
     name="PodcastTool",
-    data_files=DATA_FILES,
+    # data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
 )

@@ -13,7 +13,7 @@ from tkinter import messagebox
 
 import gtts
 
-from src.startup import OS_SYSTEM, USER_CONFIG
+from startup import OS_SYSTEM, USER_CONFIG
 
 LOGGER = logging.getLogger('podcasttool.util')
 

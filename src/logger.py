@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 
-from src.startup import PATH_PACKAGE
+from startup import PATH_PACKAGE
 
 LOGGER = logging.getLogger('podcasttool')
 

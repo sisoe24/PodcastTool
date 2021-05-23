@@ -15,8 +15,8 @@ from tkinter import ttk
 
 import pyperclip
 
-from src import util
-from src.startup import OS_SYSTEM
+import util
+from startup import OS_SYSTEM
 
 
 def archive_files():

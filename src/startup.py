@@ -30,12 +30,12 @@ USER_CATALOG = os.path.join(SYS_CONFIG_PATH, 'catalog.json')
 USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
 USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
 
+os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
+os.makedirs(USER_AUDIO, exist_ok=True)
+
 if not os.path.exists(USER_CONFIG):
     with open(USER_CONFIG, 'wb') as _:
         pass
-
-os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
-os.makedirs(USER_AUDIO, exist_ok=True)
 
 
 def write_report():
