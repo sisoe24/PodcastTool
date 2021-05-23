@@ -13,7 +13,7 @@ from tkinter import messagebox
 
 import gtts
 
-from startup import OS_SYSTEM, USER_CONFIG
+from startup import OS_SYSTEM, USER_CONFIG, LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool.util')
 
@@ -82,7 +82,7 @@ def profile(func):
             sortby = SortKey.CUMULATIVE
             ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
             ps.print_stats()
-            with open(f'{get_path("log")}/profile.log', 'w') as file:
+            with open(f'{LOG_PATH}/profile.log', 'w') as file:
                 file.write(s.getvalue())
             return value
         return inner
@@ -99,7 +99,7 @@ def total_time(func):
         total = datetime.timedelta(seconds=end - start)
         print_str = f"total time: {str(total)}\n"
         print(print_str)
-        with open(f'{get_path("log")}/profile.log', 'a') as file:
+        with open(f'{LOG_PATH}/profile.log', 'a') as file:
             file.write(print_str)
         return value
     return wrapper
@@ -123,7 +123,7 @@ def generate_audio(text, path, filename="", lang='it'):
     else:
         filename = filename.replace(" ", "_")
 
-    path = get_path(path)
+    path = os.path.abspath(path)
     try:
         speak = gtts.gTTS(text=name, lang=lang)
         speak.save(f'{path}/{filename}.mp3')
@@ -230,12 +230,11 @@ def open_log(msg, title="Error", icon="warning", _exit=True):
     msg += '\nOpen log file?'
     user = messagebox.askyesno(title=title, message=msg, icon=icon)
     if user:
-        log_path = get_path("log") / "errors.log"
+        log_path = os.path.join(LOG_PATH, "errors.log")
         open_link(log_path)
     if _exit:
         sys.exit()
 
 
 if __name__ == '__main__':
-    x = audio_duration(3123124)
-    print(x)
+    pass

@@ -428,6 +428,7 @@ class PodcastFile:
 
                 pad_fill = str(index).zfill(2)
                 item_name = audio.replace(' ', '_') + '.mp3'
+                item_name = item_name.lower()
 
                 if item_name in library.keys():
                     src_file = os.path.join(library.get(item_name), item_name)

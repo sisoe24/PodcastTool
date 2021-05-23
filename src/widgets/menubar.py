@@ -9,7 +9,7 @@ from tkinter import messagebox, ttk
 from widgets.html_frame import archive_files
 
 from utils import util
-from startup import USER_AUDIO
+from startup import LOG_PATH, USER_AUDIO
 from resources import _system_catalog_path, _catalog_file
 
 
@@ -45,10 +45,8 @@ class OptionsMenu(tk.Menu):
 
     @ staticmethod
     def clean_log():
-        log_path = util.get_path("log")
-        for file in log_path.glob('*.log'):
-            file_path = os.path.join(log_path, file)
-            with open(file_path, "w") as _:
+        for file in pathlib.Path(LOG_PATH).glob('*.log'):
+            with open(file, "w") as _:
                 pass
 
     @ staticmethod
@@ -158,12 +156,9 @@ class HelpMenu(tk.Menu):
 
         self.add_command(
             label='Open Log File',
-            command=lambda: self.open_file("log", "debug.log")
+            command=lambda: util.open_link(
+                os.path.join(LOG_PATH,  "debug.log"))
         )
-
-    @ staticmethod
-    def open_file(_dir, file):
-        util.open_link(os.path.join(util.get_path(_dir), file))
 
 
 class AudioMenu(tk.Menu):

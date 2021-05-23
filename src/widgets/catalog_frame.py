@@ -195,7 +195,7 @@ class CatalogFrame(tk.Frame):
                                       )
         if confirm:
             item = self._tree_list.item(self._tree_list.selection())
-            audio_name = item['values'][1].replace(' ', '_')
+            audio_name = item['values'][1].replace(' ', '_').lower()
             self._delete_audio.append(f'{audio_name}.mp3')
 
             self._tree_list.delete(selected_item)
@@ -279,13 +279,14 @@ class CatalogFrame(tk.Frame):
 
         if self._delete_audio:
             self._delete_new_audio()
+            self._delete_audio.clear()
 
         messagebox.showinfo(message="Modifiche salvate!")
 
     def _delete_new_audio(self):
         for file in pathlib.Path(USER_AUDIO).glob('*mp3'):
             if file.name in self._delete_audio:
-                LOGGER.debug('Deleting file: %s', file)
+                LOGGER.info('Deleting file: %s', file)
                 os.remove(file)
 
     def _update_audio_library(self):
@@ -294,7 +295,7 @@ class CatalogFrame(tk.Frame):
             for index, new_name in enumerate(new_names, 20):
                 name, lang = new_name
 
-                if util.generate_audio(text=name, path=USER_AUDIO, lang=lang):
+                if util.generate_audio(text=name.lower(), path=USER_AUDIO, lang=lang):
                     msg = f"Generating audio for:\n{name}"
                 else:
                     msg = f'Problems generating audio for:\n{name}\nPlease check log file'

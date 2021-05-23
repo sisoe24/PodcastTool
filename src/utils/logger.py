@@ -1,15 +1,13 @@
 """Logging module for podcasttools."""
-import os
 import sys
 import logging
 
-from startup import PATH_PACKAGE
+from startup import LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool')
 
 LOGGER.setLevel(logging.DEBUG)
 
-LOG_PATH = os.path.join(PATH_PACKAGE, 'log')
 
 CRITICAL_LOG = logging.FileHandler(f'{LOG_PATH}/errors.log', 'a+')
 CRITICAL_LOG.setLevel(logging.ERROR)

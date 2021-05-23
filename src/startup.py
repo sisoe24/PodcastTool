@@ -20,10 +20,11 @@ elif platform.system() == 'Linux':
     OS_SYSTEM = 'Linux'
 
 
-PATH_PACKAGE = os.path.dirname(os.path.dirname(__file__))
+PACKAGE_PATH = os.path.dirname(os.path.dirname(__file__))
+LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
 
-PATH_RESOURCES = os.path.join(PATH_PACKAGE, 'resources')
-PATH_AUDIO = os.path.join(PATH_RESOURCES,  'audio')
+# PATH_RESOURCES = os.path.join(os.path.dirname(__file__), 'resources')
+# PATH_AUDIO = os.path.join(PATH_RESOURCES,  'audio')
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
 
@@ -31,6 +32,7 @@ USER_CATALOG = os.path.join(SYS_CONFIG_PATH, 'catalog.json')
 USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
 USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
 
+os.makedirs(LOG_PATH, exist_ok=True)
 os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
 os.makedirs(USER_AUDIO, exist_ok=True)
 
@@ -41,7 +43,7 @@ if not os.path.exists(USER_CONFIG):
 
 def write_report():
     """Write and open log with missing dependencies info status."""
-    log_path = os.path.join(PATH_PACKAGE, 'log')
+    log_path = os.path.join(PACKAGE_PATH, 'log')
     report_file = os.path.join(log_path, "dependecies_missing.log")
 
     with open(report_file, "w") as report:

@@ -6,7 +6,7 @@ from datetime import datetime
 
 import yattag
 
-from startup import PATH_PACKAGE
+from startup import PACKAGE_PATH
 from utils.util import UserConfig
 
 LOGGER = logging.getLogger('podcasttool.html')
@@ -71,7 +71,7 @@ def generate_html(html_data, test_env=False):
         podcast_name = html_data['archive_name']
         html_file = f'{today}_{podcast_name}.html'
 
-        file_path = os.path.join(PATH_PACKAGE, 'archive', html_file)
+        file_path = os.path.join(PACKAGE_PATH, 'archive', html_file)
         LOGGER.debug('creating html archive: %s', file_path)
 
         with open(file_path, 'w') as file:
