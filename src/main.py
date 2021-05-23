@@ -41,7 +41,7 @@ def _set_directory():
         {str} - path to which directory to open first at gui start.
     """
     # If user is me then open in test files directory.
-    if util.is_dev_mode():
+    if util.is_dev_mode() and OS_SYSTEM == 'Mac':
         initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/ALP')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
