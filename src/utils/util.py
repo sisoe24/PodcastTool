@@ -160,7 +160,7 @@ def audio_duration(file_length: int) -> str:
     song_duration = str(datetime.timedelta(milliseconds=file_length))
 
     format_duration = re.sub(
-        r'(\d{1,2}):(\d\d):(\d\d)', r'\1h \2m \3s', song_duration)
+        r'(\d{1,2}):(\d\d):(\d\d).+', r'\1h \2m \3s', song_duration)
 
     return format_duration
 
@@ -237,4 +237,4 @@ def open_log(msg, title="Error", icon="warning", _exit=True):
 
 
 if __name__ == '__main__':
-    pass
+    audio_duration(12312312)
