@@ -1,3 +1,17 @@
+# my folder
+.vscode/*
+other/
+tests/SECD*
+misc/*
+scripts/archive/*
+
+# my files
+.DS_Store
+
+TODO.md
+*.code-workspace
+*.spec
+
 # Temporary and binary files
 *~
 *.py[cod]
@@ -47,19 +61,3 @@ MANIFEST
 
 # Per-project virtualenvs
 .venv*/
-
-# my folder
-.vscode/*
-other/
-scripts/
-src/.prototype
-tests/SECD*
-misc/*
-
-# my files
-.DS_Store
-.env
-
-TODO.md
-*.code-workspace
-*.spec
