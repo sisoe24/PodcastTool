@@ -8,8 +8,4 @@ pyinstaller src/main.py \
     --icon resources/images/app.png \
     --noconfirm \
     -n PodcastTool \
-    -p src:utils \
-    -p src:tools \
-    -p src:widgets \
-    -p src:resources \
-    --add-data src:. \
+    --add-data resources:resources \
