@@ -2,8 +2,6 @@
 import os
 import re
 import sys
-import time
-import pickle
 import pathlib
 import logging
 import datetime
@@ -13,96 +11,9 @@ from tkinter import messagebox
 
 import gtts
 
-from startup import OS_SYSTEM, USER_CONFIG, LOG_PATH
+from startup import OS_SYSTEM, LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool.util')
-
-
-class UserConfig:
-    def __init__(self, mode='rb'):
-        self._mode = mode
-        self._file = USER_CONFIG
-
-    def __enter__(self):
-        self._open = open(self._file, self._mode)
-        return self._open
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._open.close()
-
-    @property
-    def file(self):
-        return self._file
-
-    @property
-    def data(self):
-        if self.get_size() > 0:
-            with open(self._file, 'rb') as file:
-                return pickle.load(file)
-
-    def value(self, key, default=''):
-        try:
-            value = self.data[key]
-        except (KeyError, TypeError):
-            return default
-        else:
-            if value:
-                return value
-            return default
-
-    def is_empty(self):
-        if self.get_size() <= 0:
-            return True
-        for key, value in self.data.items():
-            if key in ['host', 'user', 'pass', 'web']:
-                if not value:
-                    return True
-        return False
-
-    def get_size(self):
-        return os.path.getsize(self._file)
-
-
-def profile(func):
-    """Write to log the profiling of a function."""
-    # SortKey class is not present on the linux version
-    # need to upgrade python to 3.7.4
-    try:
-        import io
-        import pstats
-        import cProfile
-        from pstats import SortKey
-
-        def inner(*args, **kwargs):
-            pr = cProfile.Profile()
-            pr.enable()
-            value = func(*args, **kwargs)
-            pr.disable()
-            s = io.StringIO()
-            sortby = SortKey.CUMULATIVE
-            ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-            ps.print_stats()
-            with open(f'{LOG_PATH}/profile.log', 'w') as file:
-                file.write(s.getvalue())
-            return value
-        return inner
-    except ModuleNotFoundError:
-        return lambda: ()
-
-
-def total_time(func):
-    """Write to log total time of function completition."""
-    def wrapper(*args, **kwarg):
-        start = time.time()
-        value = func(*args, **kwarg)
-        end = time.time()
-        total = datetime.timedelta(seconds=end - start)
-        print_str = f"total time: {str(total)}\n"
-        print(print_str)
-        with open(f'{LOG_PATH}/profile.log', 'a') as file:
-            file.write(print_str)
-        return value
-    return wrapper
 
 
 def generate_audio(text, path, filename="", lang='it'):
@@ -160,7 +71,7 @@ def audio_duration(file_length: int) -> str:
     song_duration = str(datetime.timedelta(milliseconds=file_length))
 
     format_duration = re.sub(
-        r'(\d{1,2}):(\d\d):(\d\d).+', r'\1h \2m \3s', song_duration)
+        r'(\d{1,2}):(\d\d):(\d\d)(.+)?', r'\1h \2m \3s', song_duration)
 
     return format_duration
 

@@ -20,9 +20,8 @@ import logging
 import pydub
 import regex
 
-from utils import util
 from startup import USER_AUDIO
-from utils.resources import catalog, audio_library
+from utils import util, UserConfig, catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')
 
@@ -211,7 +210,7 @@ class PodcastFile:
     def course_path(self):
         """Get the parent folder of the podcast course."""
         LOGGER.debug("course path: %s", self._course_path)
-        web = util.UserConfig().value('podcast_url')
+        web = UserConfig().value('podcast_url')
 
         return os.path.join(web, self._course_path)
 

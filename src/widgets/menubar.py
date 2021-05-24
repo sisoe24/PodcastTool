@@ -8,7 +8,7 @@ from tkinter import messagebox, ttk
 
 from widgets.html_frame import archive_files
 
-from utils import util
+from utils import util, UserConfig
 from startup import LOG_PATH, USER_AUDIO
 from utils.resources import _system_catalog_path, _catalog_file
 
@@ -19,7 +19,7 @@ class OptionsMenu(tk.Menu):
 
         self._html_media = tk.BooleanVar()
 
-        use_mediaplayer = util.UserConfig().value('html_mediaplayer', False)
+        use_mediaplayer = UserConfig().value('html_mediaplayer', False)
         self._html_media.set(use_mediaplayer)
 
         self.add_checkbutton(label='Use HTML Mediaplayer',
@@ -30,7 +30,7 @@ class OptionsMenu(tk.Menu):
 
         self._html_archive = tk.BooleanVar()
 
-        _make_archive = util.UserConfig().value('html_archive', False)
+        _make_archive = UserConfig().value('html_archive', False)
         self._html_archive.set(_make_archive)
 
         self.add_checkbutton(label='Archive HTML file',
@@ -50,11 +50,11 @@ class OptionsMenu(tk.Menu):
 
     def _update_config(self, setting):
 
-        data = util.UserConfig().data
+        data = UserConfig().data
         # data.update({'html_mediaplayer': self._html_media.get()})
         data.update(setting)
 
-        with util.UserConfig(mode='wb') as file:
+        with UserConfig(mode='wb') as file:
             pickle.dump(data, file)
 
     @ staticmethod
@@ -122,7 +122,7 @@ class CredentialsEntry(tk.Tk):
         self.save_credentials.grid(row=4, column=1, columnspan=2,
                                    sticky=tk.E, pady=5)
 
-        self.config = util.UserConfig()
+        self.config = UserConfig()
         self.load_credentials()
 
     def _save(self):
@@ -142,7 +142,7 @@ class CredentialsEntry(tk.Tk):
         data['podcast_url'] = f'{web}/images/didattica/PODCAST'
         data['plugin_url'] = f'{web}/plugins/content/1pixelout/player.swf'
 
-        with util.UserConfig(mode='wb') as config_file:
+        with UserConfig(mode='wb') as config_file:
             pickle.dump(data, config_file)
 
         self.destroy()

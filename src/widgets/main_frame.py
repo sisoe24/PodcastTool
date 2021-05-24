@@ -9,7 +9,7 @@ import regex
 
 from utils.util import open_log
 from startup import OS_SYSTEM
-from utils.resources import catalog
+from utils import catalog
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
 

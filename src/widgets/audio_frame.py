@@ -17,9 +17,9 @@ from tkinter import (
     filedialog
 )
 
-from utils import util
 from startup import USER_AUDIO
-from utils.resources import catalog, _catalog_file
+from utils import util, catalog
+from utils.resources import _catalog_file
 
 
 class AudioIntro(tk.Frame):

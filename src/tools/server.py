@@ -6,7 +6,7 @@ import logging
 
 from tkinter import messagebox
 
-from utils import util
+from utils import util, UserConfig
 
 LOGGER = logging.getLogger('podcasttool.server')
 
@@ -14,7 +14,7 @@ LOGGER = logging.getLogger('podcasttool.server')
 class FtpServer:
     def __init__(self, server_path):
         self._server_path = server_path
-        self.settings = util.UserConfig()
+        self.settings = UserConfig()
 
     def __enter__(self):
         try:
@@ -42,7 +42,7 @@ def check_server_path(server_path: str, test_env=False):
         server_path (str) path on the server to check
         test_env (bool)   if True, upload to test path
     """
-    test_server_path = util.UserConfig().data['test_url']
+    test_server_path = UserConfig().data['test_url']
 
     server_path = server_path if not test_env else test_server_path
 

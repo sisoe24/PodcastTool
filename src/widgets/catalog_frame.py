@@ -13,14 +13,14 @@ from tkinter import ttk
 from tkinter import messagebox
 
 
-from utils import util
+from utils import util, catalog
 from startup import USER_AUDIO
-from utils.resources import catalog, _catalog_file
+from utils.resources import _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
 
 
-class CatalogFrame(tk.Frame):
+class CatalogFrame(ttk.Frame):
     """Catalog page of the gui."""
     _catalog_list = catalog()
 

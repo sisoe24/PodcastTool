@@ -12,8 +12,8 @@ from tkinter import (
     filedialog
 )
 
-from utils import util
 from startup import OS_SYSTEM
+from utils import util, UserConfig
 
 from widgets import (
     MenuBar,
@@ -138,7 +138,7 @@ class MainPage(tk.Tk):
         self.clock.after(1000, self.time)
 
     def check_credentials(self):
-        if util.UserConfig().is_empty():
+        if UserConfig().is_empty():
 
             messagebox.showwarning(title='PodcastTool',
                                    message='Update Credentials first!')
@@ -229,7 +229,13 @@ class MainPage(tk.Tk):
         self.html.status('Pronto', 'green')
 
         self.update()
-        messagebox.showinfo(title="PodcastTool", message="Done!", icon="info")
+        self._open_folder()
+
+    def _open_folder(self):
+        _user = messagebox.askyesno(title='PodcastTool',
+                                    message='Done!\nOpen podcast folder?')
+        if _user:
+            util.open_link(self.podcast_obj.path)
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
