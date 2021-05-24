@@ -24,21 +24,20 @@ PWD = os.path.dirname(__file__)
 PACKAGE_PATH = os.path.dirname(PWD)
 
 LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
-RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
-ARCHIVE_PATH = os.path.join(RESOURCES_PATH, 'archive')
+os.makedirs(LOG_PATH, exist_ok=True)
 
+# RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
-
-USER_CATALOG = os.path.join(SYS_CONFIG_PATH, 'catalog.json')
+USER_ARCHIVE = os.path.join(SYS_CONFIG_PATH, 'archive')
 USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
-USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
 
-os.makedirs(LOG_PATH, exist_ok=True)
-os.makedirs(ARCHIVE_PATH, exist_ok=True)
 os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
+os.makedirs(USER_ARCHIVE, exist_ok=True)
 os.makedirs(USER_AUDIO, exist_ok=True)
 
+USER_CATALOG = os.path.join(SYS_CONFIG_PATH, 'catalog.json')
+USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
 if not os.path.exists(USER_CONFIG):
     with open(USER_CONFIG, 'wb') as _:
         pass
