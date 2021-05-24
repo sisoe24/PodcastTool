@@ -8,9 +8,10 @@ Usage:
 from setuptools import setup, find_packages
 
 APP = ['src/main.py']
-# DATA_FILES = ["log", "archive"]
+DATA_FILES = ['resources']
+
 OPTIONS = {
-    "iconfile": "include/img/app.icns",
+    "iconfile": "resources/images/app.icns",
     "emulate_shell_environment": 1,
     "packages": find_packages(),
 }
@@ -19,7 +20,7 @@ setup(
     app=APP,
     version="2.3",
     name="PodcastTool",
-    # data_files=DATA_FILES,
+    data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
 )

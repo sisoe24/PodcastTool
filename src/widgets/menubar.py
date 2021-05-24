@@ -10,7 +10,7 @@ from widgets.html_frame import archive_files
 
 from utils import util
 from startup import LOG_PATH, USER_AUDIO
-from resources import _system_catalog_path, _catalog_file
+from utils.resources import _system_catalog_path, _catalog_file
 
 
 class OptionsMenu(tk.Menu):

@@ -20,8 +20,10 @@ elif platform.system() == 'Linux':
     OS_SYSTEM = 'Linux'
 
 
-PACKAGE_PATH = os.path.dirname(os.path.dirname(__file__))
+CWD = os.path.dirname(__file__)
+PACKAGE_PATH = os.path.dirname(CWD)
 LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
+ARCHIVE_PATH = os.path.join(PACKAGE_PATH, 'archive')
 
 # PATH_RESOURCES = os.path.join(os.path.dirname(__file__), 'resources')
 # PATH_AUDIO = os.path.join(PATH_RESOURCES,  'audio')
@@ -33,6 +35,7 @@ USER_AUDIO = os.path.join(SYS_CONFIG_PATH, 'audio')
 USER_CONFIG = os.path.join(SYS_CONFIG_PATH, '.config')
 
 os.makedirs(LOG_PATH, exist_ok=True)
+os.makedirs(ARCHIVE_PATH, exist_ok=True)
 os.makedirs(SYS_CONFIG_PATH, exist_ok=True)
 os.makedirs(USER_AUDIO, exist_ok=True)
 

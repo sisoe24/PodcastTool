@@ -22,7 +22,7 @@ import regex
 
 from utils import util
 from startup import USER_AUDIO
-from resources import catalog, audio_library
+from utils.resources import catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')
 

@@ -15,7 +15,7 @@ from tkinter import messagebox
 
 from utils import util
 from startup import USER_AUDIO
-from resources import catalog, _catalog_file
+from utils.resources import catalog, _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
 

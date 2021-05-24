@@ -2,13 +2,18 @@ import os
 import json
 import shutil
 
-from startup import USER_CATALOG, USER_AUDIO
+from startup import USER_CATALOG, USER_AUDIO, CWD
 
-CURRENT_DIR = os.path.dirname(__file__)
+# if 'zip' in __file__:
+# else:
+#     CURRENT_DIR = os.path.dirname(__file__)
+
+CURRENT_DIR = os.getcwd()
+print("➡ CURRENT_DIR :", CURRENT_DIR)
 
 
 def _system_catalog_path():
-    return os.path.join(CURRENT_DIR, 'data/catalog.json')
+    return os.path.join(CURRENT_DIR, 'resources', 'data', 'catalog.json')
 
 
 def _catalog_file():
@@ -50,7 +55,7 @@ def audio_library():
     """
     library_dict = {}
 
-    sys_audio = os.path.join(CURRENT_DIR, 'audio')
+    sys_audio = os.path.join(CURRENT_DIR, 'resources', 'audio')
     parse_path = [USER_AUDIO, sys_audio]
 
     for path in parse_path:

@@ -19,7 +19,7 @@ from tkinter import (
 
 from utils import util
 from startup import USER_AUDIO
-from resources import catalog, _catalog_file
+from utils.resources import catalog, _catalog_file
 
 
 class AudioIntro(tk.Frame):
