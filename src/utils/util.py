@@ -212,7 +212,8 @@ def is_dev_mode(bypass=False):
     """
     if bypass:
         return False
-    if os.getenv('USER') in ['virgil', 'virgilsisoe', 'ubuntutest']:
+    if os.getenv('USER') in ['virgil', 'virgilsisoe',
+                             'virgilkubuntu', 'ubuntutest']:
         return True
     return False
 
@@ -220,9 +221,12 @@ def is_dev_mode(bypass=False):
 def open_link(link):
     """Open a file path or a website link."""
     if OS_SYSTEM == 'Mac':
-        subprocess.run(['open', link])
+        open_cmd = 'open'
     elif OS_SYSTEM == 'Linux':
-        subprocess.run(['xdg-open', link])
+        open_cmd = 'xdg-open'
+    else:
+        return
+    subprocess.run([open_cmd, link])
 
 
 def open_log(msg, title="Error", icon="warning", _exit=True):
