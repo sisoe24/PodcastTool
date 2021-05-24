@@ -24,7 +24,20 @@ class OptionsMenu(tk.Menu):
 
         self.add_checkbutton(label='Use HTML Mediaplayer',
                              variable=self._html_media,
-                             command=self._update_config)
+                             command=lambda: self._update_config(
+                                 {'html_mediaplayer': self._html_media.get()}
+                             ))
+
+        self._html_archive = tk.BooleanVar()
+
+        _make_archive = util.UserConfig().value('html_archive', False)
+        self._html_archive.set(_make_archive)
+
+        self.add_checkbutton(label='Archive HTML file',
+                             variable=self._html_archive,
+                             command=lambda: self._update_config(
+                                 {'html_archive': self._html_archive.get()}
+                             ))
 
         self.add_separator()
 
@@ -35,10 +48,11 @@ class OptionsMenu(tk.Menu):
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
 
-    def _update_config(self):
+    def _update_config(self, setting):
 
         data = util.UserConfig().data
-        data.update({'html_mediaplayer': self._html_media.get()})
+        # data.update({'html_mediaplayer': self._html_media.get()})
+        data.update(setting)
 
         with util.UserConfig(mode='wb') as file:
             pickle.dump(data, file)
@@ -68,15 +82,9 @@ class OptionsMenu(tk.Menu):
     @ staticmethod
     def delete_archive():
         """Delete all the html archive files."""
-        prompt = messagebox.askyesno(
-            title='Conferma',
-            message='Cancellare tutto l\'archivio html. Sei sicuro?')
-
-        if not prompt:
-            return
-
         for i in archive_files():
             os.remove(i)
+
         messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 

@@ -2,14 +2,9 @@ import os
 import json
 import shutil
 
-from startup import USER_CATALOG, USER_AUDIO, CWD
-
-# if 'zip' in __file__:
-# else:
-#     CURRENT_DIR = os.path.dirname(__file__)
+from startup import USER_CATALOG, USER_AUDIO
 
 CURRENT_DIR = os.getcwd()
-print("➡ CURRENT_DIR :", CURRENT_DIR)
 
 
 def _system_catalog_path():

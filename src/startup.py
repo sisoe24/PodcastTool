@@ -20,13 +20,13 @@ elif platform.system() == 'Linux':
     OS_SYSTEM = 'Linux'
 
 
-CWD = os.path.dirname(__file__)
-PACKAGE_PATH = os.path.dirname(CWD)
-LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
-ARCHIVE_PATH = os.path.join(PACKAGE_PATH, 'archive')
+PWD = os.path.dirname(__file__)
+PACKAGE_PATH = os.path.dirname(PWD)
 
-# PATH_RESOURCES = os.path.join(os.path.dirname(__file__), 'resources')
-# PATH_AUDIO = os.path.join(PATH_RESOURCES,  'audio')
+LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
+RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
+ARCHIVE_PATH = os.path.join(RESOURCES_PATH, 'archive')
+
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
 

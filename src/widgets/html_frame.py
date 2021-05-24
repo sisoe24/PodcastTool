@@ -16,13 +16,12 @@ from tkinter import ttk
 import pyperclip
 
 from utils import util
-from startup import OS_SYSTEM, PACKAGE_PATH
+from startup import ARCHIVE_PATH, OS_SYSTEM
 
 
 def archive_files():
     """Get all the html archives files."""
-    archive = os.path.join(PACKAGE_PATH, 'archive')
-    path = pathlib.Path(archive).glob('*html')
+    path = pathlib.Path(ARCHIVE_PATH).glob('*html')
     for file in sorted(path):
         yield file
 
