@@ -181,7 +181,7 @@ class AudioMenu(tk.Menu):
         self._sample_rate = tk.StringVar()
         self._sample_rate.set('44100Hz')
 
-        _sample_rate = tk.Menu(self, tearoff=0)
+        _sample_rate = tk.Menu(self)
         for sample in ['22050Hz', '44100Hz']:
             _sample_rate.add_radiobutton(
                 label=sample, variable=self._sample_rate)
@@ -191,7 +191,7 @@ class AudioMenu(tk.Menu):
         self.watermarks_num = tk.StringVar()
         self.watermarks_num.set('Auto')
 
-        watermarks = tk.Menu(self, tearoff=0)
+        watermarks = tk.Menu(self)
         watermarks.add_radiobutton(label='Auto', variable=self.watermarks_num)
 
         for i in range(2, 9):
@@ -204,7 +204,7 @@ class AudioMenu(tk.Menu):
         self._bitrate = tk.StringVar()
         self._bitrate.set('64k')
 
-        _bitrate = tk.Menu(self, tearoff=0)
+        _bitrate = tk.Menu(self)
         for rate in ['32k', '64k', '128k', '192k', '256k', '320k']:
             _bitrate.add_radiobutton(label=rate, variable=self._bitrate)
         return _bitrate
@@ -214,9 +214,9 @@ class MenuBar(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.audio = AudioMenu()
-        self.options = OptionsMenu()
-        self._help = HelpMenu()
+        self.audio = AudioMenu(tearoff=False)
+        self.options = OptionsMenu(tearoff=False)
+        self._help = HelpMenu(tearoff=False)
 
         self.add_cascade(label='Audio Export', menu=self.audio)
         self.add_cascade(label='Options', menu=self.options)
