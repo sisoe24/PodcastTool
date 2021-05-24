@@ -17,7 +17,7 @@ from functools import partial
 import tkinter as tk
 from tkinter import ttk
 
-import pyperclip
+# import pyperclip
 
 from utils import UserConfig
 from startup import USER_ARCHIVE, OS_SYSTEM
@@ -127,7 +127,8 @@ class HtmlFrame(tk.Frame):
 
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
-        pyperclip.copy(self.page)
+        self.clipboard_append(self.page)
+        # pyperclip.copy(self.page)
         self.status('Copiato', 'RoyalBlue1')
         self.bell()
 
