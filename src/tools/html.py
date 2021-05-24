@@ -67,10 +67,9 @@ def generate_html(html_data, test_env=False):
 
     def generate_archive(text):
         """Create a html file archive for later use."""
-        today = datetime.today().strftime('%m.%d.%Y_%H:%M')
-        podcast_name = html_data['archive_name']
-        html_file = f'{today}_{podcast_name}.html'
 
+        today = datetime.today().strftime('%m.%d.%Y_%H:%M')
+        html_file = f"{today}_{html_data['archive_name']}.html"
         file_path = os.path.join(ARCHIVE_PATH, html_file)
         LOGGER.debug('creating html archive: %s', file_path)
 
@@ -84,6 +83,8 @@ def generate_html(html_data, test_env=False):
 
     if settings.value('html_archive', False):
         generate_archive(page)
+
+    return page
 
 
 def _test_path(text):

@@ -218,7 +218,8 @@ class MainPage(tk.Tk):
 
         display_msg("Fatto!\n")
 
-        generate_html(podcast.html_page, test_upload)
+        self.html.page = generate_html(podcast.html_page, test_upload)
+
         display_msg("Pagina html generata")
 
         self._conferm_btn["state"] = 'disable'

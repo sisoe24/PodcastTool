@@ -7,7 +7,11 @@ an external module 'pyperclip'.
 """
 
 import os
+import time
 import pathlib
+import tempfile
+import webbrowser
+
 from functools import partial
 
 import tkinter as tk
@@ -15,7 +19,7 @@ from tkinter import ttk
 
 import pyperclip
 
-from utils import util
+from utils.util import UserConfig
 from startup import ARCHIVE_PATH, OS_SYSTEM
 
 
@@ -26,7 +30,7 @@ def archive_files():
         yield file
 
 
-def last_archive_created():
+def _last_archive_created():
     """Get the last created html file from the archive directory.
 
     Returns:
@@ -72,6 +76,8 @@ class HtmlFrame(tk.Frame):
                                        state='disabled', command=open_preview)
         self._preview_btn.grid(column=1, row=2)
 
+        self._page = ""
+
         self._labels()
 
     def status(self, status, color):
@@ -111,18 +117,28 @@ class HtmlFrame(tk.Frame):
         """Set copy button state."""
         self._copy_btn["state"] = value
 
+    @property
+    def page(self):
+        return self._page
+
+    @page.setter
+    def page(self, value):
+        self._page = value
+
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
-        with open(last_archive_created()) as html_file:
-            pyperclip.copy(html_file.read())
+        pyperclip.copy(self.page)
         self.status('Copiato', 'RoyalBlue1')
         self.bell()
 
-    @staticmethod
-    def _open_link(page: str):
+    def _open_link(self, page: str):
         """Open website or preview html page."""
         if page == 'web':
-            link = util.UserConfig().data['elearning_url']
+            link = UserConfig().data['elearning_url']
+            webbrowser.open(link)
         elif page == 'preview':
-            link = last_archive_created()
-        util.open_link(link)
+            with tempfile.NamedTemporaryFile('r+', suffix='.html') as f:
+                f.write(self.page)
+                webbrowser.open('file://' + f.name)
+                f.seek(0)
+                time.sleep(1)
