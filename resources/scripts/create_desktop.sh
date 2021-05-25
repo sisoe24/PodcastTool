@@ -12,11 +12,11 @@ INCLUDE_DIR="$(dirname $CURRENT_DIR)"
 PARENT_DIR="$(dirname $INCLUDE_DIR)"
 
 echo "[Desktop Entry]
-Version=2.2
+Version=2.3
 Name=PodcastTool
 Comment=app
 Exec=$HOME/PodcastTool/PodcastTool
-Icon=$INCLUDE_DIR/img/app.png
+Icon=$INCLUDE_DIR/images/app.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
