@@ -169,7 +169,7 @@ class MainPage(tk.Tk):
             self.main_class.insert_text()
             self._select_btn["state"] = "disable"
 
-    @total_time
+    # @total_time
     def _run(self):
         """Run the podcastool main script when button is pressed."""
         self._rename_files()
@@ -182,10 +182,7 @@ class MainPage(tk.Tk):
         test_upload = self._test_upload.get()
         with ThreadPoolExecutor() as executor:
             for file in self.main_class.proccesed_files():
-
-                self.update()
                 display_msg(file)
-
                 file_path = os.path.join(self.podcast_obj.path, file)
                 f1 = executor.submit(PodcastFile, file_path)
                 podcast = f1.result()
@@ -193,6 +190,7 @@ class MainPage(tk.Tk):
                                      self.menubar.bitrate,
                                      self.menubar.sample_rate,
                                      self.menubar.watermarks)
+            self.update()
         _debug_executor(f2)
 
         if podcast.missing_audio:
@@ -208,10 +206,10 @@ class MainPage(tk.Tk):
 
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
-                self.update()
                 display_msg(os.path.basename(file['path']))
                 f1 = executor.submit(upload_to_server,
                                      file["path"], server_path, test_upload)
+            self.update()
 
         _debug_executor(f1)
         display_msg("Fatto!\n")
