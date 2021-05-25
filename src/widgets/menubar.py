@@ -1,91 +1,18 @@
 import os
+import sys
 import shutil
 import pickle
 import pathlib
+import subprocess
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox, ttk, filedialog
 
 from widgets.html_frame import archive_files
 
 from utils import util, UserConfig
 from startup import LOG_PATH, USER_AUDIO
 from utils.resources import _system_catalog_path, _catalog_file
-
-
-class OptionsMenu(tk.Menu):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self._html_media = tk.BooleanVar()
-
-        use_mediaplayer = UserConfig().value('html_mediaplayer', False)
-        self._html_media.set(use_mediaplayer)
-
-        self.add_checkbutton(label='Use HTML Mediaplayer',
-                             variable=self._html_media,
-                             command=lambda: self._update_config(
-                                 {'html_mediaplayer': self._html_media.get()}
-                             ))
-
-        self._html_archive = tk.BooleanVar()
-
-        _make_archive = UserConfig().value('html_archive', False)
-        self._html_archive.set(_make_archive)
-
-        self.add_checkbutton(label='Archive HTML file',
-                             variable=self._html_archive,
-                             command=lambda: self._update_config(
-                                 {'html_archive': self._html_archive.get()}
-                             ))
-
-        self.add_separator()
-
-        self.add_command(label='Clean Log', command=self.clean_log)
-        self.add_command(label='Clean Archive', command=self.delete_archive)
-
-        self.add_separator()
-
-        self.add_command(label='Reset Names/Audio', command=self.restore_json)
-
-    def _update_config(self, setting):
-
-        data = UserConfig().data
-        # data.update({'html_mediaplayer': self._html_media.get()})
-        data.update(setting)
-
-        with UserConfig(mode='wb') as file:
-            pickle.dump(data, file)
-
-    @ staticmethod
-    def clean_log():
-        for file in pathlib.Path(LOG_PATH).glob('*.log'):
-            with open(file, "w") as _:
-                pass
-
-    @ staticmethod
-    def restore_json():
-
-        user = messagebox.askyesno(
-            message="Newly created audio files will be deleted. Are you sure?")
-
-        if not user:
-            return
-
-        shutil.copy(_system_catalog_path(), _catalog_file())
-
-        for audio in pathlib.Path(USER_AUDIO).glob('*mp3'):
-            os.remove(audio)
-
-        messagebox.showinfo(message="done!")
-
-    @ staticmethod
-    def delete_archive():
-        """Delete all the html archive files."""
-        for i in archive_files():
-            os.remove(i)
-
-        messagebox.showinfo(title='Conferma', message='Archivio cancellato!')
 
 
 class CredentialsEntry(tk.Tk):
@@ -154,19 +81,138 @@ class CredentialsEntry(tk.Tk):
         self.web_entry.insert(tk.END, self.config.value('web'))
 
 
-class HelpMenu(tk.Menu):
+def _update_config(setting):
+
+    data = UserConfig().data
+    data.update(setting)
+
+    with UserConfig(mode='wb') as file:
+        pickle.dump(data, file)
+
+
+class OptionsMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_command(label='Update credentials', command=CredentialsEntry)
+        _use_html = tk.BooleanVar()
+        _html_key = 'html_mediaplayer'
+        _use_html_config = UserConfig().value(_html_key, False)
+        _use_html.set(_use_html_config)
+
+        self.add_checkbutton(label='Use HTML Mediaplayer',
+                             variable=_use_html,
+                             command=lambda: _update_config(
+                                 {_html_key: _use_html.get()}
+                             ))
+
+        self._is_dev_mode = tk.BooleanVar()
+        self._dev_mode_key = 'dev_mode'
+        _dev_mode_config = UserConfig().value(self._dev_mode_key, False)
+        self._is_dev_mode.set(_dev_mode_config)
+
+        self.add_checkbutton(label='Enable Developer mode',
+                             variable=self._is_dev_mode, command=self._reboot)
 
         self.add_separator()
 
+        self.add_command(label='Set Podcast Folder', command=self._set_folder)
+
+        self.add_separator()
+
+        self.add_command(label='Update credentials', command=CredentialsEntry)
+
+    @staticmethod
+    def _set_folder():
+        folder = filedialog.askdirectory()
+        _update_config({'initial_dir': folder})
+
+    def _reboot(self):
+        user = messagebox.askyesno(title='PodcastTool',
+                                   message='Please relaunch the application')
+
+        if user:
+            _update_config({self._dev_mode_key: self._is_dev_mode.get()})
+            sys.exit()
+        else:
+            self._is_dev_mode.set(not user)
+
+
+class TaskMenu(tk.Menu):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.add_command(label='Clean Log', command=self.clean_log)
+        self.add_command(label='Clean Archive', command=self.delete_archive)
+
+        self.add_separator()
+        self.add_command(label='Create Linux App shortcut',
+                         command=self.delete_archive)
+        self.add_separator()
+
+        self.add_command(label='Reset Names/Audio', command=self.restore_json)
+        self.add_separator()
+
+    # @staticmethod
+    # def create_shortcut(self):
+    #     path = os.path.join(os.getcwd(), 'resourcers',
+    #                         'scripts', 'create_desktop.sh')
+    #     subprocess.run(['sudo', 'bash', path])
+
+    @staticmethod
+    def clean_log():
+        for file in pathlib.Path(LOG_PATH).glob('*.log'):
+            with open(file, "w") as _:
+                pass
+
+        messagebox.showinfo(title='PodcastTool', message='Done')
+
+    @staticmethod
+    def restore_json():
+
+        user = messagebox.askyesno(
+            message="Newly created audio files will be deleted. Are you sure?")
+
+        if not user:
+            return
+
+        shutil.copy(_system_catalog_path(), _catalog_file())
+
+        for audio in pathlib.Path(USER_AUDIO).glob('*mp3'):
+            os.remove(audio)
+
+        messagebox.showinfo(title='PodcastTool', message='Done')
+
+    @staticmethod
+    def delete_archive():
+        """Delete all the html archive files."""
+        for i in archive_files():
+            os.remove(i)
+
+        messagebox.showinfo(title='PodcastTool', message='Done')
+
+
+class GoMenu(tk.Menu):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.add_command(
-            label='Open Log File',
-            command=lambda: util.open_link(
-                os.path.join(LOG_PATH,  "debug.log"))
+            label='Log',
+            command=lambda: util.open_link(os.path.join(LOG_PATH))
         )
+
+        self.add_command(
+            label='Configuration',
+            command=lambda: util.open_link(
+                os.path.join(os.getenv('HOME'),  ".podcasttool"))
+        )
+
+        self.add_command(
+            label='Resources',
+            command=lambda: util.open_link(
+                os.path.join(os.getcwd(),  "resources"))
+        )
+
+        self.add_separator()
 
 
 class AudioMenu(tk.Menu):
@@ -216,11 +262,13 @@ class MenuBar(tk.Menu):
 
         self.audio = AudioMenu(tearoff=False)
         self.options = OptionsMenu(tearoff=False)
-        self._help = HelpMenu(tearoff=False)
+        self._go = GoMenu(tearoff=False)
+        self._help = TaskMenu(tearoff=False)
 
-        self.add_cascade(label='Audio Export', menu=self.audio)
+        self.add_cascade(label='Audio', menu=self.audio)
+        self.add_cascade(label='Go', menu=self._go)
         self.add_cascade(label='Options', menu=self.options)
-        self.add_cascade(label='Help', menu=self._help)
+        self.add_cascade(label='Tasks', menu=self._help)
 
     @property
     def watermarks(self):
