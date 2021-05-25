@@ -66,9 +66,6 @@ def write_report():
 DEPENDECIES = ["ffmpeg"]
 MISSING_DEPENDECIES = []
 
-if OS_SYSTEM == "Linux":
-    DEPENDECIES.append("xsel")
-
 for package in DEPENDECIES:
     try:
         subprocess.check_output(["which", package])
