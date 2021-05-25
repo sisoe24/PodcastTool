@@ -13,7 +13,7 @@ from tkinter import (
 )
 
 from startup import OS_SYSTEM
-from utils import util, UserConfig
+from utils import util, UserConfig, total_time
 
 from widgets import (
     MenuBar,
@@ -49,6 +49,16 @@ def _set_directory():
     LOGGER.debug("gui initial directory: %s", initial_dir)
 
     return initial_dir
+
+
+def _debug_executor(executor):
+
+    try:
+        LOGGER.debug('podcast executor status: %s', executor.result())
+    except Exception as err:
+        LOGGER.critical('error in podcast pool executor: %s',
+                        err, exc_info=True)
+        util.open_log('Error when creating podcast')
 
 
 class MainPage(tk.Tk):
@@ -159,6 +169,7 @@ class MainPage(tk.Tk):
             self.main_class.insert_text()
             self._select_btn["state"] = "disable"
 
+    @total_time
     def _run(self):
         """Run the podcastool main script when button is pressed."""
         self._rename_files()
@@ -171,8 +182,8 @@ class MainPage(tk.Tk):
         test_upload = self._test_upload.get()
         with ThreadPoolExecutor() as executor:
             for file in self.main_class.proccesed_files():
-                self.update()
 
+                self.update()
                 display_msg(file)
 
                 file_path = os.path.join(self.podcast_obj.path, file)
@@ -182,25 +193,19 @@ class MainPage(tk.Tk):
                                      self.menubar.bitrate,
                                      self.menubar.sample_rate,
                                      self.menubar.watermarks)
-
-                try:
-                    LOGGER.debug('podcast executor status: %s', f2.result())
-                except Exception as err:
-                    LOGGER.critical('error in podcast pool executor: %s',
-                                    err, exc_info=True)
-                    util.open_log('Error when creating podcast')
-                    return
+        _debug_executor(f2)
 
         if podcast.missing_audio:
             display_msg(
-                f'! Missing audio files: {podcast.missing_audio}', 'yellow'
-            )
+                f'! Missing audio files: {podcast.missing_audio}', 'yellow')
+
         display_msg("Fatto!\n")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
         display_msg("Caricamento podcast su server...")
+
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
                 self.update()
@@ -208,14 +213,7 @@ class MainPage(tk.Tk):
                 f1 = executor.submit(upload_to_server,
                                      file["path"], server_path, test_upload)
 
-                try:
-                    LOGGER.debug(
-                        'server upload executor status:%s', f1.result())
-                except Exception as e:
-                    LOGGER.critical('error when uploading to server: %s',
-                                    e, exc_info=True)
-                    util.open_log('Error when uploading to server')
-
+        _debug_executor(f1)
         display_msg("Fatto!\n")
 
         self.html.page = generate_html(podcast.html_page, test_upload)

@@ -1,7 +1,10 @@
 import time
 import datetime
+from main import LOGGER
 
 from startup import LOG_PATH
+
+today = datetime.datetime.today().strftime('%m%d%Y_%H%M')
 
 
 def profile(func):
@@ -38,9 +41,10 @@ def total_time(func):
         value = func(*args, **kwarg)
         end = time.time()
         total = datetime.timedelta(seconds=end - start)
-        print_str = f"total time: {str(total)}\n"
-        print(print_str)
+        caller = f"{args[0].__class__.__name__}.{func.__name__}"
+        result = f"{caller} - total time: {str(total)}"
+        LOGGER.info(result)
         with open(f'{LOG_PATH}/profile.log', 'a') as file:
-            file.write(print_str)
+            file.write(f'{today} - {result}')
         return value
     return wrapper
