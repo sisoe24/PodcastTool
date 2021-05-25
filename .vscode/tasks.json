@@ -1,0 +1,52 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run APP",
+            "type": "shell",
+            "command": "${config:python.pythonPath} src/main.py",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build macOS App",
+            "type": "shell",
+            "command": "${config:python.pythonPath} setup.py py2app --emulate-shell-environment",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "Clean App"
+            ]
+        },
+        {
+            "label": "Clean App",
+            "type": "shell",
+            "command": "cd ${workspaceFolder} && rm -rf build dist",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean mp3",
+            "type": "shell",
+            "command": "rm -f $HOME/.podcasttool/audio/*.mp3",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run CLI macOS app",
+            "type": "shell",
+            "command": "${workspaceFolder}/dist/PodcastTool.app/Contents/MacOS/PodcastTool",
+            "problemMatcher": [],
+        }
+    ]
+}
