@@ -1,11 +1,12 @@
 import time
+import logging
 import datetime
-from main import LOGGER
 
 from startup import LOG_PATH
 
 today = datetime.datetime.today().strftime('%m%d%Y_%H%M')
-
+ 
+LOGGER = logging.getLogger('podcasttool.profiling')
 
 def profile(func):
     """Write to log the profiling of a function."""
