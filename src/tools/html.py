@@ -58,8 +58,7 @@ def generate_html(html_data, test_env=False):
 
     LOGGER.debug('html page generated')
 
-    if settings.value('html_archive', False):
-        _generate_archive(html_data['archive_name'], page, test_env)
+    _generate_archive(html_data['archive_name'], page, test_env)
 
     return page
 
