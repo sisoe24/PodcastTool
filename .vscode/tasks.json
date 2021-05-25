@@ -27,6 +27,19 @@
             ]
         },
         {
+            "label": "Build Linux App",
+            "type": "shell",
+            "command": "bash ${workspaceFolder}/resources/scripts/build_linux.sh",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "Clean App"
+            ]
+        },
+        {
             "label": "Clean App",
             "type": "shell",
             "command": "cd ${workspaceFolder} && rm -rf build dist",
