@@ -17,7 +17,6 @@ from functools import partial
 import tkinter as tk
 from tkinter import ttk
 
-# import pyperclip
 
 from utils import UserConfig
 from startup import USER_ARCHIVE, OS_SYSTEM
@@ -138,7 +137,8 @@ class HtmlFrame(tk.Frame):
             link = UserConfig().data['elearning_url']
             webbrowser.open(link)
         elif page == 'preview':
-            with tempfile.NamedTemporaryFile('r+', suffix='.html') as f:
+            with tempfile.NamedTemporaryFile('r+', prefix='podcasttool',
+                                             suffix='.html') as f:
                 f.write(self.page)
                 webbrowser.open('file://' + f.name)
                 f.seek(0)
