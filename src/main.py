@@ -33,6 +33,8 @@ from tools import (
 
 LOGGER = logging.getLogger('podcasttool.gui')
 
+dev_mode = UserConfig().value('dev_mode', False)
+
 
 def _set_directory():
     """Set which folder to open.
@@ -41,8 +43,8 @@ def _set_directory():
         {str} - path to which directory to open first at gui start.
     """
     # If user is me then open in test files directory.
-    if util.is_dev_mode() and OS_SYSTEM == 'Mac':
-        initial_dir = os.path.join(os.getcwd(), 'other/Scrivania/Podcast/ALP')
+    if dev_mode:
+        initial_dir = UserConfig().value('initial_dir')
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
@@ -77,7 +79,7 @@ class MainPage(tk.Tk):
         title = 'PodcastTool 2.3'
 
         self._test_upload = tk.BooleanVar(False)
-        if util.is_dev_mode():
+        if dev_mode:
             title += ' - Developer mode'.upper()
             _test_check = ttk.Checkbutton(window_main, variable=self._test_upload,
                                           text='Upload to server virgil_test')

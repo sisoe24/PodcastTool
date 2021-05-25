@@ -95,7 +95,7 @@ def upload_to_server(uploading_file: str, server_path: str, test_env=False):
             LOGGER.debug('uploading file on server: %s', uploading_file)
 
             # if user is me then app will NOT upload to server
-            if util.is_dev_mode(bypass=test_env):
+            if UserConfig().value('dev_mode', False) and not test_env:
                 LOGGER.info('FAKE UPLOAD: %s in %s', uploading_file, ftp.pwd())
                 return
 
