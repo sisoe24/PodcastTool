@@ -6,11 +6,8 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 import tkinter as tk
-from tkinter import (
-    ttk,
-    messagebox,
-    filedialog
-)
+from tkinter import ttk, messagebox, filedialog
+from ttkthemes import ThemedTk
 
 from startup import OS_SYSTEM
 from utils import util, UserConfig, total_time
@@ -63,7 +60,8 @@ def _debug_executor(executor):
         util.open_log('Error when creating podcast')
 
 
-class MainPage(tk.Tk):
+class MainPage(ThemedTk):
+    # class MainPage(tk.Tk):
     """Main window frame."""
 
     def __init__(self, *args, **kwargs):
@@ -94,8 +92,11 @@ class MainPage(tk.Tk):
         app_y = 600
 
         # - position window center screen - #
-        position_height = self.winfo_screenheight() // 2 - (app_y // 2)
-        self.geometry(f'{app_x}x{app_y}-{100}+{position_height}')
+        # position_height = self.winfo_screenheight() // 2 - (app_y // 2)
+
+        h = self.winfo_screenheight() // 2
+        w = self.winfo_screenwidth() // 2
+        self.geometry(f'{app_x}x{app_y}-{w}+{h}')
 
         self.resizable(width=False, height=False)
 
@@ -132,16 +133,16 @@ class MainPage(tk.Tk):
 
         self._conferm_btn = ttk.Button(_page_main, text='Conferma e procedi',
                                        state='disable', command=self._run)
-        self._conferm_btn.place(x=105, y=65)
+        self._conferm_btn.place(x=125, y=55)
 
         self._select_btn = ttk.Button(_page_main, text='Seleziona file',
                                       command=self.check_credentials)
         # self._select_btn.invoke()
         self._select_btn.focus_set()
-        self._select_btn.place(x=5, y=65)
+        self._select_btn.place(x=5, y=55)
 
         self._labels_style()
-        self.time()
+        # self.time()
 
     def time(self):
         """Clock label for the gui."""
@@ -252,13 +253,13 @@ class MainPage(tk.Tk):
         default_size = 17
         os_size = default_size if OS_SYSTEM == 'Mac' else default_size - 6
         style = ttk.Style()
-        style.theme_use('default')
+        # style.theme_use('default')
         style.configure('label.TLabel', font=('TkDefaultFont', os_size,))
 
         default_size2 = 25
         os_size2 = default_size2 if OS_SYSTEM == 'Mac' else default_size2 - 6
         clock_style = ttk.Style()
-        clock_style.theme_use('default')
+        # clock_style.theme_use('default')
         clock_style.configure('clock.TLabel', font=('TkDefaultFont', os_size2))
 
 
@@ -266,7 +267,8 @@ def run():
     """Run gui."""
 
     try:
-        app = MainPage()
+
+        app = MainPage(theme='arc')
         app.mainloop()
     except Exception as error:
         LOGGER.critical(str(error), exc_info=True)
