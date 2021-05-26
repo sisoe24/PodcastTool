@@ -1,4 +1,5 @@
 #!/bin/bash
+source "$(dirname "${BASH_SOURCE[0]}")/podcasttoolrc.sh"
 
 # create desktop shortcut app for linux
 
@@ -7,19 +8,15 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 
-CURRENT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
-INCLUDE_DIR="$(dirname $CURRENT_DIR)"
-PARENT_DIR="$(dirname $INCLUDE_DIR)"
-
 echo "[Desktop Entry]
 Version=2.3
-Name=PodcastTool
+Name=$APP_NAME
 Comment=app
-Exec=$HOME/PodcastTool/PodcastTool
-Icon=$INCLUDE_DIR/images/app.png
+Exec=$HOME/$APP_NAME/$APP_NAME
+Icon=$ICON
 Terminal=false
 Type=Application
 Encoding=UTF-8
-StartupNotify=true" > /usr/share/applications/PodcastTool.desktop
+StartupNotify=true" >/usr/share/applications/$APP_NAME.desktop
 
 echo "shortcut app create in app launchpad!"
