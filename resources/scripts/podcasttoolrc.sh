@@ -5,8 +5,11 @@ if [[ "$OSTYPE" != 'linux-gnu'* ]]; then
     exit
 fi
 
-CURRENT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-RESOURCES="$(dirname "$CURRENT_DIR")"
+SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
+
+RESOURCES="$(dirname "$SCRIPTS_DIR")"
 PACKAGE="$(dirname "$RESOURCES")"
+
 ICON="$RESOURCES/images/app.png"
+
 APP_NAME="PodcastTool"
