@@ -33,11 +33,11 @@ def get_similar_words(wrong_name: str, catalog_section: str) -> str:
 
     similar_name = get_close_matches(wrong_name, check_list, cutoff=0.6)
     possibile_names = [i for i in similar_name]
-    choice = f"- {wrong_name} -> {possibile_names}"
+    choice = f"- {wrong_name} -> {similar_name}"
     return choice
 
 
-class LogFrame(tk.LabelFrame):
+class LogFrame(ttk.LabelFrame):
     """Log section of the gui."""
     _row_number = 0
 
@@ -66,22 +66,29 @@ class LogFrame(tk.LabelFrame):
         """Get the row number in error label frame where to display the msg."""
         return self._row_number
 
-    def refresh_widgets(self, name):
+    def _refresh_widgets(self, name):
         """Refresh widgets in error label frame."""
         for widget in self._log_frame.winfo_children():
             if name in str(widget):
                 widget.destroy()
 
+    def delete_labels(self):
+        for widget in self._log_frame.winfo_children():
+            widget.destroy()
+
     def create_label_frame(self, row=0, text=""):
         """Create error label frame for the suggestion messages."""
         self._log_label = ttk.LabelFrame(
-            self._log_frame, text=text, padding=5, name=text.lower())
+            self._log_frame, text=text, name=text.lower())
         self._log_label.grid(column=0, row=row, pady=5, sticky=tk.W)
         return self._log_label
 
     def display_msg(self, message: str, color=''):
         """Display message errors with suggestion in the error label frame."""
-        ttk.Label(self._log_label, background=color, text=message,
+        style = ttk.Style()
+        style.configure('label.TLabel', font=('TkDefaultFont', 17))
+
+        ttk.Label(self, background=color, text=message,
                   style='label.TLabel').grid(column=0, row=self.row_number,
                                              sticky=tk.W)
         self.row_increment()
@@ -104,6 +111,9 @@ class MainFrame(ttk.Frame):
 
         self.log_frame = LogFrame(self, text='Status', width=665, height=360)
         self.log_frame.grid(column=0, row=1, rowspan=2, columnspan=3)
+
+        self._refresh_btn = ttk.Button(parent, text='Refresh', state='disabled',
+                                       command=self.refresh)
 
         self.podcast_obj = None
         self.confirm_button = None
@@ -334,24 +344,25 @@ class MainFrame(ttk.Frame):
         if no then enable confirm button and proceed further.
         """
         if self._text_errors():
-            self._refresh_frame()
+            self.log_frame.config(text='Errori trovati')
+            self._refresh_btn.config(state='enabled')
         else:
-            self.log_frame.refresh_widgets("errori")
-            self.text_widget["state"] = "disabled"
-            self.confirm_button["state"] = "active"
+            # self.log_frame.refresh_widgets("errori")
 
-    def _refresh_frame(self):
-        """Create the refresh button if there are any errors."""
-        refresh_frame = self.log_frame.create_label_frame(
-            row=1, text="ERRORI TROVATI!")
-        ttk.Button(refresh_frame, text='Refresh', command=self.refresh).pack()
+            self.text_widget.config(state="disabled")
+            self._refresh_btn.config(state='disabled')
+            self.confirm_button.config(state="active")
+
+            self.log_frame.config(text='Status')
+            self.log_frame.display_msg("Nessun errore!")
 
     def refresh(self):
         """Method to be called from refresh button.
 
         Clean the error widget and restart the parsing of text widget lines.
         """
-        self.log_frame.refresh_widgets("linea")
+        self.log_frame.delete_labels()
+        # self.log_frame.refresh_widgets("linea")
         self._parse_lines()
 
     def proccesed_files(self):

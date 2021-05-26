@@ -92,7 +92,11 @@ class PodcastPage(ttk.Frame):
 
         self._conferm_btn = ttk.Button(self, text='Conferma e procedi',
                                        command=self._run, state='disable')
-        self._conferm_btn.grid(column=2, row=2, columnspan=2, pady=10)
+        self._conferm_btn.grid(column=2, row=2, columnspan=2, pady=10, padx=10)
+        self.display_msg = self.main_frame.log_frame.display_msg
+
+        self._refresh_btn = self.main_frame._refresh_btn
+        self._refresh_btn.grid(column=0, row=2, rowspan=3, sticky=tk.W, padx=10)
 
     def check_credentials(self):
         if UserConfig().is_empty():
@@ -121,15 +125,16 @@ class PodcastPage(ttk.Frame):
         """Run the podcastool main script when button is pressed."""
         self._rename_files()
 
-        display_msg = self.main_frame.log_frame.display_msg
-        self.main_frame.log_frame._log_label.config(text='Job Status')
+        self.main_frame.log_frame.delete_labels()
 
-        display_msg("Creazione podcast in corso...")
+        # self.main_frame.log_frame._log_label.config(text='Working...')
+
+        self.display_msg("Creazione podcast in corso...")
 
         test_upload = self._test_upload.get()
         with ThreadPoolExecutor() as executor:
             for file in self.main_frame.proccesed_files():
-                display_msg(file)
+                self.display_msg(file)
                 file_path = os.path.join(self.podcast_obj.path, file)
                 f1 = executor.submit(PodcastFile, file_path)
                 podcast = f1.result()
@@ -141,29 +146,29 @@ class PodcastPage(ttk.Frame):
         _debug_executor(f2)
 
         if podcast.missing_audio:
-            display_msg(
+            self.display_msg(
                 f'! Missing audio files: {podcast.missing_audio}', 'yellow')
 
-        display_msg("Fatto!\n")
+        self.display_msg("Fatto!\n")
 
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
-        display_msg("Caricamento podcast su server...")
+        self.display_msg("Caricamento podcast su server...")
 
         with ThreadPoolExecutor() as executor:
             for file in podcast.files_to_upload():
-                display_msg(os.path.basename(file['path']))
+                self.display_msg(os.path.basename(file['path']))
                 f1 = executor.submit(upload_to_server,
                                      file["path"], server_path, test_upload)
             self.update()
 
         _debug_executor(f1)
-        display_msg("Fatto!\n")
+        self.display_msg("Fatto!\n")
 
         self.html.page = generate_html(podcast.html_page, test_upload)
 
-        display_msg("Pagina html generata")
+        self.display_msg("Pagina html generata")
 
         self._conferm_btn["state"] = 'disable'
 
@@ -207,11 +212,11 @@ class MainWindow(ThemedTk):
             test_env=self._test_upload, menubar=self.menubar)
         _layout.add(_podcast_page, text='Podcast')
 
-        _audio_page = AudioPage()
-        _layout.add(_audio_page, text='Audio')
-
         _catalog_page = CatalogPage()
         _layout.add(_catalog_page, text='Catalog')
+
+        _audio_page = AudioPage()
+        _layout.add(_audio_page, text='Audio')
 
         _layout.pack(fill=tk.BOTH)
 
@@ -232,9 +237,9 @@ class MainWindow(ThemedTk):
 
         if dev_mode:
             title += ' - Developer mode'.upper()
-            _test_check = ttk.Checkbutton(self, variable=self._test_upload,
-                                          text='Upload to server virgil_test')
-            _test_check.pack()
+            # _test_check = ttk.Checkbutton(self, variable=self._test_upload,
+            #                               text='Upload to server virgil_test')
+            # _test_check.pack()
 
         self.title(title)
 
@@ -431,8 +436,7 @@ class _MainWindow(ThemedTk):
         """Create style configuration for labels."""
         default_size = 17
         os_size = default_size if OS_SYSTEM == 'Mac' else default_size - 6
-        st
-        yle = ttk.Style()
+        style = ttk.Style()
         # style.theme_use('default')
         style.configure('label.TLabel', font=('TkDefaultFont', os_size,))
 
