@@ -127,14 +127,13 @@ class HtmlFrame(tk.Frame):
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
         self.clipboard_append(self.page)
-        # pyperclip.copy(self.page)
         self.status('Copiato', 'RoyalBlue1')
         self.bell()
 
     def _open_link(self, page: str):
         """Open website or preview html page."""
         if page == 'web':
-            link = UserConfig().data['elearning_url']
+            link = UserConfig().value('elearning_url')
             webbrowser.open(link)
         elif page == 'preview':
             with tempfile.NamedTemporaryFile('r+', prefix='podcasttool',
@@ -142,4 +141,4 @@ class HtmlFrame(tk.Frame):
                 f.write(self.page)
                 webbrowser.open('file://' + f.name)
                 f.seek(0)
-                time.sleep(1)
+                time.sleep(5)
