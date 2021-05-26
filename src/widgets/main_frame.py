@@ -37,23 +37,22 @@ def get_similar_words(wrong_name: str, catalog_section: str) -> str:
     return choice
 
 
-class LogFrame(tk.Frame):
+class LogFrame(tk.LabelFrame):
     """Log section of the gui."""
     _row_number = 0
 
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
+    def __init__(self,  *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.grid_propagate(False)
 
-        self._log_frame = ttk.Frame(parent, borderwidth=3, relief='sunken',
-                                    width=670, height=360)
-        self._log_frame.grid(column=0, row=0, rowspan=2, columnspan=2,
-                             sticky=tk.N)
-        self._log_frame.grid_propagate(False)
+        # self._log_frame = ttk.Frame(parent, borderwidth=3, relief='sunken',
+        #                             width=670, height=360)
+        # self._log_frame.grid(column=0, row=0, rowspan=2, columnspan=2,
+        #                      sticky=tk.N)
+        # self._log_frame.grid_propagate(False)
+        self._log_frame = self
 
         self._log_label = None
-
-        self._label_img = ttk.Label(self._log_frame, name='logo', width=500)
 
     def row_increment(self):
         """Increment row number from the same error label frame.
@@ -88,22 +87,23 @@ class LogFrame(tk.Frame):
         self.row_increment()
 
 
-class MainFrame(tk.Frame):
+class MainFrame(ttk.Frame):
     """Main Core of the gui."""
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self.grid_propagate(False)
+        # self.grid_propagate(False)
 
         font_size = 21 if OS_SYSTEM == 'Mac' else 15
         widget_width = 47 if OS_SYSTEM == 'Mac' else 51
 
-        self._text_box = tk.Text(parent, width=widget_width, height=4,
+        self._text_box = tk.Text(self, width=widget_width, height=4,
                                  borderwidth=1, relief='sunken',
                                  font=('TkDefaultFont', font_size))
-        self._text_box.place(x=5, y=95)
+        self._text_box.grid(column=0, row=0, columnspan=3, pady=5)
 
-        self.log_frame = LogFrame(self)
+        self.log_frame = LogFrame(self, text='Status', width=665, height=360)
+        self.log_frame.grid(column=0, row=1, rowspan=2, columnspan=3)
 
         self.podcast_obj = None
         self.confirm_button = None

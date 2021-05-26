@@ -43,16 +43,15 @@ def _last_archive_created():
     return None
 
 
-class HtmlFrame(tk.Frame):
+class HtmlFrame(ttk.Frame):
     """Html section of the gui."""
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
-        self._html_frame = ttk.LabelFrame(self, width=300, height=90,
-                                          text="HTML")
+        self._html_frame = ttk.LabelFrame(self, text="HTML")
         self._html_frame.grid(column=0, row=0)
-        self._html_frame.grid_propagate(False)
+        # self._html_frame.grid_propagate(False)
 
         status_font = 20 if OS_SYSTEM == 'Mac' else 14
         self.status_var = tk.StringVar(value="Non pronto")
