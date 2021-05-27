@@ -29,15 +29,15 @@ class CredentialsEntry(tk.Tk):
         self._main.grid(column=0, row=0)
         self._main.grid_propagate(False)
 
-        ttk.Label(self._main, text='Host').grid(row=0)
-        ttk.Label(self._main, text='User').grid(row=1)
-        ttk.Label(self._main, text='Password').grid(row=2)
-        ttk.Label(self._main, text='Website').grid(row=3)
+        ttk.Label(self._main, text='Host').grid(row=0, sticky=tk.E)
+        ttk.Label(self._main, text='User').grid(row=1, sticky=tk.E)
+        ttk.Label(self._main, text='Password').grid(row=2, sticky=tk.E)
+        ttk.Label(self._main, text='Website').grid(row=3, sticky=tk.E)
 
-        self.host_entry = ttk.Entry(self._main, width=25)
-        self.user_entry = ttk.Entry(self._main, width=25)
-        self.pass_entry = ttk.Entry(self._main, width=25, show="*")
-        self.web_entry = ttk.Entry(self._main, width=25)
+        self.host_entry = ttk.Entry(self._main, width=24)
+        self.user_entry = ttk.Entry(self._main, width=24)
+        self.pass_entry = ttk.Entry(self._main, width=24, show="*")
+        self.web_entry = ttk.Entry(self._main, width=24)
 
         self.host_entry.grid(row=0, column=1)
         self.user_entry.grid(row=1, column=1)

@@ -5,13 +5,14 @@ import sys
 import pathlib
 import logging
 import datetime
+import platform
 import subprocess
 
 from tkinter import messagebox
 
 import gtts
 
-from startup import OS_SYSTEM, LOG_PATH
+from startup import LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool.util')
 
@@ -114,9 +115,11 @@ def convert_month_name(month):
 
 def open_link(link):
     """Open a file path or a website link."""
-    if OS_SYSTEM == 'Mac':
+    os_system = platform.system()
+
+    if os_system == 'Darwin':
         open_cmd = 'open'
-    elif OS_SYSTEM == 'Linux':
+    elif os_system == 'Linux':
         open_cmd = 'xdg-open'
     else:
         return

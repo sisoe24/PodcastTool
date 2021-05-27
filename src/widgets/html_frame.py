@@ -19,7 +19,7 @@ from tkinter import ttk
 
 
 from utils import UserConfig
-from startup import USER_ARCHIVE, OS_SYSTEM
+from startup import USER_ARCHIVE, APP_GEOMETRY
 
 
 def archive_files():
@@ -29,7 +29,7 @@ def archive_files():
         yield file
 
 
-def _last_archive_created():
+def __last_archive_created():
     """Get the last created html file from the archive directory.
 
     Returns:
@@ -53,11 +53,11 @@ class HtmlFrame(ttk.Frame):
         self._html_frame.grid(column=0, row=0)
         # self._html_frame.grid_propagate(False)
 
-        status_font = 20 if OS_SYSTEM == 'Mac' else 14
         self.status_var = tk.StringVar(value="Non pronto")
-        self._status_display = tk.Label(self._html_frame,
-                                        textvariable=self.status_var,
-                                        font=('TkDefaultFont', status_font))
+        self._status_display = tk.Label(
+            self._html_frame, textvariable=self.status_var,
+            font=('TkDefaultFont', APP_GEOMETRY.html_font))
+
         self._status_display.grid(column=1, row=1)
         self._status_display.configure(background="red")
 
@@ -90,7 +90,7 @@ class HtmlFrame(ttk.Frame):
 
     def _labels(self):
         """Generate labels for the html frame."""
-        labels = ["Status:    ", "Web:"]
+        labels = ["Status:\t", "Web:"]
         for index, label in enumerate(labels, 1):
             ttk.Label(self._html_frame, text=label).grid(
                 column=0, row=index, stick=tk.W)
@@ -140,4 +140,4 @@ class HtmlFrame(ttk.Frame):
                 f.write(self.page)
                 webbrowser.open('file://' + f.name)
                 f.seek(0)
-                time.sleep(5)
+                time.sleep(2)

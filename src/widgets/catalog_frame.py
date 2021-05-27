@@ -14,7 +14,7 @@ from tkinter import messagebox
 
 
 from utils import util, catalog
-from startup import USER_AUDIO
+from startup import USER_AUDIO, APP_GEOMETRY
 from utils.resources import _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
@@ -66,12 +66,13 @@ class CatalogLoad(ttk.Frame):
 
         self._selected_catalog = ttk.Combobox(self, value=["docenti", "corsi"],
                                               width=10, state="readonly")
-        self._selected_catalog.grid(column=0, row=0, pady=10, sticky=tk.E)
+        self._selected_catalog.grid(
+            column=1, row=0, pady=10, padx=10, sticky=tk.E)
 
         self._load_btn = ttk.Button(self, text="Carica lista")
-        self._load_btn.grid(column=1, row=0, padx=10)
+        self._load_btn.grid(column=0, row=0)
 
-    @property
+    @ property
     def load_button(self):
         return self._load_btn
 
@@ -89,17 +90,18 @@ class CatalogFrame(ttk.Frame):
         super().__init__(parent, *args, **kwargs)
 
         self._load_widget = CatalogLoad(self)
-        self._load_widget.grid(column=0, row=0, columnspan=2, sticky=tk.W)
+        self._load_widget.grid(
+            column=0, row=0, columnspan=2, padx=10, sticky=tk.W)
         self._load_widget.load_button.config(command=self._load_catalog)
 
         # TREE VIEW
         self.vertical_scrollbar = ttk.Scrollbar(self)
-        self._tree_list = ttk.Treeview(self, height=22,
+        self._tree_list = ttk.Treeview(self, height=APP_GEOMETRY.treeview_height,
                                        selectmode='browse',
                                        yscrollcommand=self.vertical_scrollbar.set,
                                        columns=("names_short", "names_long"))
         self._tree_list.grid(column=0, row=1, columnspan=3,
-                             rowspan=2, sticky=tk.W + tk.E)
+                             rowspan=2, sticky=tk.W + tk.E, padx=10)
         self.vertical_scrollbar.grid(column=3, row=1,
                                      rowspan=2, sticky=tk.N + tk.S)
         self._generate_tree_columns()
@@ -107,7 +109,7 @@ class CatalogFrame(ttk.Frame):
 
         # BUTTON SECTION
         ttk.Button(self, text="Aggiungi Docente", command=self._add_docenti).grid(
-            column=0, row=3, sticky=tk.W)
+            column=0, row=3, sticky=tk.W, padx=10)
 
         ttk.Button(self, text="Aggiungi Corso", command=self._add_corso).grid(
             column=0, row=3, sticky=tk.E)
@@ -115,7 +117,7 @@ class CatalogFrame(ttk.Frame):
         self._course = None
 
         ttk.Button(self, text="Cancella Selezione", command=self._delete_selected).grid(
-            column=2, row=3, pady=10, sticky=tk.NE)
+            column=2, row=3, pady=10, padx=10, sticky=tk.NE)
 
     def _generate_tree_columns(self):
         """Generate columns for the treeview widget."""

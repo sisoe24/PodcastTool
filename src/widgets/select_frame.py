@@ -15,12 +15,12 @@ in the suggestion section of the gui when the date written by user is wrong.
 import os
 import logging
 import pathlib
+import platform
 
 from datetime import datetime
 
 import regex
 
-from startup import OS_SYSTEM
 from utils.util import open_log
 
 
@@ -45,10 +45,11 @@ def get_date(file_path: str) -> str:
     Returns:
         {dict} - a dict with today, creation and modification date.
     """
+    os_system = platform.system()
 
-    if OS_SYSTEM == 'Mac':
+    if os_system == 'Darwin':
         create_time = os.stat(file_path).st_birthtime
-    elif OS_SYSTEM == 'Linux':
+    elif os_system == 'Linux':
         create_time = os.stat(file_path).st_ctime
 
     mod_time = os.path.getmtime(file_path)

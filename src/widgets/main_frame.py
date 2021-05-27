@@ -8,7 +8,7 @@ from tkinter import ttk
 import regex
 
 from utils.util import open_log
-from startup import OS_SYSTEM
+from startup import APP_GEOMETRY
 from utils import catalog
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
@@ -86,7 +86,9 @@ class LogFrame(ttk.LabelFrame):
     def display_msg(self, message: str, color=''):
         """Display message errors with suggestion in the error label frame."""
         style = ttk.Style()
-        style.configure('label.TLabel', font=('TkDefaultFont', 17))
+
+        style.configure('label.TLabel', font=(
+            'TkDefaultFont', APP_GEOMETRY.log_font))
 
         ttk.Label(self, background=color, text=message,
                   style='label.TLabel').grid(column=0, row=self.row_number,
@@ -101,15 +103,15 @@ class MainFrame(ttk.Frame):
         super().__init__(parent, *args, **kwargs)
         # self.grid_propagate(False)
 
-        font_size = 21 if OS_SYSTEM == 'Mac' else 15
-        widget_width = 47 if OS_SYSTEM == 'Mac' else 51
-
-        self._text_box = tk.Text(self, width=widget_width, height=4,
-                                 borderwidth=1, relief='sunken',
-                                 font=('TkDefaultFont', font_size))
+        self._text_box = tk.Text(self, width=APP_GEOMETRY.textbox_width,
+                                 height=4, borderwidth=1, relief='sunken',
+                                 font=('TkDefaultFont',
+                                       APP_GEOMETRY.textbox_font))
         self._text_box.grid(column=0, row=0, columnspan=3, pady=5)
 
-        self.log_frame = LogFrame(self, text='Status', width=665, height=360)
+        self.log_frame = LogFrame(self, text='Status',
+                                  width=APP_GEOMETRY.log_width,
+                                  height=APP_GEOMETRY.log_height)
         self.log_frame.grid(column=0, row=1, rowspan=2, columnspan=3)
 
         self._refresh_btn = ttk.Button(parent, text='Refresh', state='disabled',
@@ -118,7 +120,7 @@ class MainFrame(ttk.Frame):
         self.podcast_obj = None
         self.confirm_button = None
 
-    @property
+    @ property
     def text_widget(self):
         """Return the text widget element."""
         return self._text_box
@@ -149,7 +151,7 @@ class MainFrame(ttk.Frame):
 
         self._parse_lines()
 
-    @property
+    @ property
     def _get_lines(self) -> list:
         """Return a list of the files names written in the text widget.
 

@@ -7,6 +7,7 @@ from datetime import datetime
 
 from tkinter import messagebox, TkVersion
 
+from app.geometry import AppGeometry
 
 if TkVersion <= 8.5:
     messagebox.showinfo(
@@ -14,11 +15,7 @@ if TkVersion <= 8.5:
         "Please update to +8.6")
     sys.exit("tk version is old")
 
-if platform.system() == 'Darwin':
-    OS_SYSTEM = 'Mac'
-elif platform.system() == 'Linux':
-    OS_SYSTEM = 'Linux'
-
+APP_GEOMETRY = AppGeometry()
 
 PWD = os.path.dirname(__file__)
 PACKAGE_PATH = os.path.dirname(PWD)
@@ -54,7 +51,7 @@ def write_report():
             msg = f"{now} - The following packages are required: {app}\n"
             report.write(msg)
 
-            if OS_SYSTEM == "Linux":
+            if platform.system() == "Linux":
                 report.write(
                     f"type in the terminal:\nsudo apt install {app}\n")
 
