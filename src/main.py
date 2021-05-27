@@ -96,7 +96,8 @@ class PodcastPage(ttk.Frame):
         self.display_msg = self.main_frame.log_frame.display_msg
 
         self._refresh_btn = self.main_frame._refresh_btn
-        self._refresh_btn.grid(column=0, row=2, rowspan=3, sticky=tk.W, padx=10)
+        self._refresh_btn.grid(
+            column=0, row=2, rowspan=3, sticky=tk.W, padx=10)
 
     def check_credentials(self):
         if UserConfig().is_empty():
@@ -217,6 +218,8 @@ class MainWindow(ThemedTk):
 
         _audio_page = AudioPage()
         _layout.add(_audio_page, text='Audio')
+
+        # _layout.select(_catalog_page)
 
         _layout.pack(fill=tk.BOTH)
 
@@ -452,6 +455,7 @@ def run():
 
     try:
 
+        # app = MainWindow()
         app = MainWindow(theme='arc')
         app.mainloop()
     except Exception as error:
