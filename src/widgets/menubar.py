@@ -8,77 +8,13 @@ import subprocess
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
 
-from widgets.html_frame import archive_files
-
+from app import CustomDialog
 from utils import util, UserConfig
 from startup import LOG_PATH, USER_AUDIO
 from utils.resources import _system_catalog_path, _catalog_file
 
-
-class CredentialsEntry(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.title('Update Credentials')
-
-        h = self.winfo_screenheight() // 2
-        w = self.winfo_screenwidth() // 2
-        self.geometry(f'300x150+{w}+{h}')
-        self.resizable(width=False, height=False)
-
-        self._main = ttk.Frame(self, width=300, height=150)
-        self._main.grid(column=0, row=0)
-        self._main.grid_propagate(False)
-
-        ttk.Label(self._main, text='Host').grid(row=0, sticky=tk.E)
-        ttk.Label(self._main, text='User').grid(row=1, sticky=tk.E)
-        ttk.Label(self._main, text='Password').grid(row=2, sticky=tk.E)
-        ttk.Label(self._main, text='Website').grid(row=3, sticky=tk.E)
-
-        self.host_entry = ttk.Entry(self._main, width=24)
-        self.user_entry = ttk.Entry(self._main, width=24)
-        self.pass_entry = ttk.Entry(self._main, width=24, show="*")
-        self.web_entry = ttk.Entry(self._main, width=24)
-
-        self.host_entry.grid(row=0, column=1)
-        self.user_entry.grid(row=1, column=1)
-        self.pass_entry.grid(row=2, column=1)
-        self.web_entry.grid(row=3, column=1)
-
-        self.save_credentials = ttk.Button(self._main, text='Save',
-                                           command=self._save)
-        self.save_credentials.grid(row=4, column=1, columnspan=2,
-                                   sticky=tk.E, pady=5)
-
-        self.config = UserConfig()
-        self.load_credentials()
-
-    def _save(self):
-        data = {}
-
-        data['host'] = self.host_entry.get()
-        data['user'] = self.user_entry.get()
-        data['pass'] = self.pass_entry.get()
-        data['web'] = self.web_entry.get()
-
-        web = data['web']
-        if web.endswith('/'):
-            web = web[:-1]
-
-        data['elearning_url'] = f'{web}/elearning'
-        data['test_url'] = f'{web}/images/didattica/virgil_test'
-        data['podcast_url'] = f'{web}/images/didattica/PODCAST'
-        data['plugin_url'] = f'{web}/plugins/content/1pixelout/player.swf'
-
-        with UserConfig(mode='wb') as config_file:
-            pickle.dump(data, config_file)
-
-        self.destroy()
-
-    def load_credentials(self):
-        self.host_entry.insert(tk.END, self.config.value('host'))
-        self.user_entry.insert(tk.END, self.config.value('user'))
-        self.pass_entry.insert(tk.END, self.config.value('pass'))
-        self.web_entry.insert(tk.END, self.config.value('web'))
+from widgets.html_frame import archive_files
+from widgets.credentials import CredentialsEntry
 
 
 def _update_config(setting):
@@ -112,6 +48,10 @@ class OptionsMenu(tk.Menu):
 
         self.add_checkbutton(label='Enable Developer mode',
                              variable=self._is_dev_mode, command=self._reboot)
+
+        self._test_upload = tk.BooleanVar(False)
+        self.add_checkbutton(label='Upload virgil_test',
+                             variable=self._test_upload)
 
         self.add_separator()
 
@@ -150,7 +90,6 @@ class TaskMenu(tk.Menu):
         self.add_separator()
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
-        self.add_separator()
 
     # @staticmethod
     # def create_shortcut(self):
@@ -212,7 +151,38 @@ class GoMenu(tk.Menu):
                 os.path.join(os.getcwd(),  "resources"))
         )
 
-        self.add_separator()
+
+class CreateAudio(CustomDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title('Create Audio sample')
+
+        ttk.Label(self._layout, text='Text').grid(row=0, sticky=tk.E)
+        ttk.Label(self._layout, text='Language').grid(row=1, sticky=tk.E)
+
+        self._text_entry = ttk.Entry(self._layout, width=24)
+        self._lang_select = ttk.Combobox(self._layout, state="readonly",
+                                         value=["it", "en"], width=5)
+        self._lang_select.current(0)
+
+        self._text_entry.grid(row=0, column=1)
+        self._lang_select.grid(row=1, column=1, sticky=tk.W)
+
+        self._save_btn.config(command=self.text_to_audio)
+
+    def text_to_audio(self):
+        """Generate text to audio files."""
+        ask_user = filedialog.asksaveasfilename(
+            initialfile=self._text_entry.get())
+        if not ask_user:
+            return
+
+        path, filename = os.path.split(ask_user)
+        if not util.generate_audio(text=self._text_entry.get(),
+                                   filename=filename, path=path,
+                                   lang=self._lang_select.get()):
+            messagebox.showerror(title='PodcastTool',
+                                 message='Problem Creating Audio. Check log file')
 
 
 class AudioMenu(tk.Menu):
@@ -222,6 +192,11 @@ class AudioMenu(tk.Menu):
         self.add_cascade(label='Waterkmarks', menu=self._get_watermarks())
         self.add_cascade(label='Bitrate', menu=self._get_bitrate())
         self.add_cascade(label='Sample Rate', menu=self._get_sample_rate())
+
+        self.add_separator()
+
+        self.add_command(label='Create Audio sample',
+                         command=CreateAudio)
 
     def _get_sample_rate(self):
         self._sample_rate = tk.StringVar()
@@ -270,14 +245,17 @@ class MenuBar(tk.Menu):
         self.add_cascade(label='Options', menu=self.options)
         self.add_cascade(label='Tasks', menu=self._help)
 
-    @property
+    def test_upload(self):
+        return self.options._test_upload.get()
+
+    @ property
     def watermarks(self):
         return self.audio.watermarks_num.get()
 
-    @property
+    @ property
     def bitrate(self):
         return self.audio._bitrate.get()
 
-    @property
+    @ property
     def sample_rate(self):
         return self.audio._sample_rate.get().replace('Hz', '')
