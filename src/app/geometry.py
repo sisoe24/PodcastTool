@@ -52,3 +52,11 @@ class AppGeometry:
         if OS_SYSTEM == 'Darwin':
             return default
         return default - 6
+
+    @property
+    def dialog_width(self):
+        return 350
+
+    @property
+    def dialog_height(self):
+        return 150
