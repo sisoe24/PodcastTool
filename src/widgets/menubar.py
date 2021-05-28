@@ -41,6 +41,10 @@ class OptionsMenu(tk.Menu):
                                  {_html_key: _use_html.get()}
                              ))
 
+        self.add_separator()
+        self.add_command(label='Set Podcast Folder', command=self._set_folder)
+        self.add_separator()
+
         self._is_dev_mode = tk.BooleanVar()
         self._dev_mode_key = 'dev_mode'
         _dev_mode_config = UserConfig().value(self._dev_mode_key, False)
@@ -50,12 +54,8 @@ class OptionsMenu(tk.Menu):
                              variable=self._is_dev_mode, command=self._reboot)
 
         self._test_upload = tk.BooleanVar(False)
-        self.add_checkbutton(label='Upload virgil_test',
+        self.add_checkbutton(label='Upload to ftp/virgil_test',
                              variable=self._test_upload)
-
-        self.add_separator()
-
-        self.add_command(label='Set Podcast Folder', command=self._set_folder)
 
         self.add_separator()
 
@@ -119,7 +119,10 @@ class RunMenu(tk.Menu):
         for audio in pathlib.Path(USER_AUDIO).glob('*mp3'):
             os.remove(audio)
 
-        messagebox.showinfo(title='PodcastTool', message='Done')
+        messagebox.showinfo(
+            title='PodcastTool',
+            message='Done.\nApplication must be restarted manually')
+        sys.exit()
 
     @staticmethod
     def delete_archive():
