@@ -73,10 +73,9 @@ class AudioPage(ttk.Frame):
 
 
 class PodcastPage(ttk.Frame):
-    def __init__(self, test_env, menubar, * args, **kwargs):
+    def __init__(self, menubar, * args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._test_upload = test_env
         self.menubar = menubar
 
         self.html = HtmlFrame(self)
@@ -128,11 +127,10 @@ class PodcastPage(ttk.Frame):
 
         self.main_frame.log_frame.delete_labels()
 
-        # self.main_frame.log_frame._log_label.config(text='Working...')
-
         self.display_msg("Creazione podcast in corso...")
 
-        test_upload = self._test_upload.get()
+        test_upload = self.menubar.test_upload()
+
         with ThreadPoolExecutor() as executor:
             for file in self.main_frame.proccesed_files():
                 self.display_msg(file)
@@ -169,8 +167,6 @@ class PodcastPage(ttk.Frame):
 
         self.html.page = generate_html(podcast.html_page, test_upload)
 
-        self.display_msg("Pagina html generata")
-
         self._conferm_btn["state"] = 'disable'
 
         self.html.copy_button = "normal"
@@ -181,8 +177,9 @@ class PodcastPage(ttk.Frame):
         self._open_folder()
 
     def _open_folder(self):
-        _user = messagebox.askyesno(title='PodcastTool',
-                                    message='Done!\nOpen podcast folder?')
+        _user = messagebox.askyesno(
+            title='PodcastTool',
+            message='Pagina HTML generata!\nApri cartella podcast?')
         if _user:
             util.open_link(self.podcast_obj.path)
 
@@ -209,8 +206,7 @@ class MainWindow(ThemedTk):
 
         _layout = ttk.Notebook(self)
 
-        _podcast_page = PodcastPage(
-            test_env=self._test_upload, menubar=self.menubar)
+        _podcast_page = PodcastPage(menubar=self.menubar)
         _layout.add(_podcast_page, text='Podcast')
 
         _catalog_page = CatalogPage()
@@ -234,14 +230,8 @@ class MainWindow(ThemedTk):
 
     def _set_title(self):
         title = 'PodcastTool 2.3'
-        self._test_upload = tk.BooleanVar(False)
-
         if dev_mode:
-            title += ' - Developer mode'.upper()
-            # _test_check = ttk.Checkbutton(self, variable=self._test_upload,
-            #                               text='Upload to server virgil_test')
-            # _test_check.pack()
-
+            title += ' - DEVELOPER MODE'
         self.title(title)
 
 
