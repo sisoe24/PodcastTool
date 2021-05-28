@@ -12,8 +12,6 @@ import pathlib
 import tempfile
 import webbrowser
 
-from functools import partial
-
 import tkinter as tk
 from tkinter import ttk
 
@@ -56,27 +54,30 @@ class HtmlFrame(ttk.Frame):
         self.status_var = tk.StringVar(value="Non pronto")
         self._status_display = tk.Label(
             self._html_frame, textvariable=self.status_var,
-            font=('TkDefaultFont', APP_GEOMETRY.html_font))
+            font=('TkDefaultFont', APP_GEOMETRY.html_font)
+        )
 
         self._status_display.grid(column=1, row=1)
         self._status_display.configure(background="red")
 
-        self._copy_btn = ttk.Button(self._html_frame, text='Copy HTML',
+        ttk.Button(self._html_frame, text='Website',
+                   command=lambda: self._open_link('web')).grid(
+            column=0, row=2, pady=5, padx=5
+        )
+
+        self._preview_btn = ttk.Button(
+            self._html_frame, text='Preview',
+            state='disabled',
+            command=lambda: self._open_link('preview'))
+        self._preview_btn.grid(column=1, row=2, padx=20)
+
+        self._copy_btn = ttk.Button(self._html_frame, text='Copy',
                                     state='disabled', command=self._copy_html)
-        self._copy_btn.grid(column=3, row=1, padx=20)
-
-        open_web = partial(self._open_link, 'web')
-        ttk.Button(self._html_frame, text='Apri website',
-                   command=open_web).grid(column=3, row=2, pady=5)
-
-        open_preview = partial(self._open_link, 'preview')
-        self._preview_btn = ttk.Button(self._html_frame, text='Preview HTML',
-                                       state='disabled', command=open_preview)
-        self._preview_btn.grid(column=1, row=2)
+        self._copy_btn.grid(column=3, row=2, padx=5)
 
         self._page = ""
 
-        self._labels()
+        # self._labels()
 
     def status(self, status, color):
         """Display html status message on gui
