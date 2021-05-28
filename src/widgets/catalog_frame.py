@@ -26,14 +26,14 @@ class AddNewEntry(CustomDialog):
         super().__init__(*args, **kwargs)
         self.title(title)
 
-        ttk.Label(self._layout, text='Abbreviato').grid(row=0, sticky=tk.E)
+        ttk.Label(self._layout, text='Abbrev.').grid(row=0, sticky=tk.E)
         ttk.Label(self._layout, text='Intero').grid(row=1, sticky=tk.E)
         ttk.Label(self._layout, text='Language').grid(row=2, sticky=tk.E)
         ttk.Label(self._layout, text='Corso',
                   state=enable_corsi).grid(row=3, sticky=tk.E)
 
-        self._short_name = ttk.Entry(self._layout, width=20)
-        self._long_name = ttk.Entry(self._layout, width=20)
+        self._short_name = ttk.Entry(self._layout, width=24)
+        self._long_name = ttk.Entry(self._layout, width=24)
         self._lang_select = ttk.Combobox(self._layout, state="readonly",
                                          value=["it", "en"], width=5)
         self._lang_select.current(0)
@@ -102,8 +102,6 @@ class CatalogFrame(ttk.Frame):
             column=0, row=3, sticky=tk.E)
 
         # self._course = None
-        AddNewEntry(
-            title='Aggiungi Corso', enable_corsi='readonly')
 
         ttk.Button(self, text="Cancella Selezione", command=self._delete_selected).grid(
             column=2, row=3, pady=10, padx=10, sticky=tk.NE)
@@ -180,9 +178,7 @@ class CatalogFrame(ttk.Frame):
                                 message="Nessun nome selezionato")
             return
         confirm = messagebox.askyesno(title="PodcastTool",
-                                      message=(
-                                            f"Cancellare: {selected_item}?")
-                                      )
+                                      message=(f"Cancellare: {selected_item}?"))
         if confirm:
             item = self._tree_list.item(self._tree_list.selection())
             audio_name = item['values'][1].replace(' ', '_').lower()
