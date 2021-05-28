@@ -77,7 +77,7 @@ class OptionsMenu(tk.Menu):
             self._is_dev_mode.set(not user)
 
 
-class TaskMenu(tk.Menu):
+class RunMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -238,12 +238,12 @@ class MenuBar(tk.Menu):
         self.audio = AudioMenu(tearoff=False)
         self.options = OptionsMenu(tearoff=False)
         self._go = GoMenu(tearoff=False)
-        self._help = TaskMenu(tearoff=False)
+        self._help = RunMenu(tearoff=False)
 
         self.add_cascade(label='Audio', menu=self.audio)
-        self.add_cascade(label='Go', menu=self._go)
         self.add_cascade(label='Options', menu=self.options)
-        self.add_cascade(label='Tasks', menu=self._help)
+        self.add_cascade(label='Run', menu=self._help)
+        self.add_cascade(label='Go', menu=self._go)
 
     def test_upload(self):
         return self.options._test_upload.get()
