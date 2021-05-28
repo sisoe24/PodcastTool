@@ -20,12 +20,10 @@ class CustomDialog(ThemedTk):
         self.resizable(width=False, height=False)
 
         self._layout = ttk.Frame(self)
-        self._layout.grid(column=0, row=0, sticky=tk.NS)
+        self._layout.grid(column=0, row=0, sticky=tk.NSEW)
 
-        # self.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure(1, weight=2)
-        # self.grid_columnconfigure(3, weight=3)
-        # self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         # self._layout.grid_columnconfigure((0, 1, 2), weight=1)
         # self._layout.grid_rowconfigure((0, 1, 2), weight=3)
