@@ -43,7 +43,8 @@ class AudioFrame(ttk.Frame):
 
         # ttk.Button(self._audio_list_frame, text="aggiungi casella",
         #            command=self.add_combobox).grid(column=1, row=20)
-        ttk.Button(self._audio_list_frame, text="Salva nuova lista",
+        
+        ttk.Button(self._audio_list_frame, text="Salva",
                    command=self.new_intro).grid(column=1, row=20, sticky=tk.E,
                                                 pady=5, padx=5)
 
@@ -51,12 +52,14 @@ class AudioFrame(ttk.Frame):
                                      padding=1)
         water_frame.grid(column=0, row=3, pady=10, sticky=tk.W)
 
-        self.watermark = ttk.Combobox(water_frame, width=42)
-        self.watermark.grid(column=0, row=4, sticky=tk.E)
-        self.watermark.set(self._catalog["watermark"])
+        self._watermak_text = tk.StringVar()
+        self.watermark = ttk.Entry(water_frame,
+                                   textvariable=self._watermak_text,
+                                   width=43)
+        self.watermark.grid(column=0, row=4, padx=5, sticky=tk.E)
+        self._watermak_text.set(self._catalog["watermark"])
 
-        save_watermark = ttk.Button(water_frame,
-                                    text="Salva nuovo watermark",
+        save_watermark = ttk.Button(water_frame, text="Salva",
                                     command=self.new_watermark)
         save_watermark.grid(column=0, row=5, sticky=tk.E, pady=5, padx=5)
 
