@@ -44,14 +44,6 @@ class LogFrame(ttk.LabelFrame):
     def __init__(self,  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.grid_propagate(False)
-
-        # self._log_frame = ttk.Frame(parent, borderwidth=3, relief='sunken',
-        #                             width=670, height=360)
-        # self._log_frame.grid(column=0, row=0, rowspan=2, columnspan=2,
-        #                      sticky=tk.N)
-        # self._log_frame.grid_propagate(False)
-        self._log_frame = self
-
         self._log_label = None
 
     def row_increment(self):
@@ -68,18 +60,18 @@ class LogFrame(ttk.LabelFrame):
 
     def _refresh_widgets(self, name):
         """Refresh widgets in error label frame."""
-        for widget in self._log_frame.winfo_children():
+        for widget in self.winfo_children():
             if name in str(widget):
                 widget.destroy()
 
     def delete_labels(self):
-        for widget in self._log_frame.winfo_children():
+        for widget in self.winfo_children():
             widget.destroy()
 
     def create_label_frame(self, row=0, text=""):
         """Create error label frame for the suggestion messages."""
         self._log_label = ttk.LabelFrame(
-            self._log_frame, text=text, name=text.lower())
+            self, text=text, name=text.lower())
         self._log_label.grid(column=0, row=row, pady=5, sticky=tk.W)
         return self._log_label
 
@@ -91,7 +83,8 @@ class LogFrame(ttk.LabelFrame):
             'TkDefaultFont', APP_GEOMETRY.log_font))
 
         ttk.Label(self, background=color, text=message,
-                  style='label.TLabel').grid(column=0, row=self.row_number,
+                  style='label.TLabel').grid(column=0,
+                                             row=self.row_number, padx=10,
                                              sticky=tk.W)
         self.row_increment()
 
