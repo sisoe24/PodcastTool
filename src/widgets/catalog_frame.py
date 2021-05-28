@@ -13,6 +13,7 @@ from tkinter import ttk
 from tkinter import messagebox
 
 
+from app import CustomDialog
 from utils import util, catalog
 from startup import USER_AUDIO, APP_GEOMETRY
 from utils.resources import _catalog_file
@@ -20,19 +21,10 @@ from utils.resources import _catalog_file
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
 
 
-class AddNewEntry(tk.Tk):
+class AddNewEntry(CustomDialog):
     def __init__(self, title, enable_corsi='disabled', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title(title)
-
-        h = self.winfo_screenheight() // 2
-        w = self.winfo_screenwidth() // 2
-        self.geometry(f'300x150+{w}+{h}')
-        self.resizable(width=False, height=False)
-
-        self._layout = ttk.Frame(self, width=300, height=150)
-        self._layout.grid(column=0, row=0)
-        self._layout.grid_propagate(False)
 
         ttk.Label(self._layout, text='Abbreviato').grid(row=0, sticky=tk.E)
         ttk.Label(self._layout, text='Intero').grid(row=1, sticky=tk.E)
@@ -54,10 +46,6 @@ class AddNewEntry(tk.Tk):
         self._long_name.grid(row=1, column=1)
         self._lang_select.grid(row=2, column=1, sticky=tk.W)
         self._course.grid(row=3, column=1, sticky=tk.W)
-
-        self._save_btn = ttk.Button(self._layout, text='Salva')
-        self._save_btn.grid(row=4, column=1,
-                            sticky=tk.E, pady=5)
 
 
 class CatalogLoad(ttk.Frame):
@@ -90,8 +78,7 @@ class CatalogFrame(ttk.Frame):
         super().__init__(parent, *args, **kwargs)
 
         self._load_widget = CatalogLoad(self)
-        self._load_widget.grid(
-            column=0, row=0, columnspan=2, padx=10, sticky=tk.W)
+        self._load_widget.grid(column=0, row=0, columnspan=3, padx=10)
         self._load_widget.load_button.config(command=self._load_catalog)
 
         # TREE VIEW
@@ -114,7 +101,9 @@ class CatalogFrame(ttk.Frame):
         ttk.Button(self, text="Aggiungi Corso", command=self._add_corso).grid(
             column=0, row=3, sticky=tk.E)
 
-        self._course = None
+        # self._course = None
+        AddNewEntry(
+            title='Aggiungi Corso', enable_corsi='readonly')
 
         ttk.Button(self, text="Cancella Selezione", command=self._delete_selected).grid(
             column=2, row=3, pady=10, padx=10, sticky=tk.NE)
@@ -276,14 +265,18 @@ class CatalogFrame(ttk.Frame):
             else:
                 return
 
-            self._tree_list.insert("", 0, short_name)
-            self._tree_list.set(short_name, 'names_short', short_name)
-            self._tree_list.set(short_name, 'names_long', long_name)
+            # when adding entry if catalog is not loaded then dont show entry
+            # in empty catalog
+            if self.get_catalog:
+                self._tree_list.insert("", 0, short_name)
+                self._tree_list.set(short_name, 'names_short', short_name)
+                self._tree_list.set(short_name, 'names_long', long_name)
 
             self._updated_names[section].append(
                 [long_name, self._language])
-            # self._btn_save["state"] = "active"
+
             self._save_new_catalog()
+            self._updated_names[section].clear()
 
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
@@ -297,8 +290,6 @@ class CatalogFrame(ttk.Frame):
             self._delete_new_audio()
             self._delete_audio.clear()
 
-        messagebox.showinfo(message="Modifiche salvate!")
-
     def _delete_new_audio(self):
         for file in pathlib.Path(USER_AUDIO).glob('*mp3'):
             if file.name in self._delete_audio:
@@ -307,14 +298,16 @@ class CatalogFrame(ttk.Frame):
 
     def _update_audio_library(self):
         """Update audio library with deleting or adding the modifications."""
-        for _, new_names in self._updated_names.items():
-            for index, new_name in enumerate(new_names, 3):
+
+        report_msg = 'Modifiche salvate!'
+
+        for new_names in self._updated_names.values():
+            for new_name in new_names:
                 name, lang = new_name
 
                 if util.generate_audio(text=name.lower(), path=USER_AUDIO, lang=lang):
-                    msg = f"Generating audio for:\n{name}"
+                    report_msg += f"\nAudio Generato per: {name}"
                 else:
-                    msg = f'Problems generating audio for:\n{name}\nPlease check log file'
+                    report_msg += f"\nProblemi per: {name}\nControlla log file"
 
-                ttk.Label(self, text=msg).grid(
-                    column=1, row=index, sticky=tk.W, padx=5)
+        messagebox.showinfo(title='PodcastTool', message=report_msg)

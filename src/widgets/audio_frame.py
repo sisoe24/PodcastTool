@@ -14,7 +14,6 @@ import tkinter as tk
 from tkinter import (
     ttk,
     messagebox,
-    filedialog
 )
 
 from startup import USER_AUDIO
@@ -22,7 +21,7 @@ from utils import util, catalog
 from utils.resources import _catalog_file
 
 
-class AudioIntro(tk.Frame):
+class AudioIntro(ttk.Frame):
     """Audio intro modification section of the gui."""
     _catalog = catalog()
     _new_audio = []
@@ -34,23 +33,23 @@ class AudioIntro(tk.Frame):
         self.audio_catalog = self._catalog
 
         self._audio_frame = ttk.Frame(self,)
-        self._audio_frame.grid(column=0, row=0)
+        self._audio_frame.grid(column=0, row=0, pady=5)
 
         self._audio_list_frame = ttk.LabelFrame(
             self._audio_frame, text="Audio intro", padding=1)
-        self._audio_list_frame.grid(column=0, row=0)
+        self._audio_list_frame.grid(column=0, row=0, pady=5)
 
         self.create_combobox()
 
-        ttk.Button(self._audio_list_frame, text="aggiungi casella",
-                   command=self.add_combobox).grid(column=1, row=20)
+        # ttk.Button(self._audio_list_frame, text="aggiungi casella",
+        #            command=self.add_combobox).grid(column=1, row=20)
         ttk.Button(self._audio_list_frame, text="Salva nuova lista",
                    command=self.new_intro).grid(column=1, row=20, sticky=tk.E,
                                                 pady=5, padx=5)
 
         water_frame = ttk.LabelFrame(self._audio_frame, text="Watermark",
                                      padding=1)
-        water_frame.grid(column=0, row=3, sticky=tk.W)
+        water_frame.grid(column=0, row=3, pady=10, sticky=tk.W)
 
         self.watermark = ttk.Combobox(water_frame, width=42)
         self.watermark.grid(column=0, row=4, sticky=tk.E)
@@ -61,41 +60,7 @@ class AudioIntro(tk.Frame):
                                     command=self.new_watermark)
         save_watermark.grid(column=0, row=5, sticky=tk.E, pady=5, padx=5)
 
-        create_frame = ttk.LabelFrame(
-            self._audio_frame, text="Crea text audio", padding=1)
-        create_frame.grid(column=0, row=6, sticky=tk.W)
-
-        ttk.Label(create_frame, text="text:").grid()
-
-        self.text_entry = ttk.Entry(create_frame, width=40)
-        self.text_entry.grid(column=1, row=0)
-
-        ttk.Button(create_frame, text="Crea audio",
-                   command=self.text_to_audio).grid(column=1, row=1,
-                                                    sticky=tk.E,
-                                                    pady=5, padx=5)
-
-        ttk.Label(create_frame, text="lang:").grid(column=0, row=1,
-                                                   sticky=tk.W)
-        self._lang_select = ttk.Combobox(create_frame, value=["it", "en"],
-                                         state="readonly", width=2)
-        self._lang_select.grid(column=1, row=1, sticky=tk.W)
-        self._lang_select.current(0)
-
-    def text_to_audio(self):
-        """Generate text to audio files."""
-        ask_user = filedialog.asksaveasfilename()
-        if not ask_user:
-            return
-
-        path, filename = os.path.split(ask_user)
-        if not util.generate_audio(text=self.text_entry.get(),
-                                   filename=filename, path=path,
-                                   lang=self._lang_select.get()):
-            messagebox.showerror(title='PodcastTool',
-                                 message='Problem Creating Audio. Check log file')
-
-    def add_combobox(self):
+    def __add_combobox(self):
         """Add new combobox widget if user wants."""
         ttk.Combobox(self._audio_list_frame, value=self.const_vars(),
                      width=40).grid(column=1, row=self.list_len)
