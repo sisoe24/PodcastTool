@@ -16,7 +16,7 @@ from widgets import (
     MenuBar,
     HtmlFrame,
     MainFrame,
-    AudioIntro,
+    AudioFrame,
     CatalogFrame,
     SelectPodcast
 )
@@ -69,7 +69,7 @@ class CatalogPage(ttk.Frame):
 class AudioPage(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        AudioIntro(self).pack()
+        AudioFrame(self).pack()
 
 
 class PodcastPage(ttk.Frame):

@@ -21,7 +21,7 @@ from utils import util, catalog
 from utils.resources import _catalog_file
 
 
-class AudioIntro(ttk.Frame):
+class AudioFrame(ttk.Frame):
     """Audio intro modification section of the gui."""
     _catalog = catalog()
     _new_audio = []
