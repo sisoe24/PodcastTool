@@ -32,7 +32,6 @@ def get_similar_words(wrong_name: str, catalog_section: str) -> str:
         check_list = catalog('docenti').keys()
 
     similar_name = get_close_matches(wrong_name, check_list, cutoff=0.6)
-    possibile_names = [i for i in similar_name]
     choice = f"- {wrong_name} -> {similar_name}"
     return choice
 
@@ -341,6 +340,8 @@ class MainFrame(ttk.Frame):
         if self._text_errors():
             self.log_frame.config(text='Errori trovati')
             self._refresh_btn.config(state='enabled')
+            self._refresh_btn.grid(
+                column=0, row=2, rowspan=3, sticky=tk.W, padx=10)
         else:
             # self.log_frame.refresh_widgets("errori")
 
@@ -350,6 +351,7 @@ class MainFrame(ttk.Frame):
 
             self.log_frame.config(text='Status')
             self.log_frame.display_msg("Nessun errore!")
+            self._refresh_btn.grid_remove()
 
     def refresh(self):
         """Method to be called from refresh button.
