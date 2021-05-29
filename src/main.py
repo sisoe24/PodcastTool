@@ -148,6 +148,10 @@ class PodcastPage(ttk.Frame):
 
         self.display_msg("Fatto!\n")
 
+        # generate html page before so if no internet connection
+        # the archive will still be created
+        self.html.page = generate_html(podcast.html_page, test_upload)
+
         check_path = list(podcast.files_to_upload())[0]["server_path"]
         server_path = check_server_path(check_path, test_upload)
 
@@ -162,8 +166,6 @@ class PodcastPage(ttk.Frame):
 
         _debug_executor(f1)
         self.display_msg("Fatto!\n")
-
-        self.html.page = generate_html(podcast.html_page, test_upload)
 
         self._conferm_btn["state"] = 'disable'
 
