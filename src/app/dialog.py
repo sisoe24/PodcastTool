@@ -1,15 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 
-from ttkthemes import ThemedTk
-
 from app.geometry import AppGeometry
 
 
-class CustomDialog(ThemedTk):
+class CustomDialog(tk.Toplevel):
     def __init__(self,  *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.set_theme('arc')
 
         app = AppGeometry()
 
@@ -24,9 +21,6 @@ class CustomDialog(ThemedTk):
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-
-        # self._layout.grid_columnconfigure((0, 1, 2), weight=1)
-        # self._layout.grid_rowconfigure((0, 1, 2), weight=3)
 
         self._save_btn = ttk.Button(self._layout, text='Save')
         self._save_btn.grid(row=10, column=1, sticky=tk.E, pady=5)
