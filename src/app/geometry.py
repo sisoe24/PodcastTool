@@ -55,7 +55,7 @@ class AppGeometry:
 
     @property
     def dialog_width(self):
-        return 300
+        return 320
 
     @property
     def dialog_height(self):
