@@ -8,7 +8,7 @@ from tkinter import ttk
 import regex
 
 from utils import catalog
-from startup import APP_GEOMETRY, critical
+from startup import APP_GEOMETRY, COLORS, critical
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
 
@@ -95,7 +95,9 @@ class MainFrame(ttk.Frame):
         # self.grid_propagate(False)
 
         self._text_box = tk.Text(self, width=APP_GEOMETRY.textbox_width,
-                                 height=4, borderwidth=1, relief='sunken',
+                                 height=4, relief='flat', fg='black',
+                                 highlightbackground=COLORS.text_box_border(),
+                                 background=COLORS.text_box(),
                                  font=('TkDefaultFont',
                                        APP_GEOMETRY.textbox_font))
         self._text_box.grid(column=0, row=0, columnspan=3, pady=5)

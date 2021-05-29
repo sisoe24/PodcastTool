@@ -17,7 +17,7 @@ from tkinter import ttk
 
 
 from utils import UserConfig
-from startup import USER_ARCHIVE, APP_GEOMETRY
+from startup import USER_ARCHIVE, APP_GEOMETRY, COLORS
 
 
 def archive_files():
@@ -58,7 +58,7 @@ class HtmlFrame(ttk.Frame):
         )
 
         self._status_display.grid(column=1, row=1)
-        self._status_display.configure(background="red")
+        self._status_display.configure(background=COLORS.no_html())
 
         ttk.Button(self._html_frame, text='Website',
                    command=lambda: self._open_link('web')).grid(
@@ -127,7 +127,7 @@ class HtmlFrame(ttk.Frame):
     def _copy_html(self):
         """Copy the main page generated after the script is completed."""
         self.clipboard_append(self.page)
-        self.status('Copiato', 'RoyalBlue1')
+        self.status('Copiato', COLORS.copy_html())
         self.bell()
 
     def _open_link(self, page: str):
