@@ -23,7 +23,7 @@ class FtpServer:
                                    passwd=self.settings.value('pass', 'x'))
         except Exception as error:
             LOGGER.critical('Problem connecting %s', exc_info=True)
-            critical('Credentials probably wrong.')
+            critical('Credentials probably wrong or no internet connection.')
 
         # self._ftp.login()
 
