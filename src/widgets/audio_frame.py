@@ -7,7 +7,6 @@ Default export options are:
     Sample Rate: 22050Hz.
     Watermark cuts: auto.
 """
-import os
 import json
 
 import tkinter as tk
@@ -23,6 +22,7 @@ from utils.resources import _catalog_file
 
 class AudioFrame(ttk.Frame):
     """Audio intro modification section of the gui."""
+    # TODO: should be nice to order by selecting the column
     _catalog = catalog()
     _new_audio = []
     list_len = len(_catalog["intro"])
