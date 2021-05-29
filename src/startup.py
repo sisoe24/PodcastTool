@@ -11,6 +11,7 @@ from pydub import AudioSegment
 
 import logger
 from app.geometry import AppGeometry
+from app.colors import Colors
 
 LOGGER = logging.getLogger('podcasttool.startup')
 
@@ -29,6 +30,7 @@ if TkVersion <= 8.5:
     sys.exit("tk version is old")
 
 APP_GEOMETRY = AppGeometry()
+COLORS = Colors()
 
 PWD = os.path.dirname(__file__)
 PACKAGE_PATH = os.path.dirname(PWD)
