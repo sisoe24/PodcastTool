@@ -1,20 +1,26 @@
 """Reusable utility functions."""
 import os
 import re
-import sys
-import pathlib
 import logging
+import pathlib
 import datetime
-import platform
-import subprocess
-
-from tkinter import messagebox
+import requests
+import urllib.request
 
 import gtts
 
-from startup import LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool.util')
+
+
+def is_online():
+    try:
+        # requests.get('https://translate.google.com')
+        urllib.request.urlopen('https://translate.google.com')
+        return True
+    except Exception as e:
+        LOGGER.critical('Computer appears to be offline')
+        return False
 
 
 def generate_audio(text, path, filename="", lang='it'):
@@ -28,21 +34,35 @@ def generate_audio(text, path, filename="", lang='it'):
     Keyword Arguments:
         lang {str} - the language for the audio(default: 'it')
     """
-    name = str(text).replace("_", " ")
+    if not is_online():
+        return
 
     if not filename:
-        filename = name.replace(" ", "_")
+        filename = text.replace(" ", "_")
     else:
         filename = filename.replace(" ", "_")
 
     path = os.path.abspath(path)
+    msg = 'gTTS had some problem! Check log file.'
+
     try:
-        speak = gtts.gTTS(text=name, lang=lang)
-        speak.save(f'{path}/{filename}.mp3')
+        LOGGER.debug('Try to create gtts class')
+        speak = gtts.gTTS(text=text, lang=lang)
+
     except Exception as error:
-        msg = 'gTTS had some problems creating audio! check log file.'
+        msg += '\nFailed to create gtts class'
         LOGGER.critical('%s', msg, exc_info=True)
         return False
+    else:
+        try:
+            LOGGER.debug('Try to save gtts audio')
+            speak.save(f'{path}/{filename}.mp3')
+
+        except Exception as error:
+            msg += '\nFailed to create gtts audio'
+            LOGGER.critical('%s', msg, exc_info=True)
+            return False
+
     return True
 
 
@@ -113,29 +133,7 @@ def convert_month_name(month):
     return months[month]
 
 
-def open_link(link):
-    """Open a file path or a website link."""
-    os_system = platform.system()
-
-    if os_system == 'Darwin':
-        open_cmd = 'open'
-    elif os_system == 'Linux':
-        open_cmd = 'xdg-open'
-    else:
-        return
-    subprocess.Popen([open_cmd, link])
-
-
-def open_log(msg, title="Error", icon="warning", _exit=True):
-    """If fatal error ask user if wants to open log file."""
-    msg += '\nOpen log file?'
-    user = messagebox.askyesno(title=title, message=msg, icon=icon)
-    if user:
-        log_path = os.path.join(LOG_PATH, "errors.log")
-        open_link(log_path)
-    if _exit:
-        sys.exit()
-
-
 if __name__ == '__main__':
-    audio_duration(12312312)
+    if os.path.exists('test.mp3'):
+        os.remove('test.mp3')
+    is_online()
