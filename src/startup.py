@@ -68,7 +68,7 @@ try:
 except Exception as error:
     LOGGER.warning(error)
 
-    included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpegx')
+    included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpeg')
     if not os.path.exists(included_bin):
         critical('no ffmpeg binary found')
 
