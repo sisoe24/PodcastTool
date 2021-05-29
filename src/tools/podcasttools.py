@@ -371,6 +371,7 @@ class PodcastFile:
 
         """
         tmp_dir_path = f'{self.directory}/.tmp_{self.name}'
+        shutil.rmtree(tmp_dir_path, ignore_errors=True)
         LOGGER.debug('creating temporary folder: %s', tmp_dir_path)
         os.makedirs(tmp_dir_path, exist_ok=True)
 
