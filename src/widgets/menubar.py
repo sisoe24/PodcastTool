@@ -43,9 +43,8 @@ class OptionsMenu(tk.Menu):
         self._dev_mode_key = 'dev_mode'
         _dev_mode_config = UserConfig().value(self._dev_mode_key, False)
         self._is_dev_mode.set(_dev_mode_config)
-
-        self.add_separator()
         self.add_command(label='Update credentials', command=CredentialsEntry)
+
         self.add_separator()
 
         self.add_checkbutton(label='Enable Developer mode',
