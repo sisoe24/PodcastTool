@@ -17,6 +17,30 @@ LOGGER = logging.getLogger('podcasttool.startup')
 
 PLATFORM = platform.system()
 
+
+def open_path(link):
+    """Open a file path or a website link."""
+
+    if PLATFORM == 'Darwin':
+        open_cmd = 'open'
+    elif PLATFORM == 'Linux':
+        open_cmd = 'xdg-open'
+    else:
+        return
+    subprocess.Popen([open_cmd, link])
+
+
+def critical(msg, title="Error", icon="warning", _exit=True):
+    """If fatal error ask user if wants to open log file."""
+    msg += '\nOpen log file?'
+    user = messagebox.askyesno(title=title, message=msg, icon=icon)
+    if user:
+        log_path = os.path.join(LOG_PATH, "errors.log")
+        open_path(log_path)
+    if _exit:
+        sys.exit()
+
+
 # TODO: work on windows version
 if PLATFORM == 'Windows':
     LOGGER.critical('current not Windows supported')
@@ -45,8 +69,11 @@ try:
     subprocess.check_output(["which", 'ffmpeg'])
 except Exception as error:
     LOGGER.warning(error)
-    # TODO: add linux binary
-    included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpeg')
+
+    included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpegx')
+    if not os.path.exists(included_bin):
+        critical('no ffmpeg binary found')
+
     AudioSegment.converter = included_bin
     LOGGER.warning("Falling back on: %s", included_bin)
 else:
@@ -73,26 +100,3 @@ if not os.path.exists(USER_CONFIG):
     LOGGER.debug('user config file didnt exists. creating one')
     with open(USER_CONFIG, 'wb') as _:
         pass
-
-
-def open_path(link):
-    """Open a file path or a website link."""
-
-    if PLATFORM == 'Darwin':
-        open_cmd = 'open'
-    elif PLATFORM == 'Linux':
-        open_cmd = 'xdg-open'
-    else:
-        return
-    subprocess.Popen([open_cmd, link])
-
-
-def critical(msg, title="Error", icon="warning", _exit=True):
-    """If fatal error ask user if wants to open log file."""
-    msg += '\nOpen log file?'
-    user = messagebox.askyesno(title=title, message=msg, icon=icon)
-    if user:
-        log_path = os.path.join(LOG_PATH, "errors.log")
-        open_path(log_path)
-    if _exit:
-        sys.exit()
