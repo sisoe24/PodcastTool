@@ -112,7 +112,7 @@ class MainFrame(ttk.Frame):
         self.podcast_obj = None
         self.confirm_button = None
 
-    @ property
+    @property
     def text_widget(self):
         """Return the text widget element."""
         return self._text_box
@@ -143,7 +143,7 @@ class MainFrame(ttk.Frame):
 
         self._parse_lines()
 
-    @ property
+    @property
     def _get_lines(self) -> list:
         """Return a list of the files names written in the text widget.
 

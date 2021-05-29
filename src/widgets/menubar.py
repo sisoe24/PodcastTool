@@ -246,14 +246,14 @@ class MenuBar(tk.Menu):
     def test_upload(self):
         return self.options._test_upload.get()
 
-    @ property
+    @property
     def watermarks(self):
         return self.audio.watermarks_num.get()
 
-    @ property
+    @property
     def bitrate(self):
         return self.audio._bitrate.get()
 
-    @ property
+    @property
     def sample_rate(self):
         return self.audio._sample_rate.get().replace('Hz', '')
