@@ -36,18 +36,6 @@ class OptionsMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        _use_html = tk.BooleanVar()
-        _html_key = 'html_mediaplayer'
-        _use_html_config = UserConfig().value(_html_key, False)
-        _use_html.set(_use_html_config)
-
-        self.add_checkbutton(label='Use HTML Mediaplayer',
-                             variable=_use_html,
-                             command=lambda: _update_config(
-                                 {_html_key: _use_html.get()}
-                             ))
-
-        self.add_separator()
         self.add_command(label='Set Podcast Folder', command=self._set_folder)
         self.add_separator()
 
@@ -56,6 +44,10 @@ class OptionsMenu(tk.Menu):
         _dev_mode_config = UserConfig().value(self._dev_mode_key, False)
         self._is_dev_mode.set(_dev_mode_config)
 
+        self.add_separator()
+        self.add_command(label='Update credentials', command=CredentialsEntry)
+        self.add_separator()
+
         self.add_checkbutton(label='Enable Developer mode',
                              variable=self._is_dev_mode, command=self._reboot)
 
@@ -63,9 +55,16 @@ class OptionsMenu(tk.Menu):
         self.add_checkbutton(label='Upload to ftp/virgil_test',
                              variable=self._test_upload)
 
-        self.add_separator()
+        _use_html = tk.BooleanVar()
+        _html_key = 'html_mediaplayer'
+        _use_html_config = UserConfig().value(_html_key, False)
+        _use_html.set(_use_html_config)
 
-        self.add_command(label='Update credentials', command=CredentialsEntry)
+        self.add_checkbutton(label='Use Flash Mediaplayer',
+                             variable=_use_html,
+                             command=lambda: _update_config(
+                                 {_html_key: _use_html.get()}
+                             ))
 
     @staticmethod
     def _set_folder():
