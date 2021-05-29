@@ -4,6 +4,7 @@ From here you can modify the name catalog by adding and deleting other names.
 The module will create the audio files for the newly created names.
 """
 import os
+import re
 import json
 import logging
 import pathlib
@@ -47,6 +48,22 @@ class AddNewEntry(CustomDialog):
         self._lang_select.grid(row=2, column=1, sticky=tk.W)
         self._course.grid(row=3, column=1, sticky=tk.W)
 
+    def clean_name(self, name: str) -> str:
+
+        name = re.sub(r'[^A-zÀ-ÿ_0-9]|\[|\]', '_', name.strip())
+        name = re.sub(r'_{2,}', '_', name)
+
+        return name.title()
+
+    def long_name(self):
+        return self.clean_name(self._long_name.get())
+
+    def short_name(self):
+        return self.clean_name(self._short_name.get())
+
+    def course(self):
+        return self._course.get()
+
 
 class CatalogLoad(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -86,31 +103,35 @@ class CatalogFrame(ttk.Frame):
         self._tree_list = ttk.Treeview(self, height=APP_GEOMETRY.treeview_height,
                                        selectmode='browse',
                                        yscrollcommand=self.vertical_scrollbar.set,
-                                       columns=("names_short", "names_long"))
-        self._tree_list.grid(column=0, row=1, columnspan=3,
-                             rowspan=2, sticky=tk.W + tk.E, padx=10)
-        self.vertical_scrollbar.grid(column=3, row=1,
-                                     rowspan=2, sticky=tk.N + tk.S)
+                                       columns=("names_short", "names_long",))
+        self._tree_list.grid(column=0, row=1, columnspan=3, rowspan=2,
+                             sticky=tk.W + tk.E)
+
+        self.vertical_scrollbar.grid(column=3, row=1, rowspan=2,
+                                     sticky=tk.N + tk.S)
         self._generate_tree_columns()
         self.vertical_scrollbar.config(command=self._tree_list.yview)
 
         # BUTTON SECTION
         ttk.Button(self, text="Aggiungi Docente", command=self._add_docenti).grid(
-            column=0, row=3, sticky=tk.W, padx=10)
+            column=0, row=3, sticky=tk.W,)
 
         ttk.Button(self, text="Aggiungi Corso", command=self._add_corso).grid(
-            column=0, row=3, sticky=tk.E)
+            column=0, row=3, padx=100, sticky=tk.E)
 
         # self._course = None
-
         ttk.Button(self, text="Cancella Selezione", command=self._delete_selected).grid(
-            column=2, row=3, pady=10, padx=10, sticky=tk.NE)
+            column=2, row=3, pady=10, sticky=tk.NE)
+
+        self._catalog = None
 
     def _generate_tree_columns(self):
         """Generate columns for the treeview widget."""
         self._tree_list["show"] = "headings"
+
         self._tree_list.heading('names_short', text='Nome abbreviato')
-        self._tree_list.column('names_short', width=300)
+        self._tree_list.column('names_short', width=250)
+
         self._tree_list.heading('names_long', text='Nome intero')
         self._tree_list.column('names_long', width=300)
 
@@ -131,25 +152,25 @@ class CatalogFrame(ttk.Frame):
         """Return the language selected: it or eng."""
         return self.new_entry._lang_select.get()
 
-    def _check_name_size(self, course_name):
-        """Check if name course is 3 letters long otherwise raise error."""
-        if self.get_catalog == "corsi" and not len(course_name) == 3:
-            raise ValueError("Course name has to be 3 letters long")
-
     @property
-    def get_catalog(self):
+    def catalog(self):
         """Return the catalog name selected from the combobox widget."""
-        return self._load_widget.catalog_selection()
+        return self._catalog
+
+    @catalog.setter
+    def catalog(self, value):
+        self._catalog = value
 
     def _load_catalog(self):
         """Load name list into treeview widget."""
+        self.catalog = self._load_widget.catalog_selection()
         self._reset_list()
         self._refresh_list()
 
         row_colors = ["oddrow", "evenrow"]
         try:
             catalog_names = sorted(
-                self._catalog_list[self.get_catalog].items())
+                self._catalog_list[self.catalog].items())
         except KeyError:
             return
         for index, names in enumerate(catalog_names):
@@ -190,20 +211,20 @@ class CatalogFrame(ttk.Frame):
 
     def _delete_from_catalog(self, delete_key):
         """Delete key from class catalog list."""
-        self._catalog_list[self.get_catalog].pop(delete_key)
+        self._catalog_list[self.catalog].pop(delete_key)
 
     def _add_corso(self):
         self.new_entry = AddNewEntry(
             title='Aggiungi Corso', enable_corsi='readonly')
+        self.catalog = 'corsi'
 
-        self.new_entry._save_btn.config(
-            command=lambda: self._insert_to_catalog('corsi'))
+        self.new_entry._save_btn.config(command=self._insert_to_catalog)
 
     def _add_docenti(self):
         self.new_entry = AddNewEntry(title='Aggiungi Docente')
+        self.catalog = 'docenti'
 
-        self.new_entry._save_btn.config(
-            command=lambda: self._insert_to_catalog('docenti'))
+        self.new_entry._save_btn.config(command=self._insert_to_catalog)
 
     def _get_new_names(self):
         """Return a tuple with new names to insert taken from Entry widget.
@@ -211,68 +232,64 @@ class CatalogFrame(ttk.Frame):
         Return:
             tuple - short_name and long_name variables.
         """
-        if not self.new_entry._short_name.get() or not self.new_entry._long_name.get():
+        short_name = self.new_entry.short_name()
+        long_name = self.new_entry.long_name()
+
+        if not short_name or not long_name:
             messagebox.showinfo(title="Errore", message="Nome invalido")
             return None
 
-        _ = self.new_entry._short_name.get().strip()
+        if self.catalog == 'corsi':
+            short_name = short_name.upper()
 
-        # TODO: should do better checking of typos example:
-        # if there are two spaces then it will insert 2 trailing
-        if self.get_catalog == "docenti":
-            short_name = _.replace(" ", "_").title()
-        else:
-            short_name = _.replace(" ", "_").upper()
-        del _
-
-        long_name = self.new_entry._long_name.get().strip().title()
         return (short_name, long_name)
 
-    def _insert_to_catalog(self, section):
+    def _check_name_size(self, course_name):
+        """Check if name course is 3 letters long otherwise raise error."""
+        if self.catalog == "corsi" and not len(course_name) == 3:
+            raise ValueError("Course name has to be 3 letters long")
+
+    def _insert_to_catalog(self):
         """Insert new name into treeview widget."""
+        short_name, long_name = self._get_new_names()
         try:
             short_name, long_name = self._get_new_names()
             self._check_name_size(short_name)
 
-        except TypeError:
-            messagebox.showinfo(title="Errore",
-                                message="Nessun nome inserito")
+        except TypeError as error:
+            LOGGER.info('type error: %s', error, exc_info=True)
+            messagebox.showinfo(title="PodcastTool",
+                                message=f"Nessun nome inserito.{error}")
 
         except tk._tkinter.TclError:
-            messagebox.showerror(title="Errore", message="Nome esiste già!")
+            messagebox.showerror(title="PodcastTool",
+                                 message="Nome esiste già!")
 
         except ValueError:
             messagebox.showerror(
-                title="nome corso",
+                title="PodcastTool",
                 message="Nome del corso dovrebbe avere solo 3 lettere")
         else:
+            section = self.catalog
             if section == "docenti":
                 self._catalog_list[section].update(
-                    {short_name: long_name})
+                    {short_name: long_name.replace('_', ' ')})
 
             elif section == 'corsi':
-                course_path = self.new_entry._course.get()
+                course_path = self.new_entry.course()
                 if not course_path:
                     messagebox.showerror(message="manca codice corso")
                     return
                 self._catalog_list[section].update(
                     {short_name: {"course_name": long_name,
                                   "course_path": course_path}})
-            else:
-                return
-
-            # when adding entry if catalog is not loaded then dont show entry
-            # in empty catalog
-            if self.get_catalog:
-                self._tree_list.insert("", 0, short_name)
-                self._tree_list.set(short_name, 'names_short', short_name)
-                self._tree_list.set(short_name, 'names_long', long_name)
 
             self._updated_names[section].append(
                 [long_name, self._language])
 
             self._save_new_catalog()
             self._updated_names[section].clear()
+            self._load_catalog()
 
     def _save_new_catalog(self):
         """Save new verison of catalog after delete or added new names."""
