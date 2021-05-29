@@ -16,10 +16,10 @@ class CredentialsEntry(CustomDialog):
         ttk.Label(self._layout, text='Password').grid(row=2, sticky=tk.E)
         ttk.Label(self._layout, text='Website').grid(row=3, sticky=tk.E)
 
-        self.host_entry = ttk.Entry(self._layout, width=24)
-        self.user_entry = ttk.Entry(self._layout, width=24)
-        self.pass_entry = ttk.Entry(self._layout, width=24, show="*")
-        self.web_entry = ttk.Entry(self._layout, width=24)
+        self.host_entry = ttk.Entry(self._layout, width=27)
+        self.user_entry = ttk.Entry(self._layout, width=27)
+        self.pass_entry = ttk.Entry(self._layout, width=27, show="*")
+        self.web_entry = ttk.Entry(self._layout, width=27)
 
         self.host_entry.grid(row=0, column=1)
         self.user_entry.grid(row=1, column=1)
