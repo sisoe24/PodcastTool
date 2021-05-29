@@ -26,7 +26,7 @@ class AppGeometry:
         default = 15
         if OS_SYSTEM == 'Darwin':
             return default
-        return default - 6
+        return default - 4
 
     @property
     def textbox_width(self):
