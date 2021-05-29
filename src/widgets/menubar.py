@@ -91,6 +91,7 @@ class RunMenu(tk.Menu):
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
 
+    # TODO: need to check this on linux
     # @staticmethod
     # def create_shortcut(self):
     #     path = os.path.join(os.getcwd(), 'resourcers',

@@ -136,6 +136,7 @@ class HtmlFrame(ttk.Frame):
             link = UserConfig().value('elearning_url')
             webbrowser.open(link)
         elif page == 'preview':
+            # TODO: doesnt work anymore on linux
             with tempfile.NamedTemporaryFile('r+', prefix='podcasttool',
                                              suffix='.html') as f:
                 f.write(self.page)

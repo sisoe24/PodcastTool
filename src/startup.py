@@ -16,6 +16,7 @@ LOGGER = logging.getLogger('podcasttool.startup')
 
 PLATFORM = platform.system()
 
+# TODO: work on windows version
 if PLATFORM == 'Windows':
     LOGGER.critical('current not Windows supported')
     sys.exit()
@@ -42,7 +43,7 @@ try:
     subprocess.check_output(["which", 'ffmpeg'])
 except Exception as error:
     LOGGER.warning(error)
-
+    # TODO: add linux binary
     included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpeg')
     AudioSegment.converter = included_bin
     LOGGER.warning("Falling back on: %s", included_bin)
