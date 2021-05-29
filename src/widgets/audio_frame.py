@@ -43,7 +43,7 @@ class AudioFrame(ttk.Frame):
 
         # ttk.Button(self._audio_list_frame, text="aggiungi casella",
         #            command=self.add_combobox).grid(column=1, row=20)
-        
+
         ttk.Button(self._audio_list_frame, text="Salva",
                    command=self.new_intro).grid(column=1, row=20, sticky=tk.E,
                                                 pady=5, padx=5)
@@ -109,11 +109,11 @@ class AudioFrame(ttk.Frame):
         Arguments:
             audio_list {list/tuple} - iterable variable to generate new audio
         """
-
         for index, name in enumerate(audio_list, 10):
 
             if util.generate_audio(text=name.lower(), path=USER_AUDIO):
                 msg = f"Generating audio for: {name}"
+                # TODO: message should be done in the final messagebox
                 ttk.Label(self._audio_frame, text=msg).grid(
                     column=0, row=index)
                 self.update()
