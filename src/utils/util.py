@@ -37,26 +37,27 @@ def generate_audio(text, path, filename="", lang='it'):
     if not is_online():
         return
 
-    if not filename:
-        filename = text.replace(" ", "_")
-    else:
-        filename = filename.replace(" ", "_")
-
-    path = os.path.abspath(path)
     msg = 'gTTS had some problem! Check log file.'
 
     try:
         LOGGER.debug('Try to create gtts class')
-        speak = gtts.gTTS(text=text, lang=lang)
+        speak = gtts.gTTS(text=text.replace('_', ' '), lang=lang)
 
     except Exception as error:
         msg += '\nFailed to create gtts class'
         LOGGER.critical('%s', msg, exc_info=True)
         return False
     else:
+
+        if not filename:
+            filename = text.replace(" ", "_")
+        else:
+            filename = filename.replace(" ", "_")
+
+        path = os.path.abspath(path)
         try:
             LOGGER.debug('Try to save gtts audio')
-            speak.save(f'{path}/{filename}.mp3')
+            speak.save(os.path.join(path, f'{filename}.mp3'))
 
         except Exception as error:
             msg += '\nFailed to create gtts audio'
