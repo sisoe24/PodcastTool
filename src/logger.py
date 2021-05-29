@@ -12,6 +12,7 @@ LOGGER.setLevel(logging.DEBUG)
 
 LOG_PATH = pathlib.Path(os.path.dirname(__file__))
 LOG_PATH = os.path.join(LOG_PATH.parent, 'log')
+os.makedirs(LOG_PATH, exist_ok=True)
 
 CRITICAL_LOG = logging.FileHandler(os.path.join(LOG_PATH, 'errors.log'), 'a+')
 CRITICAL_LOG.setLevel(logging.ERROR)

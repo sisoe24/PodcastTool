@@ -61,8 +61,6 @@ PACKAGE_PATH = os.path.dirname(PWD)
 LOGGER.debug('Package path: %s', PACKAGE_PATH)
 
 LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
-os.makedirs(LOG_PATH, exist_ok=True)
-
 RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
 
 try:
