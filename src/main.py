@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from ttkthemes import ThemedTk
 
-from startup import APP_GEOMETRY, open_path, critical
+from startup import APP_GEOMETRY, COLORS, open_path, critical
 from utils import util, UserConfig, total_time
 
 from widgets import (
@@ -83,6 +83,11 @@ class PodcastPage(ttk.Frame):
 
         self.main_frame = MainFrame(self)
         self.main_frame.grid(column=0, row=1, columnspan=3, padx=10)
+
+        self._open_folder_btn = ttk.Button(
+            self, text='Apri Cartella Podcast',
+            command=lambda: open_path(self.podcast_obj.path)
+        )
 
         self._select_btn = ttk.Button(self, text='Seleziona file',
                                       command=self.check_credentials)
@@ -171,17 +176,11 @@ class PodcastPage(ttk.Frame):
 
         self.html.copy_button = "normal"
         self.html.preview_button = "normal"
-        self.html.status('Pronto', 'green')
+        self.html.status('Pronto', COLORS.ready_html())
 
         self.update()
-        self._open_folder()
-
-    def _open_folder(self):
-        _user = messagebox.askyesno(
-            title='PodcastTool',
-            message='Pagina HTML generata!\nApri cartella podcast?')
-        if _user:
-            open_path(self.podcast_obj.path)
+        self._open_folder_btn.grid(
+            column=0, row=2, rowspan=3, sticky=tk.W, padx=10)
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
