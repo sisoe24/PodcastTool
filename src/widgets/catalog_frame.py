@@ -77,7 +77,7 @@ class CatalogLoad(ttk.Frame):
         self._load_btn = ttk.Button(self, text="Carica lista")
         self._load_btn.grid(column=0, row=0)
 
-    @ property
+    @property
     def load_button(self):
         return self._load_btn
 
@@ -100,10 +100,11 @@ class CatalogFrame(ttk.Frame):
 
         # TREE VIEW
         self.vertical_scrollbar = ttk.Scrollbar(self)
-        self._tree_list = ttk.Treeview(self, height=APP_GEOMETRY.treeview_height,
-                                       selectmode='browse',
-                                       yscrollcommand=self.vertical_scrollbar.set,
-                                       columns=("names_short", "names_long",))
+        self._tree_list = ttk.Treeview(
+            self, height=APP_GEOMETRY.treeview_height,
+            selectmode='browse', yscrollcommand=self.vertical_scrollbar.set,
+            columns=("names_short", "names_long", 'code_course'))
+
         self._tree_list.grid(column=0, row=1, columnspan=3, rowspan=2,
                              sticky=tk.W + tk.E)
 
@@ -129,11 +130,14 @@ class CatalogFrame(ttk.Frame):
         """Generate columns for the treeview widget."""
         self._tree_list["show"] = "headings"
 
-        self._tree_list.heading('names_short', text='Nome abbreviato')
-        self._tree_list.column('names_short', width=250)
+        self._tree_list.heading('names_short', text='Nome Abbreviato')
+        self._tree_list.column('names_short', width=150)
 
         self._tree_list.heading('names_long', text='Nome intero')
-        self._tree_list.column('names_long', width=300)
+        self._tree_list.column('names_long', width=290)
+
+        self._tree_list.heading('code_course', text='Codice Corso')
+        self._tree_list.column('code_course', width=100)
 
         self._tree_list.tag_configure("oddrow", background='gray90')
         self._tree_list.tag_configure("evenrow", background='gray99')
@@ -167,26 +171,28 @@ class CatalogFrame(ttk.Frame):
         self._reset_list()
         self._refresh_list()
 
-        row_colors = ["oddrow", "evenrow"]
         try:
-            catalog_names = sorted(
-                self._catalog_list[self.catalog].items())
+            catalog_names = sorted(self._catalog_list[self.catalog].items())
         except KeyError:
             return
+
         for index, names in enumerate(catalog_names):
+            # print("➡ names :", names)
+
             if index % 2 == 0:
-                self._tree_list.insert('', index, names[0],
-                                       tags=(row_colors[index - index]))
+                self._tree_list.insert('', index, names[0], tags=('oddrow'))
             else:
-                self._tree_list.insert('', index, names[0],
-                                       tags=(row_colors[index - index + 1]))
+                self._tree_list.insert('', index, names[0], tags=('evenrow'))
 
             self._tree_list.set(names[0], 'names_short', names[0])
-            try:
-                # TODO: add course path?
+
+            if self.catalog == 'corsi':
                 self._tree_list.set(names[0], 'names_long',
                                     names[1]["course_name"])
-            except TypeError:
+
+                self._tree_list.set(names[0], 'code_course',
+                                    names[1]["course_path"])
+            else:
                 self._tree_list.set(names[0], 'names_long', names[1])
 
     def _delete_selected(self):
