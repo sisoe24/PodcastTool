@@ -2,7 +2,7 @@ import os
 import json
 import shutil
 
-from startup import USER_CATALOG, USER_AUDIO
+from startup import USER_CATALOG, USER_AUDIO, critical
 
 CURRENT_DIR = os.getcwd()
 
@@ -56,6 +56,14 @@ def audio_library():
     for path in parse_path:
         for dirpath, _, filenames in os.walk(path):
             for filename in filenames:
-                if filename.endswith('mp3'):
-                    library_dict[filename] = dirpath
+                if not filename.startswith('.'):
+
+                    file_path = os.path.join(dirpath, filename)
+                    file_size = os.path.getsize(file_path)
+
+                    if filename.endswith('mp3') and file_size > 0:
+                        library_dict[filename] = dirpath
+                    else:
+                        critical(f'Invalid file: {filename}')
+
     return library_dict
