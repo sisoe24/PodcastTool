@@ -10,7 +10,13 @@ from tkinter import messagebox, ttk, filedialog
 
 from app import CustomDialog
 from utils import util, UserConfig
-from startup import LOG_PATH, USER_AUDIO, SYS_CONFIG_PATH, RESOURCES_PATH
+from startup import (
+    open_path,
+    LOG_PATH,
+    USER_AUDIO,
+    SYS_CONFIG_PATH,
+    RESOURCES_PATH
+)
 from utils.resources import _system_catalog_path, _catalog_file
 
 from widgets.html_frame import archive_files
@@ -138,16 +144,16 @@ class GoMenu(tk.Menu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_command(label='Log', command=lambda: util.open_link(LOG_PATH))
+        self.add_command(label='Log', command=lambda: open_path(LOG_PATH))
 
         self.add_command(
             label='Resources',
-            command=lambda: util.open_link(RESOURCES_PATH)
+            command=lambda: open_path(RESOURCES_PATH)
         )
 
         self.add_command(
             label='Configuration',
-            command=lambda: util.open_link(SYS_CONFIG_PATH)
+            command=lambda: open_path(SYS_CONFIG_PATH)
         )
 
 

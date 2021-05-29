@@ -20,7 +20,7 @@ import logging
 import pydub
 import regex
 
-from startup import USER_AUDIO
+from startup import USER_AUDIO, critical
 from utils import util, UserConfig, catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')
@@ -105,7 +105,7 @@ class PodcastFile:
         except Exception as error:
             LOGGER.critical('%s - probably not a wave file!',
                             error, exc_info=True)
-            util.open_log('Probably not a wave file.')
+            critical('Probably not a wave file.')
 
         # amount in seconds
         total_float_seconds = nframe / rframe
@@ -132,7 +132,7 @@ class PodcastFile:
             LOGGER.critical(
                 "La nomenclatura del file sembra invalida %s",
                 filename, exc_info=True)
-            util.open_log('Error parsing podcast name cli.')
+            critical('Error parsing podcast name cli.')
 
     @property
     def name(self):

@@ -6,8 +6,8 @@ import logging
 
 from tkinter import messagebox
 
+from startup import critical
 from utils import util, UserConfig
-
 LOGGER = logging.getLogger('podcasttool.server')
 
 
@@ -23,7 +23,7 @@ class FtpServer:
                                    passwd=self.settings.value('pass', 'x'))
         except Exception as error:
             LOGGER.critical('Problem connecting %s', exc_info=True)
-            util.open_log('Credentials probably wrong.')
+            critical('Credentials probably wrong.')
 
         # self._ftp.login()
 
@@ -42,7 +42,7 @@ def check_server_path(server_path: str, test_env=False):
         server_path (str) path on the server to check
         test_env (bool)   if True, upload to test path
     """
-    test_server_path = UserConfig().value('test_url')  
+    test_server_path = UserConfig().value('test_url')
 
     server_path = server_path if not test_env else test_server_path
 
@@ -73,7 +73,7 @@ def check_server_path(server_path: str, test_env=False):
                 sys.exit('Exit App')
         except Exception as error:
             LOGGER.critical('exception when cwd to ftp', exc_info=True)
-            util.open_log('Unexpected error uploading to server.')
+            critical('Unexpected error uploading to server.')
 
     return server_path
 

@@ -21,8 +21,7 @@ from datetime import datetime
 
 import regex
 
-from utils.util import open_log
-
+from startup import critical
 
 LOGGER = logging.getLogger('podcasttool.widgets.selectframe')
 
@@ -79,7 +78,7 @@ def _extract_lesson(podcast_file):
                         file_path.name, exc_info=True)
         LOGGER.critical(
             "if problem persist, remember that you can select multiple files")
-        open_log("Nessun match in lezione\nControllare errors.log?")
+        critical("Nessun match in lezione\nControllare errors.log?")
     return file_path, lesson_num
 
 

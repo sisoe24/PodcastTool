@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from ttkthemes import ThemedTk
 
-from startup import APP_GEOMETRY
+from startup import APP_GEOMETRY, open_path, critical
 from utils import util, UserConfig, total_time
 
 from widgets import (
@@ -57,7 +57,7 @@ def _debug_executor(executor):
     except Exception as err:
         LOGGER.critical('error in podcast pool executor: %s',
                         err, exc_info=True)
-        util.open_log('Error when creating podcast')
+        critical('Error when creating podcast')
 
 
 class CatalogPage(ttk.Frame):
@@ -179,7 +179,7 @@ class PodcastPage(ttk.Frame):
             title='PodcastTool',
             message='Pagina HTML generata!\nApri cartella podcast?')
         if _user:
-            util.open_link(self.podcast_obj.path)
+            open_path(self.podcast_obj.path)
 
     def _rename_files(self):
         """Rename the wrong typed podcast names."""
@@ -243,7 +243,7 @@ def run():
         app.mainloop()
     except Exception as error:
         LOGGER.critical(str(error), exc_info=True)
-        # util.open_log(msg="Errore app startup.\nControllare errors.log?")
+        # critical(msg="Errore app startup.\nControllare errors.log?")
 
 
 if __name__ == '__main__':

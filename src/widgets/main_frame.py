@@ -7,9 +7,8 @@ from tkinter import ttk
 
 import regex
 
-from utils.util import open_log
-from startup import APP_GEOMETRY
 from utils import catalog
+from startup import APP_GEOMETRY, critical
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
 
@@ -169,7 +168,7 @@ class MainFrame(ttk.Frame):
             except Exception as error:
                 LOGGER.critical('no suggestion error: %s',
                                 error, exc_info=True)
-                open_log("Impossibile riconoscere nome")
+                critical("Impossibile riconoscere nome")
 
         self.check_errors()
 
