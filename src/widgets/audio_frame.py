@@ -22,7 +22,6 @@ from utils.resources import _catalog_file
 
 class AudioFrame(ttk.Frame):
     """Audio intro modification section of the gui."""
-    # TODO: should be nice to order by selecting the column
     _catalog = catalog()
     _new_audio = []
     list_len = len(_catalog["intro"])
@@ -109,18 +108,21 @@ class AudioFrame(ttk.Frame):
         Arguments:
             audio_list {list/tuple} - iterable variable to generate new audio
         """
-        for index, name in enumerate(audio_list, 10):
+        new_audio = []
+        problem_audio = []
 
+        for name in audio_list:
             if util.generate_audio(text=name.lower(), path=USER_AUDIO):
-                msg = f"Generating audio for: {name}"
-                # TODO: message should be done in the final messagebox
-                ttk.Label(self._audio_frame, text=msg).grid(
-                    column=0, row=index)
-                self.update()
+                new_audio.append(name)
             else:
-                messagebox.showerror(
-                    title='PodcastTool',
-                    message='Problem Creating Audio. Check log file')
+                problem_audio.append(name)
+        msg = ''
+        if new_audio:
+            msg += f'Audio generato per {new_audio}'
+        if problem_audio:
+            msg += f'Problemi a generare audio per: {problem_audio}. controlla log file'
+
+        messagebox.showinfo(title='PodcastTool', message=msg)
 
     def new_intro(self):
         """Check if audio intro was modified."""
@@ -156,7 +158,6 @@ class AudioFrame(ttk.Frame):
         """Save modifications in catalog json file."""
         with open(_catalog_file(), "w") as json_file:
             json.dump(self.audio_catalog, json_file, indent=True)
-        messagebox.showinfo(title="PodcastTool", message="Done!", icon="info")
 
     @staticmethod
     def const_vars():
