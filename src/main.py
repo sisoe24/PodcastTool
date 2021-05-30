@@ -224,8 +224,8 @@ class MainWindow(tk.Tk):
 
     def _set_geometry(self):
 
-        h = self.winfo_screenheight() // 2
-        w = self.winfo_screenwidth() // 2
+        h = (self.winfo_screenheight() // 2) - (APP_GEOMETRY.width // 2) 
+        w = (self.winfo_screenwidth() // 2) - (APP_GEOMETRY.height // 2) 
 
         self.geometry(f'{APP_GEOMETRY.width}x{APP_GEOMETRY.height}-{w}+{h}')
 
