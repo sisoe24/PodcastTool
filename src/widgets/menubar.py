@@ -3,7 +3,6 @@ import sys
 import shutil
 import pickle
 import pathlib
-import subprocess
 
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
