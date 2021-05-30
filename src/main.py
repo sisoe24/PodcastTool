@@ -7,7 +7,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
-from ttkthemes import ThemedTk
 
 from startup import APP_GEOMETRY, COLORS, open_path, critical
 from utils import util, UserConfig, total_time
@@ -194,13 +193,11 @@ class PodcastPage(ttk.Frame):
                     os.rename(old_name, new_name)
 
 
-class MainWindow(ThemedTk):
+class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # TODO: not sure about the theme
-        self.set_theme('arc')
-        # ttk.Style().theme_use('clam')
+        ttk.Style().theme_use('clam')
 
         self._set_title()
         self._set_geometry()
