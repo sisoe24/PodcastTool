@@ -86,6 +86,7 @@ class CatalogLoad(ttk.Frame):
 
 
 class CatalogFrame(ttk.Frame):
+    # TODO: should be nice to order by selecting the column
     _catalog_list = catalog()
 
     _updated_names = {"docenti": [], "corsi": []}
