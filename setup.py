@@ -13,8 +13,6 @@ DATA_FILES = ['resources', ]
 OPTIONS = {
     "iconfile": "resources/images/app.icns",
     "emulate_shell_environment": 1,
-    'includes': ['ttkthemes'],
-    'packages': ['ttkthemes'],
 }
 
 setup(
