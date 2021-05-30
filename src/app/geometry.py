@@ -11,7 +11,7 @@ class AppGeometry:
 
     @property
     def height(self):
-        return 550
+        return 545
 
     @property
     def log_width(self):
@@ -26,7 +26,7 @@ class AppGeometry:
         default = 15
         if OS_SYSTEM == 'Darwin':
             return default
-        return default - 4
+        return default - 5
 
     @property
     def textbox_width(self):
@@ -44,7 +44,7 @@ class AppGeometry:
 
     @property
     def treeview_height(self):
-        return 17
+        return 19
 
     @property
     def html_font(self):
