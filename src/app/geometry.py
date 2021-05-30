@@ -11,15 +11,15 @@ class AppGeometry:
 
     @property
     def height(self):
-        return 545
+        return 550
 
     @property
     def log_width(self):
-        return 630
+        return 625
 
     @property
     def log_height(self):
-        return 242
+        return 240
 
     @property
     def log_font(self):

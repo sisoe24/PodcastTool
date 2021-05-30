@@ -95,7 +95,9 @@ class PodcastPage(ttk.Frame):
 
         self._conferm_btn = ttk.Button(self, text='Conferma e procedi',
                                        command=self._run, state='disable')
-        self._conferm_btn.grid(column=2, row=2, columnspan=2, pady=10, padx=10)
+        self._conferm_btn.grid(column=2, row=2, columnspan=2,
+                               pady=15, padx=10, sticky=tk.E)
+
         self.display_msg = self.main_frame.log_frame.display_msg
 
         self._refresh_btn = self.main_frame._refresh_btn
