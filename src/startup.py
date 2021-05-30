@@ -60,8 +60,8 @@ PWD = os.path.dirname(__file__)
 PACKAGE_PATH = os.path.dirname(PWD)
 LOGGER.debug('Package path: %s', PACKAGE_PATH)
 
-LOG_PATH = os.path.join(PACKAGE_PATH, 'log')
 RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
+LOG_PATH = os.path.join(RESOURCES_PATH, 'log')
 
 try:
     subprocess.check_output(["which", 'ffmpeg'])

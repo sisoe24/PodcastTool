@@ -11,7 +11,7 @@ LOGGER = logging.getLogger('podcasttool')
 LOGGER.setLevel(logging.DEBUG)
 
 LOG_PATH = pathlib.Path(os.path.dirname(__file__))
-LOG_PATH = os.path.join(LOG_PATH.parent, 'log')
+LOG_PATH = os.path.join(LOG_PATH.parent, 'resources', 'log')
 os.makedirs(LOG_PATH, exist_ok=True)
 
 CRITICAL_LOG = logging.FileHandler(os.path.join(LOG_PATH, 'errors.log'), 'a+')
