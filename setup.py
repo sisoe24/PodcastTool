@@ -5,15 +5,16 @@ Usage:
     python setup.py py2app
 """
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 APP = ['src/main.py']
-DATA_FILES = ['resources']
+DATA_FILES = ['resources', ]
 
 OPTIONS = {
     "iconfile": "resources/images/app.icns",
     "emulate_shell_environment": 1,
-    "packages": find_packages(),
+    'includes': ['ttkthemes'],
+    'packages': ['ttkthemes'],
 }
 
 setup(
