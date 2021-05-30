@@ -12,6 +12,7 @@ gtts = "*"
 py2app = "*"
 pyinstaller = "*"
 textblob = "*"
+ttkthemes = "*"
 
 [requires]
 python_version = "3"

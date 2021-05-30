@@ -4,7 +4,7 @@ import sys
 import logging
 import platform
 import subprocess
-from datetime import datetime
+
 from tkinter import messagebox, TkVersion
 
 from pydub import AudioSegment
@@ -43,7 +43,7 @@ def critical(msg, title="Error", icon="warning", _exit=True):
 
 # TODO: work on windows version
 if PLATFORM == 'Windows':
-    LOGGER.critical('current not Windows supported')
+    LOGGER.critical('Currently not Windows supported')
     sys.exit()
 
 if TkVersion <= 8.5:
@@ -68,12 +68,14 @@ try:
 except Exception as error:
     LOGGER.warning(error)
 
-    included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM, 'ffmpeg')
+    included_bin = os.path.join(
+        os.getcwd(), 'resources', 'bin', PLATFORM, 'ffmpeg')
     if not os.path.exists(included_bin):
+        LOGGER.critical('no ffmppeg binary found', exc_info=True)
         critical('no ffmpeg binary found')
 
     AudioSegment.converter = included_bin
-    LOGGER.warning("Falling back on: %s", included_bin)
+    LOGGER.warning("System ffmpeg not found! Falling back on: %s", included_bin)
 else:
     LOGGER.debug('Using system ffmpeg')
 
