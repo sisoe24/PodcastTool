@@ -47,7 +47,8 @@ class HtmlFrame(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
-        self._html_frame = ttk.LabelFrame(self, text="HTML")
+        self._html_frame = ttk.LabelFrame(
+            self, text="HTML",  labelanchor=tk.NS)
         self._html_frame.grid(column=0, row=0)
         # self._html_frame.grid_propagate(False)
 
@@ -57,7 +58,7 @@ class HtmlFrame(ttk.Frame):
             font=('TkDefaultFont', APP_GEOMETRY.html_font)
         )
 
-        self._status_display.grid(column=1, row=1)
+        self._status_display.grid(column=1, row=1, pady=5)
         self._status_display.configure(background=COLORS.no_html())
 
         ttk.Button(self._html_frame, text='Website',
