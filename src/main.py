@@ -197,6 +197,11 @@ class PodcastPage(ttk.Frame):
 class MainWindow(ThemedTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # TODO: not sure about the theme
+        self.set_theme('arc')
+        # ttk.Style().theme_use('clam')
+
         self._set_title()
         self._set_geometry()
 
@@ -239,8 +244,7 @@ def run():
 
     try:
 
-        # app = MainWindow()
-        app = MainWindow(theme='arc')
+        app = MainWindow()
         app.mainloop()
     except Exception as error:
         LOGGER.critical(str(error), exc_info=True)
