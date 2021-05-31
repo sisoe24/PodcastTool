@@ -88,18 +88,8 @@ class RunMenu(tk.Menu):
         self.add_command(label='Clean Archive', command=self.delete_archive)
 
         self.add_separator()
-        self.add_command(label='Create Linux App shortcut',
-                         command=self.delete_archive)
-        self.add_separator()
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
-
-    # TODO: need to check this on linux
-    # @staticmethod
-    # def create_shortcut(self):
-    #     path = os.path.join(os.getcwd(), 'resourcers',
-    #                         'scripts', 'create_desktop.sh')
-    #     subprocess.run(['sudo', 'bash', path])
 
     @staticmethod
     def clean_log():
