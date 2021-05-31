@@ -35,6 +35,8 @@ function build_linux() {
 		-n "$APP_NAME" \
 		--add-data resources:resources
 
+	(cd dist && zip -r ../PodcastTool.zip PodcastTool)
+
 }
 
 # Create application shortcut
@@ -47,7 +49,10 @@ function create_shortcut() {
 
 	echo 'Create shortcut'
 
-	cat <<-END >>/usr/share/applications/$APP_NAME.desktop
+	local file
+	file="/usr/share/applications/$APP_NAME.desktop"
+
+	cat <<-END >>$file
 		[Desktop Entry]
 		Version=2.3
 		Name=$APP_NAME
@@ -57,7 +62,7 @@ function create_shortcut() {
 		Terminal=false
 		Type=Application
 		Encoding=UTF-8
-		StartupNotify=true" 
+		StartupNotify=true
 	END
 
 	echo "Shortcut create in app launchpad!"

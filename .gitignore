@@ -3,6 +3,7 @@ other/
 tests/SECD*
 misc/*
 scripts/archive/*
+*.zip
 
 # my files
 .DS_Store
