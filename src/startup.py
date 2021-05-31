@@ -10,10 +10,12 @@ from tkinter import messagebox, TkVersion
 from pydub import AudioSegment
 
 import logger
+
 from app.geometry import AppGeometry
 from app.colors import Colors
 
 LOGGER = logging.getLogger('podcasttool.startup')
+LOGGER.debug('\nSTART APPLICATION')
 
 PLATFORM = platform.system()
 
@@ -56,12 +58,25 @@ if TkVersion <= 8.5:
 APP_GEOMETRY = AppGeometry()
 COLORS = Colors()
 
-PWD = os.path.dirname(__file__)
-PACKAGE_PATH = os.path.dirname(PWD)
-LOGGER.debug('Package path: %s', PACKAGE_PATH)
+LOGGER.debug('CWD: %s', os.getcwd())
 
-RESOURCES_PATH = os.path.join(PACKAGE_PATH, 'resources')
-LOG_PATH = os.path.join(RESOURCES_PATH, 'log')
+# PWD = os.path.dirname(__file__)
+# LOGGER.debug('Startup file directory: %s', PWD)
+
+# PACKAGE_PATH = os.path.dirname(PWD)
+# LOGGER.debug('Package path: %s', PACKAGE_PATH)
+
+LOG_PATH = logger.LOG_PATH
+LOGGER.debug('Log path: %s', LOG_PATH)
+
+RESOURCES_PATH = os.path.join(os.getcwd(), 'resources')
+LOGGER.debug('Resources path: %s', RESOURCES_PATH)
+
+if not os.path.exists(RESOURCES_PATH):
+    LOGGER.critical('could not find resourcers in path', exc_info=True)
+    critical(title='PodcastTool',
+             msg='Could not find resources directory')
+
 
 try:
     subprocess.check_output(["which", 'ffmpeg'])
@@ -75,7 +90,8 @@ except Exception as error:
         critical('no ffmpeg binary found')
 
     AudioSegment.converter = included_bin
-    LOGGER.warning("System ffmpeg not found! Falling back on: %s", included_bin)
+    LOGGER.warning(
+        "System ffmpeg not found! Falling back on: %s", included_bin)
 else:
     LOGGER.debug('Using system ffmpeg')
 

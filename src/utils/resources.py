@@ -2,13 +2,11 @@ import os
 import json
 import shutil
 
-from startup import USER_CATALOG, USER_AUDIO, critical
-
-CURRENT_DIR = os.getcwd()
+from startup import RESOURCES_PATH, USER_CATALOG, USER_AUDIO, critical
 
 
 def _system_catalog_path():
-    return os.path.join(CURRENT_DIR, 'resources', 'data', 'catalog.json')
+    return os.path.join(RESOURCES_PATH, 'data', 'catalog.json')
 
 
 def _catalog_file():
@@ -50,7 +48,7 @@ def audio_library():
     """
     library_dict = {}
 
-    sys_audio = os.path.join(CURRENT_DIR, 'resources', 'audio')
+    sys_audio = os.path.join(RESOURCES_PATH, 'audio')
     parse_path = [USER_AUDIO, sys_audio]
 
     for path in parse_path:

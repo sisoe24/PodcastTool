@@ -4,14 +4,13 @@ import sys
 import logging
 import pathlib
 
-# from startup import LOG_PATH
 
 LOGGER = logging.getLogger('podcasttool')
 
 LOGGER.setLevel(logging.DEBUG)
 
 LOG_PATH = pathlib.Path(os.path.dirname(__file__))
-LOG_PATH = os.path.join(LOG_PATH.parent, 'resources', 'log')
+LOG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool', 'log')
 os.makedirs(LOG_PATH, exist_ok=True)
 
 CRITICAL_LOG = logging.FileHandler(os.path.join(LOG_PATH, 'errors.log'), 'a+')
@@ -25,7 +24,7 @@ LOGGER.addHandler(CRITICAL_LOG)
 DEBUG_LOW = logging.FileHandler(os.path.join(LOG_PATH, 'debug.log'), 'a+')
 DEBUG_LOW.setLevel(logging.DEBUG)
 FORMATTER = logging.Formatter(
-    '%(asctime)s - %(filename)-20s %(funcName)-25s %(levelname)-10s %(message)s',
+    '%(asctime)s - %(filename)-12s %(funcName)-10s %(levelname)-6s: %(message)s',
     '%Y-%m-%d %H:%M')
 DEBUG_LOW.setFormatter(FORMATTER)
 LOGGER.addHandler(DEBUG_LOW)
