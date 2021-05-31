@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
+from version import __version__
 from startup import APP_GEOMETRY, COLORS, open_path, critical
 from utils import UserConfig, total_time
 
@@ -223,15 +224,15 @@ class MainWindow(tk.Tk):
 
     def _set_geometry(self):
 
-        h = (self.winfo_screenheight() // 2) - (APP_GEOMETRY.width // 2) 
-        w = (self.winfo_screenwidth() // 2) - (APP_GEOMETRY.height // 2) 
+        h = (self.winfo_screenheight() // 2) - (APP_GEOMETRY.width // 2)
+        w = (self.winfo_screenwidth() // 2) - (APP_GEOMETRY.height // 2)
 
         self.geometry(f'{APP_GEOMETRY.width}x{APP_GEOMETRY.height}-{w}+{h}')
 
         self.resizable(width=False, height=False)
 
     def _set_title(self):
-        title = 'PodcastTool 2.3'
+        title = f'PodcastTool {__version__}'
         if dev_mode:
             title += ' - DEVELOPER MODE'
         self.title(title)

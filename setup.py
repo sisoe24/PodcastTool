@@ -6,6 +6,8 @@ Usage:
 """
 
 from setuptools import setup
+from src.version import __version__
+
 
 APP = ['src/main.py']
 DATA_FILES = ['resources', ]
@@ -17,7 +19,7 @@ OPTIONS = {
 
 setup(
     app=APP,
-    version="2.3",
+    version=__version__,
     name="PodcastTool",
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
