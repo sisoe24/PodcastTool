@@ -63,10 +63,10 @@ LOGGER.debug('CWD: %s', os.getcwd())
 PWD = os.path.dirname(__file__)
 LOGGER.debug('Startup file directory: %s', PWD)
 
-# TODO: find nicer solution.
+# TODO: find better solution.
 # HACK: when launching app on linux, app will assume the home directory as working directory
 # thus will not find the resources
-if PLATFORM == 'Linux':
+if PLATFORM == 'Linux' and os.getcwd() == os.getenv('HOME'):
     os.chdir(PWD)
 
 # PACKAGE_PATH = os.path.dirname(PWD)
