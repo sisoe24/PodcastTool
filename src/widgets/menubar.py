@@ -3,6 +3,7 @@ import sys
 import shutil
 import pickle
 import pathlib
+import subprocess
 
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
@@ -16,7 +17,11 @@ from startup import (
     SYS_CONFIG_PATH,
     RESOURCES_PATH
 )
-from utils.resources import _system_catalog_path, _catalog_file
+
+from utils.resources import (
+    _system_catalog_path,
+    _catalog_file
+)
 
 from widgets.html_frame import archive_files
 from widgets.credentials import CredentialsEntry
@@ -88,8 +93,20 @@ class RunMenu(tk.Menu):
         self.add_command(label='Clean Archive', command=self.delete_archive)
 
         self.add_separator()
+        self.add_command(label='Create bash setup', command=self.bash_setup)
+        self.add_separator()
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
+
+    @staticmethod
+    def bash_setup():
+
+        cmd = f"alias podcasttool='bash {RESOURCES_PATH}/scripts/podcasttool.sh'"
+        with open(os.path.join(os.getenv('HOME'), '.bashrc'), 'r+') as f:
+            if f.read().find('alias podcasttool') == -1:
+                f.write(cmd)
+
+        messagebox.showinfo(title='PodcastTool', message='Done')
 
     @staticmethod
     def clean_log():
