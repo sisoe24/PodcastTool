@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
 
-# if [[ "$OSTYPE" != 'linux-gnu'* ]]; then
-# 	echo 'Only for Linux'
-# 	exit
-# fi
+if [[ "$OSTYPE" != 'linux-gnu'* ]]; then
+	echo 'Only for Linux'
+	exit
+fi
 
-# SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
-
-RESOURCES="$(dirname "$SCRIPTS_DIR")"
-PACKAGE="$(dirname "$RESOURCES")"
-
-ICON="$RESOURCES/images/app.png"
+SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
 
 APP_NAME="PodcastTool"
 
@@ -24,16 +19,21 @@ function build_linux() {
 
 	echo "Creating Build..."
 
-	exit
+	local resources
+	resources="$(dirname "$SCRIPTS_DIR")"
+
+	local package
+	package="$(dirname "$resources")"
+
 	for dir in 'dist' 'build'; do
-		if [[ -d $PACKAGE/$dir ]]; then
-			rm -rf "${PACKAGE:?}/$dir"
+		if [[ -d $package/$dir ]]; then
+			rm -rf "${package:?}/$dir"
 			echo "cleaning: $dir"
 		fi
 	done
 
 	pyinstaller src/main.py \
-		--icon "$ICON" \
+		--icon "$resources/images/app.png" \
 		--noconfirm \
 		-n "$APP_NAME" \
 		--add-data resources:resources
@@ -69,21 +69,21 @@ function create_shortcut() {
 function helper() {
 	_tab=$'\t'
 	cat <<-END
-		Usage: $(basename "$0") [-h] [-s] [-b] 
+		Usage: bash $(basename "$0") [-h] [-s] [-b]
 		Optional args:
 		-h  ${_tab} Display this help message.
-		-s  ${_tab} Create Application Shortcut.
+		-c  ${_tab} Create Application Shortcut.
 		-b  ${_tab} Build Linux Application
 	END
 	exit 1
 }
 
-while getopts "h:s:b" opt; do
+while getopts "h:cbs" opt; do
 	case ${opt} in
 	h)
 		helper
 		;;
-	s)
+	c)
 		create_shortcut
 		;;
 	b)
@@ -94,8 +94,12 @@ while getopts "h:s:b" opt; do
 		helper
 		;;
 	*)
-		echo "Unkown options: $OPTARG"
+		echo "Unkown options: $OPTARG" 1>&2
 		helper
 		;;
 	esac
 done
+
+if [[ -z "$*" ]]; then
+	helper
+fi
