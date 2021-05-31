@@ -8,7 +8,7 @@ fi
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
 
 APP_NAME="PodcastTool"
-
+RESOURCES="$(dirname "$SCRIPTS_DIR")"
 # build linux standalone package with pyinstaller
 # https://pyinstaller.readthedocs.io/en/stable/usage.html
 function build_linux() {
@@ -19,11 +19,8 @@ function build_linux() {
 
 	echo "Creating Build..."
 
-	local resources
-	resources="$(dirname "$SCRIPTS_DIR")"
-
 	local package
-	package="$(dirname "$resources")"
+	package="$(dirname "$RESOURCES")"
 
 	for dir in 'dist' 'build'; do
 		if [[ -d $package/$dir ]]; then
@@ -33,7 +30,7 @@ function build_linux() {
 	done
 
 	pyinstaller src/main.py \
-		--icon "$resources/images/app.png" \
+		--icon "$RESOURCES/images/app.png" \
 		--noconfirm \
 		-n "$APP_NAME" \
 		--add-data resources:resources
@@ -56,7 +53,7 @@ function create_shortcut() {
 		Name=$APP_NAME
 		Comment=app
 		Exec=$HOME/$APP_NAME/$APP_NAME
-		Icon=$ICON
+		Icon=$RESOURCES/images/app.png
 		Terminal=false
 		Type=Application
 		Encoding=UTF-8
