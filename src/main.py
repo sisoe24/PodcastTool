@@ -1,7 +1,6 @@
 """GUI interface of PodcastTool."""
 import os
 import logging
-from datetime import datetime
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -9,7 +8,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 from startup import APP_GEOMETRY, COLORS, open_path, critical
-from utils import util, UserConfig, total_time
+from utils import UserConfig, total_time
 
 from widgets import (
     MenuBar,
