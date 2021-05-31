@@ -60,14 +60,21 @@ COLORS = Colors()
 
 LOGGER.debug('CWD: %s', os.getcwd())
 
-# PWD = os.path.dirname(__file__)
-# LOGGER.debug('Startup file directory: %s', PWD)
+PWD = os.path.dirname(__file__)
+LOGGER.debug('Startup file directory: %s', PWD)
+
+# TODO: find nicer solution.
+# HACK: when launching app on linux, app will assume the home directory as working directory
+# thus will not find the resources
+if PLATFORM == 'Linux':
+    os.chdir(PWD)
 
 # PACKAGE_PATH = os.path.dirname(PWD)
 # LOGGER.debug('Package path: %s', PACKAGE_PATH)
 
 LOG_PATH = logger.LOG_PATH
 LOGGER.debug('Log path: %s', LOG_PATH)
+
 
 RESOURCES_PATH = os.path.join(os.getcwd(), 'resources')
 LOGGER.debug('Resources path: %s', RESOURCES_PATH)
