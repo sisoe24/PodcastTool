@@ -199,6 +199,8 @@ class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # HACK: apparently on virtualbox scaling doesnt work properly
+        self.tk.call('tk', 'scaling', '1.30')
         ttk.Style().theme_use('clam')
 
         self._set_title()
