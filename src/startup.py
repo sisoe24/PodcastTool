@@ -7,7 +7,7 @@ import subprocess
 
 from tkinter import messagebox, TkVersion
 
-from pydub import AudioSegment
+# from pydub import AudioSegment, audio_segment
 
 import logger
 
@@ -84,29 +84,25 @@ if not os.path.exists(RESOURCES_PATH):
     critical(title='PodcastTool',
              msg='Could not find resources directory')
 
+for ff_bin in ['ffmpeg', 'ffprobe']:
+    try:
+        subprocess.check_output(["which", ff_bin])
+    except Exception as error:
+        LOGGER.warning(error)
 
-try:
-    subprocess.check_output(["which", 'ffmpeg'])
-except Exception as error:
-    LOGGER.warning(error)
+        included_bin = os.path.join(RESOURCES_PATH, 'bin', PLATFORM)
+        os.environ['PATH'] += os.pathsep + included_bin
 
-    included_bin = os.path.join(
-        os.getcwd(), 'resources', 'bin', PLATFORM, 'ffmpeg')
-    if not os.path.exists(included_bin):
-        LOGGER.critical('no ffmppeg binary found', exc_info=True)
-        critical('no ffmpeg binary found')
+        LOGGER.warning(f"System {ff_bin} not found! Falling back on: %s",
+                       included_bin)
 
-    AudioSegment.converter = included_bin
-    LOGGER.warning(
-        "System ffmpeg not found! Falling back on: %s", included_bin)
-else:
-    LOGGER.debug('Using system ffmpeg')
+    else:
+        LOGGER.debug(f'Using system: {ff_bin}')
 
-finally:
-    output = subprocess.check_output([AudioSegment.converter, '-version'])
-    ffmpeg_version = re.search(r'ffmpeg\sversion\s.+?\s', str(output)).group()
-    LOGGER.debug(ffmpeg_version)
-
+    finally:
+        output = subprocess.check_output([ff_bin, '-version'])
+        ff_version = re.search(r'ff.+\sversion\s.+?\s', str(output))
+        LOGGER.debug(ff_version.group())
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
 USER_ARCHIVE = os.path.join(SYS_CONFIG_PATH, 'archive')
