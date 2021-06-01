@@ -431,6 +431,7 @@ class PodcastFile:
                 item_name = item_name.lower()
 
                 if item_name in library.keys():
+                    LOGGER.debug('Copy audio: %s', item_name)
                     src_file = os.path.join(library.get(item_name), item_name)
                     dst_name = f'{pad_fill}_{item_name}'
 
