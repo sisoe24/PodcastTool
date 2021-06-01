@@ -8,7 +8,9 @@ fi
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
 
 APP_NAME="PodcastTool"
+VERSION="2.3"
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
+
 # build linux standalone package with pyinstaller
 # https://pyinstaller.readthedocs.io/en/stable/usage.html
 function build_linux() {
@@ -35,7 +37,7 @@ function build_linux() {
 		-n "$APP_NAME" \
 		--add-data resources:resources
 
-	(cd dist && zip -r ../PodcastTool.zip PodcastTool)
+	(cd dist && zip -r PodcastTool_$VERSION.zip PodcastTool)
 
 }
 
@@ -54,7 +56,7 @@ function create_shortcut() {
 
 	cat <<-END >>$file
 		[Desktop Entry]
-		Version=2.3
+		Version=$VERSION
 		Name=$APP_NAME
 		Comment=app
 		Exec=$HOME/$APP_NAME/$APP_NAME
