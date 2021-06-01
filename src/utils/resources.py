@@ -1,8 +1,11 @@
 import os
 import json
 import shutil
+import logging
 
 from startup import RESOURCES_PATH, USER_CATALOG, USER_AUDIO, critical
+
+LOGGER = logging.getLogger('podcasttool.resources')
 
 
 def _system_catalog_path():
