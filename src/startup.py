@@ -4,6 +4,7 @@ import sys
 import logging
 import platform
 import subprocess
+from datetime import datetime
 
 from tkinter import messagebox, TkVersion
 
@@ -15,7 +16,7 @@ from app.geometry import AppGeometry
 from app.colors import Colors
 
 LOGGER = logging.getLogger('podcasttool.startup')
-LOGGER.debug('\nSTART APPLICATION')
+LOGGER.debug('\n\nSTART APPLICATION %s', datetime.now())
 
 PLATFORM = platform.system()
 
