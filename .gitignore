@@ -4,6 +4,7 @@ tests/SECD*
 misc/*
 scripts/archive/*
 *.zip
+**/mp3/
 
 # my files
 .DS_Store
