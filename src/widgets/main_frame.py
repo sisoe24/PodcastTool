@@ -168,9 +168,7 @@ class MainFrame(ttk.Frame):
                 self._check_part_errors(file, index)
 
             except Exception as error:
-                LOGGER.critical('no suggestion error: %s',
-                                error, exc_info=True)
-                critical("Impossibile riconoscere nome")
+                critical(f"Impossibile riconoscere nome: {error}")
 
         self.check_errors()
 

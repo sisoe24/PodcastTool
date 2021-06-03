@@ -74,11 +74,8 @@ def _extract_lesson(podcast_file):
             r'(?<=[L|l]\w+_)(\d{1,2})', extract_lesson).group()
 
     except AttributeError:
-        LOGGER.critical('no lesson match found: %s',
-                        file_path.name, exc_info=True)
-        LOGGER.critical(
-            "if problem persist, remember that you can select multiple files")
-        critical("Nessun match in lezione\nControllare errors.log?")
+        LOGGER.critical('no lesson match: %s', file_path.name, exc_info=True)
+        critical("Nessun match in lezione!\nTip: Puoi selezionare piu file insieme")
     return file_path, lesson_num
 
 

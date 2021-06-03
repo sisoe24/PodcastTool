@@ -105,7 +105,7 @@ class PodcastFile:
         except Exception as error:
             LOGGER.critical('%s - probably not a wave file!',
                             error, exc_info=True)
-            critical('Probably not a wave file.')
+            critical(f'Probably not a wave file. {error}')
 
         # amount in seconds
         total_float_seconds = nframe / rframe
@@ -129,10 +129,10 @@ class PodcastFile:
                     parte_\d{1,2}\.wav   # part number
                     ''', filename, regex.I | regex.X)
         if not valid_file:
-            LOGGER.critical(
-                "La nomenclatura del file sembra invalida %s",
-                filename, exc_info=True)
-            critical('Error parsing podcast name cli.')
+            # LOGGER.critical(
+            #     "La nomenclatura del file sembra invalida %s",
+            #     filename, exc_info=True)
+            critical(f'La nomenclatura del file sembra invalida: {filename}')
 
     @property
     def name(self):
@@ -382,9 +382,9 @@ class PodcastFile:
 
         Keyword Arguments:
 
-            bitrate {str} - - specify bitrate(default: {'64k'})
-            sample_rate {str} - - specify sample rate(default: {'22050'})
-            num_cuts {str} - - how many cuts in audio(default: {Auto})
+            bitrate {str}     - specify bitrate(default: {'64k'})
+            sample_rate {str} - specify sample rate(default: {'22050'})
+            num_cuts {str}    - how many cuts in audio(default: {Auto})
         """
 
         tmp_dir = self._mkdir_tmp()
@@ -487,18 +487,20 @@ class PodcastFile:
             """Create pydub audio segment from all the mp3 files in tmp dir."""
             path = pathlib.Path(tmp_dir).iterdir()
             LOGGER.debug('combining audio files in folder: %s', tmp_dir)
+
             for item in sorted(path):
                 if item.name.endswith('mp3'):
                     LOGGER.debug('merging audio: %s', os.path.basename(item))
-                    # yield pydub.AudioSegment.from_file(str(item))
                     yield pydub.AudioSegment.from_mp3(str(item))
 
         def _mp3_path() -> str:
             """Get the mp3 folder path."""
             mp3_path = pathlib.Path(self.abspath).parent / 'mp3'
+
             if not mp3_path.exists():
                 LOGGER.debug("mp3 folder not found...creating one.")
                 os.mkdir(mp3_path)
+
             LOGGER.debug("mp3 folder path: %s", mp3_path)
             return mp3_path
 

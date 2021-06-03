@@ -7,8 +7,15 @@ from concurrent.futures import ThreadPoolExecutor
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
-from version import __version__
-from startup import APP_GEOMETRY, COLORS, open_path, critical
+from app.version import __version__
+from startup import (
+    RESOURCES_PATH,
+    APP_GEOMETRY,
+    COLORS,
+    open_path,
+    critical,
+)
+
 from utils import UserConfig, total_time
 
 from widgets import (
@@ -28,6 +35,7 @@ from tools import (
 )
 
 LOGGER = logging.getLogger('podcasttool.gui')
+LOGGER.debug('main current directory: %s', os.path.dirname(__file__))
 
 dev_mode = UserConfig().value('dev_mode', False)
 
@@ -40,11 +48,12 @@ def _set_directory():
     """
     # If user is me then open in test files directory.
     if dev_mode:
-        initial_dir = UserConfig().value('initial_dir')
+        samples = os.path.join(RESOURCES_PATH, 'samples', 'ALP')
+        initial_dir = UserConfig().value('initial_dir', samples)
     else:
         initial_dir = os.path.join(os.environ['HOME'], 'Scrivania/Podcast')
 
-    LOGGER.debug("gui initial directory: %s", initial_dir)
+    LOGGER.debug("Initial directory: %s", initial_dir)
 
     return initial_dir
 
@@ -54,9 +63,7 @@ def _debug_executor(executor):
     try:
         LOGGER.debug('podcast executor status: %s', executor.result())
     except Exception as err:
-        LOGGER.critical('error in podcast pool executor: %s',
-                        err, exc_info=True)
-        critical('Error when creating podcast')
+        critical(f'Error when creating podcast: {err}')
 
 
 class CatalogPage(ttk.Frame):
@@ -248,8 +255,7 @@ def run():
         app = MainWindow()
         app.mainloop()
     except Exception as error:
-        LOGGER.critical(str(error), exc_info=True)
-        # critical(msg="Errore app startup.\nControllare errors.log?")
+        critical(msg="Errore app startup.")
 
 
 if __name__ == '__main__':

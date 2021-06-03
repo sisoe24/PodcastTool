@@ -22,7 +22,6 @@ class FtpServer:
                                    user=self.settings.value('user', 'x'),
                                    passwd=self.settings.value('pass', 'x'))
         except Exception as error:
-            LOGGER.critical('Problem connecting %s', exc_info=True)
             critical('Credentials probably wrong or no internet connection.')
 
         # self._ftp.login()
@@ -72,7 +71,6 @@ def check_server_path(server_path: str, test_env=False):
                                               '\nmanualmente e riprovare'))
                 sys.exit('Exit App')
         except Exception as error:
-            LOGGER.critical('exception when cwd to ftp', exc_info=True)
             critical('Unexpected error uploading to server.')
 
     return server_path
