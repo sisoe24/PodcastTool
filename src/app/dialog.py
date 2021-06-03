@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from app.geometry import AppGeometry
+from .geometry import AppGeometry
 
 
 class CustomDialog(tk.Toplevel):
