@@ -4,7 +4,6 @@ import re
 import logging
 import pathlib
 import datetime
-import requests
 import urllib.request
 
 import gtts
@@ -67,7 +66,7 @@ def generate_audio(text, path, filename="", lang='it'):
     return True
 
 
-def get_path(directory: str) -> str:
+def __get_path(directory: str) -> str:
     """Search for the path in main working directory.
 
     Get path of the argument string directory if is in root PodcastTool folder.
@@ -135,6 +134,4 @@ def convert_month_name(month):
 
 
 if __name__ == '__main__':
-    if os.path.exists('test.mp3'):
-        os.remove('test.mp3')
-    is_online()
+    pass
