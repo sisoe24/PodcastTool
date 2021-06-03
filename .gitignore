@@ -1,17 +1,14 @@
 # my folder
 other/
-tests/SECD*
-misc/*
-scripts/archive/*
 *.zip
 **/mp3/
+.env
+TODO
+*.spec
 
-# my files
+# mac files
 .DS_Store
 
-TODO.md
-*.code-workspace
-*.spec
 
 # Temporary and binary files
 *~
