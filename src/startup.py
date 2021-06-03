@@ -1,14 +1,16 @@
 import os
 import re
 import sys
+import shlex
+import pathlib
 import logging
 import platform
 import subprocess
+
 from datetime import datetime
 
 from tkinter import messagebox, TkVersion
 
-# from pydub import AudioSegment, audio_segment
 
 import logger
 
@@ -25,65 +27,63 @@ def open_path(link):
     """Open a file path or a website link."""
 
     if PLATFORM == 'Darwin':
-        open_cmd = 'open'
+        open_cmd = 'open -a TextEdit'
     elif PLATFORM == 'Linux':
         open_cmd = 'xdg-open'
     else:
         return
-    subprocess.Popen([open_cmd, link])
+
+    open_cmd = shlex.split(open_cmd)
+    open_cmd.append(link)
+    print("➡ open_cmd :", open_cmd)
+
+    # subprocess.run([open_cmd, link])
+    subprocess.run(open_cmd)
 
 
-def critical(msg, title="Error", icon="warning", _exit=True):
+def critical(msg,  _exit=True):
     """If fatal error ask user if wants to open log file."""
+    msg = str(msg)
+    LOGGER.critical(msg, exc_info=True)
+
     msg += '\nOpen log file?'
-    user = messagebox.askyesno(title=title, message=msg, icon=icon)
+    user = messagebox.askyesno(title='PodcastTool', message=msg, icon='error')
+
     if user:
-        log_path = os.path.join(LOG_PATH, "errors.log")
-        open_path(log_path)
+        open_path(os.path.join(LOG_PATH, "errors.log"))
     if _exit:
         sys.exit()
 
 
-# TODO: work on windows version
+def resources():
+    current_path = pathlib.Path(os.path.dirname(__file__))
+    for parent in current_path.parents:
+        resources_path = os.path.join(parent, 'resources')
+        if os.path.exists(resources_path):
+            return resources_path
+
+    # else
+    critical(msg='Could not find resources directory')
+
+
+LOG_PATH = logger.LOG_PATH
+LOGGER.debug('Log path: %s', LOG_PATH)
+
 if PLATFORM == 'Windows':
-    LOGGER.critical('Currently not Windows supported')
-    sys.exit()
+    critical(msg='Currently not Windows supported')
 
 if TkVersion <= 8.5:
-    LOGGER.critical('tk Version is <=8.6')
-    messagebox.showinfo(
-        message=f"Your Tcl-Tk version {TkVersion} has some bugs!"
-        "Please update to +8.6")
-    sys.exit("tk version is old")
+    critical(msg=f"Tk {TkVersion}! Please update Tk to +8.6")
+
+RESOURCES_PATH = resources()
+LOGGER.debug('Resources path: %s', RESOURCES_PATH)
 
 APP_GEOMETRY = AppGeometry()
 COLORS = Colors()
 
 LOGGER.debug('CWD: %s', os.getcwd())
+LOGGER.debug('Startup file directory: %s', os.path.dirname(__file__))
 
-PWD = os.path.dirname(__file__)
-LOGGER.debug('Startup file directory: %s', PWD)
-
-# TODO: find better solution.
-# HACK: when launching app on linux, app will assume the home directory as working directory
-# thus will not find the resources
-if PLATFORM == 'Linux' and os.getcwd() == os.getenv('HOME'):
-    os.chdir(PWD)
-
-# PACKAGE_PATH = os.path.dirname(PWD)
-# LOGGER.debug('Package path: %s', PACKAGE_PATH)
-
-LOG_PATH = logger.LOG_PATH
-LOGGER.debug('Log path: %s', LOG_PATH)
-
-
-RESOURCES_PATH = os.path.join(os.getcwd(), 'resources')
-LOGGER.debug('Resources path: %s', RESOURCES_PATH)
-
-if not os.path.exists(RESOURCES_PATH):
-    LOGGER.critical('could not find resourcers in path', exc_info=True)
-    critical(title='PodcastTool',
-             msg='Could not find resources directory')
 
 for ff_bin in ['ffmpeg', 'ffprobe']:
     try:
@@ -102,7 +102,7 @@ for ff_bin in ['ffmpeg', 'ffprobe']:
 
     finally:
         output = subprocess.check_output([ff_bin, '-version'])
-        ff_version = re.search(r'ff.+\sversion\s.+?\s', str(output))
+        ff_version = re.search(r'ff(probe|mpeg)\sversion\s.+?\s', str(output))
         LOGGER.debug(ff_version.group())
 
 SYS_CONFIG_PATH = os.path.join(os.getenv('HOME'), '.podcasttool')
