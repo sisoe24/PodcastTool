@@ -37,7 +37,9 @@ function build_linux() {
 		-n "$APP_NAME" \
 		--add-data resources:resources
 
-	(cd dist && zip -r PodcastTool_$VERSION.zip PodcastTool)
+	if [[ -n $1 && $1 == 'z' ]]; then
+		(cd dist && zip -r PodcastTool.zip PodcastTool)
+	fi
 
 }
 
@@ -91,7 +93,7 @@ while getopts "h:cbs" opt; do
 		create_shortcut
 		;;
 	b)
-		build_linux
+		build_linux "$2"
 		;;
 	\?)
 		echo "Invalid option: $OPTARG" 1>&2
