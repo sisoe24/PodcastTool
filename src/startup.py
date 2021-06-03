@@ -17,6 +17,7 @@ import logger
 from app.geometry import AppGeometry
 from app.colors import Colors
 
+
 LOGGER = logging.getLogger('podcasttool.startup')
 LOGGER.debug('\n\nSTART APPLICATION %s', datetime.now())
 
@@ -25,8 +26,9 @@ PLATFORM = platform.system()
 
 def open_path(link):
     """Open a file path or a website link."""
-
     if PLATFORM == 'Darwin':
+        # TODO: not sure about opening the log file in text edit
+        # but Console.app gets stuck pretty often
         open_cmd = 'open -a TextEdit'
     elif PLATFORM == 'Linux':
         open_cmd = 'xdg-open'
@@ -35,7 +37,6 @@ def open_path(link):
 
     open_cmd = shlex.split(open_cmd)
     open_cmd.append(link)
-    print("➡ open_cmd :", open_cmd)
 
     # subprocess.run([open_cmd, link])
     subprocess.run(open_cmd)
@@ -55,14 +56,25 @@ def critical(msg,  _exit=True):
         sys.exit()
 
 
-def resources():
-    current_path = pathlib.Path(os.path.dirname(__file__))
-    for parent in current_path.parents:
-        resources_path = os.path.join(parent, 'resources')
-        if os.path.exists(resources_path):
-            return resources_path
+def get_resources(find_path='resources', start_dir=__file__):
 
-    # else
+    def verify_path(_dir, path):
+        path = os.path.join(_dir, path)
+        if os.path.exists(path):
+            return path
+        return False
+
+    current_path = pathlib.Path(os.path.dirname(start_dir))
+    check_path = verify_path(current_path, find_path)
+
+    if check_path:
+        return check_path
+
+    for parent in current_path.parents:
+        check_path = verify_path(parent, find_path)
+        if check_path:
+            return check_path
+
     critical(msg='Could not find resources directory')
 
 
@@ -75,7 +87,7 @@ if PLATFORM == 'Windows':
 if TkVersion <= 8.5:
     critical(msg=f"Tk {TkVersion}! Please update Tk to +8.6")
 
-RESOURCES_PATH = resources()
+RESOURCES_PATH = get_resources()
 LOGGER.debug('Resources path: %s', RESOURCES_PATH)
 
 APP_GEOMETRY = AppGeometry()
