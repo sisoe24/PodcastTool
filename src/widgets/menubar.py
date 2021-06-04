@@ -93,20 +93,8 @@ class RunMenu(tk.Menu):
         self.add_command(label='Clean Archive', command=self.delete_archive)
 
         self.add_separator()
-        self.add_command(label='Create bash setup', command=self.bash_setup)
-        self.add_separator()
 
         self.add_command(label='Reset Names/Audio', command=self.restore_json)
-
-    @staticmethod
-    def bash_setup():
-
-        cmd = f"alias podcasttool='bash {RESOURCES_PATH}/scripts/podcasttool.sh'"
-        with open(os.path.join(os.getenv('HOME'), '.bashrc'), 'r+') as f:
-            if f.read().find('alias podcasttool') == -1:
-                f.write(cmd)
-
-        messagebox.showinfo(title='PodcastTool', message='Done')
 
     @staticmethod
     def clean_log():
