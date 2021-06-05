@@ -9,12 +9,17 @@ RESOURCES="$(dirname "$SCRIPTS_DIR")"
 function create_alias() {
 	local bashrc
 	bashrc="$HOME/.bashrc"
+
+	local current_file
+	current_file="$(basename "$BASH_SOURCE")"
+
+	local cmd
+	cmd="alias podcasttool='bash $RESOURCES/scripts/podcasttool.sh'"
+
 	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
-		local cmd
-		cmd="alias podcasttool='bash $RESOURCES/scripts/podcasttool.sh'"
 		printf "\n%s" "$cmd" >>"$bashrc"
 	else
-		echo "Command exists already."
+		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' $file
 	fi
 }
 
