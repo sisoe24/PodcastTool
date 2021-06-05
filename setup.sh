@@ -20,8 +20,8 @@ function build_linux() {
 	package="$(dirname "$RESOURCES")"
 
 	for dir in 'dist' 'build'; do
-		if [[ -d $package/$dir ]]; then
-			rm -rf "${package:?}/$dir"
+		if [[ -d $dir ]]; then
+			rm -rf "$dir"
 			echo "cleaning: $dir"
 		fi
 	done
