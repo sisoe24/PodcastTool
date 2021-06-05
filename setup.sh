@@ -6,6 +6,7 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
 fi
 
 APP_NAME="PodcastTool"
+VERSION="2.3"
 
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
@@ -34,7 +35,7 @@ function build_linux() {
 		--add-data resources:resources
 
 	if [[ -n $1 && $1 == 'z' ]]; then
-		(cd dist && zip -r PodcastTool.zip PodcastTool)
+		(cd dist && zip -r PodcastTool_"$VERSION"_ubuntu1710.zip PodcastTool)
 	fi
 
 }
