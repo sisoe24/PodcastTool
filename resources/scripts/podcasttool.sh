@@ -1,62 +1,35 @@
 #!/usr/bin/env bash
 
-if [[ "$OSTYPE" != 'linux-gnu'* ]]; then
-	echo 'Only for Linux'
-	exit
-fi
+VERSION="2.3"
+APP_NAME="PodcastTool"
 
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
-
-APP_NAME="PodcastTool"
-VERSION="2.3"
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
 
-# build linux standalone package with pyinstaller
-# https://pyinstaller.readthedocs.io/en/stable/usage.html
-function build_linux() {
-	if [[ -z "$VIRTUAL_ENV" ]]; then
-		echo 'Not inside virtual einvornment?'
-		exit 1
+function create_alias() {
+	local bashrc
+	bashrc="$HOME/.bashrc"
+	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
+		local cmd
+		cmd="alias podcasttool='bash $RESOURCES/scripts/podcasttool.sh'"
+		printf "\n%s" "$cmd" >>"$bashrc"
+	else
+		echo "Command exists already."
 	fi
-
-	echo "Creating Build..."
-
-	local package
-	package="$(dirname "$RESOURCES")"
-
-	for dir in 'dist' 'build'; do
-		if [[ -d $package/$dir ]]; then
-			rm -rf "${package:?}/$dir"
-			echo "cleaning: $dir"
-		fi
-	done
-
-	pyinstaller src/main.py \
-		--icon "$RESOURCES/images/app.png" \
-		--noconfirm \
-		-n "$APP_NAME" \
-		--add-data resources:resources
-
-	if [[ -n $1 && $1 == 'z' ]]; then
-		(cd dist && zip -r PodcastTool.zip PodcastTool)
-	fi
-
 }
 
 # Create application shortcut
 function create_shortcut() {
 
 	if [[ $(/usr/bin/id -u) -ne 0 ]]; then
-		echo "This script requires Root access. Try with sudo"
-		exit 1
+		echo "This action requires Root access."
 	fi
-
-	echo 'Create shortcut'
 
 	local file
 	file="/usr/share/applications/$APP_NAME.desktop"
 
-	cat <<-END >>$file
+	sudo -s -H <<-EOF
+		cat >"$file"
 		[Desktop Entry]
 		Version=$VERSION
 		Name=$APP_NAME
@@ -67,45 +40,63 @@ function create_shortcut() {
 		Type=Application
 		Encoding=UTF-8
 		StartupNotify=true
-	END
+	EOF
 
-	echo "Shortcut create in app launchpad!"
+	echo "Shortcut creata in app launchpad!"
 }
 
-function helper() {
-	_tab=$'\t'
-	cat <<-END
-		Usage: bash $(basename "$0") [-h] [-s] [-b]
-		Optional args:
-		-h  ${_tab} Display this help message.
-		-c  ${_tab} Create Application Shortcut.
-		-b  ${_tab} Build Linux Application
-	END
-	exit 1
+function launch_ui() {
+
+	if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
+
+		declare -a files
+
+		while IFS= read -r -d '' file; do
+			files+=("$file")
+		done < <(find . -type f -name "PodcastTool" -print0)
+
+		if [[ ${#files[@]} -gt 1 ]]; then
+			select file in "${files[@]}"; do
+				./"$file"
+			done
+		else
+			./"${files[0]}"
+		fi
+
+	elif [[ "$OSTYPE" == 'darwin'* ]]; then
+		/Application/PodcastTool.app/Contents/MacOS/PodcastTool
+	fi
 }
 
-while getopts "h:cbs" opt; do
-	case ${opt} in
-	h)
-		helper
-		;;
-	c)
-		create_shortcut
-		;;
-	b)
-		build_linux "$2"
-		;;
-	\?)
-		echo "Invalid option: $OPTARG" 1>&2
-		helper
-		;;
-	*)
-		echo "Unkown options: $OPTARG" 1>&2
-		helper
-		;;
-	esac
-done
+function main() {
+	declare -a options
 
-if [[ -z "$*" ]]; then
-	helper
-fi
+	options=(
+		'Lancia PodcastTool'
+		'Crea App Shortcut'
+		'Crea CMD Shortcut'
+		'Exit'
+	)
+
+	select opt in "${options[@]}"; do
+		case "$opt" in
+		"${options[0]}")
+			launch_ui
+			;;
+		"${options[1]}")
+			create_shortcut
+			;;
+		"${options[2]}")
+			create_alias
+			;;
+		"Exit")
+			exit 0
+			;;
+		*)
+			main
+			;;
+		esac
+	done
+}
+
+main
