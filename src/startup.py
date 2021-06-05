@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import shlex
 import pathlib
 import logging
 import platform
@@ -27,19 +26,13 @@ PLATFORM = platform.system()
 def open_path(link):
     """Open a file path or a website link."""
     if PLATFORM == 'Darwin':
-        # TODO: not sure about opening the log file in text edit
-        # but Console.app gets stuck pretty often
-        open_cmd = 'open -a TextEdit'
+        open_cmd = 'open'
     elif PLATFORM == 'Linux':
         open_cmd = 'xdg-open'
     else:
         return
 
-    open_cmd = shlex.split(open_cmd)
-    open_cmd.append(link)
-
-    # subprocess.run([open_cmd, link])
-    subprocess.run(open_cmd)
+    subprocess.run([open_cmd, link])
 
 
 def critical(msg,  _exit=True):
