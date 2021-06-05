@@ -5,12 +5,18 @@
 SERVER=""
 
 if [[ -z $SERVER ]]; then
-    echo "Need server ip address"
-    exit 1
+
+    if [[ -z $TEST_SERVER ]]; then
+        echo 'need server path'
+        exit
+    fi
+
+    SERVER=$TEST_SERVER
 fi
 
+SERVER_PT="$SERVER":/home/${SERVER%%@*}/Developer/PodcastTool
+
 PT="$HOME/PodcastTool"
-DPT="$HOME/Developer/PodcastTool"
 
 alias cdpt='cd $PT'
 alias pt='$PT/PodcastTool'
@@ -28,7 +34,7 @@ function get_podcasts_folder() {
     podcasts="$HOME"/Desktop/Podcast
 
     if [[ ! -d $podcasts ]]; then
-        rsync -avz --progress "$SERVER:$DPT/resources/samples"
+        rsync -avz --progress $SERVER_PT/resources/samples
     fi
 }
 
@@ -44,22 +50,22 @@ function get_app() {
         fi
     done
 
-    rsync -avz --progress "$SERVER:$DPT"/dist/PodcastTool*.zip ~/Downloads
+    rsync -avz --progress "$SERVER_PT"/dist/PodcastTool_*.zip ~/Downloads
     unzip "$zip_file"
 
-    "$HOME"/PodcastTool/PodcastTool
+    "$PT"/PodcastTool
 }
 
-function _podcasttool() {
+function podcasttool() {
 
     file="$HOME/PodcastTool/resources/scripts/podcasttool.sh"
 
     if [[ ! -f $file ]]; then
         echo "file doesnt exists yet. try getting the app first"
-        exit 0
+        main
     fi
 
-    local options -a
+    declare -a options
     options=('Edit' 'Run' 'Build' 'Create Desktop shortcut')
 
     select mode in "${options[@]}"; do
@@ -93,12 +99,12 @@ function destkop_shortcut() {
 
 function main() {
 
-    local options -a
+    declare -a options
     options=(
         "Get App from ubuntutest"
         "Open .desktop file"
         "Open podcasttool"
-        "Get Podcast folder"
+        "Get Podcasts wav samples folder"
     )
 
     select setup in "${options[@]}" 'Exit'; do
@@ -106,11 +112,11 @@ function main() {
         "${options[0]}")
             get_app
             ;;
-        "${options[1]}") ;;
-
-        \
-            "${options[2]}")
-            _podcasttool
+        "${options[1]}")
+            destkop_shortcut
+            ;;
+        "${options[2]}")
+            podcasttool
             ;;
         "${options[3]}")
             get_podcasts_folder
@@ -119,8 +125,7 @@ function main() {
             exit 0
             ;;
         *)
-            echo "do something else"
-            exit 0
+            main
             ;;
         esac
     done
