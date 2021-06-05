@@ -5,8 +5,6 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
 	exit 1
 fi
 
-echo $VERSION
-exit
 APP_NAME="PodcastTool"
 
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
