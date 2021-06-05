@@ -9,6 +9,7 @@ APP_NAME="PodcastTool"
 
 SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
+
 # build linux standalone package with pyinstaller
 # https://pyinstaller.readthedocs.io/en/stable/usage.html
 function build_linux() {

@@ -19,7 +19,8 @@ function create_alias() {
 	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
 		printf "\n%s" "$cmd" >>"$bashrc"
 	else
-		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' $file
+		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' $bashrc
+		echo "Done"
 	fi
 }
 
@@ -58,14 +59,23 @@ function launch_ui() {
 
 		while IFS= read -r -d '' file; do
 			files+=("$file")
-		done < <(find . -type f -name "PodcastTool" -print0)
+		done < <(find $HOME -type f -name "PodcastTool" -print0 2>/dev/null)
 
 		if [[ ${#files[@]} -gt 1 ]]; then
 			select file in "${files[@]}"; do
-				./"$file"
+				case "$file" in
+				"Back")
+					launch_ui
+					;;
+				*)
+					if [[ -n $file ]]; then
+						"$file"
+					fi
+					;;
+				esac
 			done
 		else
-			./"${files[0]}"
+			"${files[0]}"
 		fi
 
 	elif [[ "$OSTYPE" == 'darwin'* ]]; then
@@ -75,6 +85,8 @@ function launch_ui() {
 
 function main() {
 	declare -a options
+
+	echo "PodcastTool $VERSION"
 
 	options=(
 		'Lancia PodcastTool'
