@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
 
+function abs_path() {
+	local current_dir
+	current_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+	# clean pwd if calling it from root so we can avoid conditionals
+	current_dir=${current_dir##$(pwd)}
+
+	# this will create double slash in some occasions
+	current_dir="$(pwd)/$current_dir"
+	current_dir=${current_dir/\/\//\/}
+
+	if [[ -d $current_dir ]]; then
+		echo "$current_dir"
+	else
+		echo "$current_dir: not a valid path?"
+	fi
+
+}
+
 VERSION="2.3"
 APP_NAME="PodcastTool"
 
-SCRIPTS_DIR="$(dirname "${BASH_SOURCE[0]}")"
+SCRIPTS_DIR=$(abs_path)
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
 
 function create_cmd_shortcut() {
@@ -14,7 +33,9 @@ function create_cmd_shortcut() {
 	current_file="$(basename "$BASH_SOURCE")"
 
 	local cmd
-	cmd="alias podcasttool='bash $RESOURCES/scripts/$current_file'"
+	cmd="alias podcasttool='bash $SCRIPTS_DIR/$current_file'"
+
+	echo "cmd: $cmd"
 
 	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
 		printf "\n%s" "$cmd" >>"$bashrc"
@@ -63,7 +84,7 @@ function launch_ui() {
 
 		while IFS= read -r -d '' file; do
 			files+=("$file")
-		done < <(find $HOME -type f -name "PodcastTool" -print0 2>/dev/null)
+		done < <(find "$HOME" -type f -name "PodcastTool" -print0 2>/dev/null)
 
 		if [[ ${#files[@]} -gt 1 ]]; then
 			select file in "${files[@]}"; do
@@ -112,11 +133,11 @@ function main() {
 			launch_ui
 			;;
 		"${options[1]}")
-			create_app_shortcut
+			create_cmd_shortcut
 			;;
 		"${options[2]}")
 			only_linux
-			create_cmd_shortcut
+			create_app_shortcut
 			;;
 		"Exit")
 			exit 0

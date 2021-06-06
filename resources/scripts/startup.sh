@@ -34,7 +34,7 @@ function get_podcasts_folder() {
     podcasts="$HOME"/Desktop/Podcast
 
     if [[ ! -d $podcasts ]]; then
-        rsync -avz --progress $SERVER_PT/resources/samples
+        rsync -avz --progress "$SERVER_PT"/resources/samples
     fi
 }
 
