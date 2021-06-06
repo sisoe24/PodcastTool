@@ -87,20 +87,21 @@ function launch_ui() {
 function install() {
 	sudo -s -H <<-EOF
 		if [[ -d /opt/PodcastTool ]]; then
-			echo 'Trovata versione vecchia... cancello'
-			rm -rf /opt/PodcastTool
+			echo 'Cancello vecchia versione...'
+			rm -rf /opt/PodcastTool && echo 'Fatto'
 		fi
-		echo 'Copia in corso...'
-		cp -r $APP_PATH /opt/
-		echo 'Fatto.'
 
-		source /opt/PodcastTool/scripts/podcasttool.sh
-		create_app_shortcut
-		create_cmd_shortcut
+		echo 'Installazione in corso in corso...'
+		cp -r $APP_PATH /opt/ && echo
 
 	EOF
 
-	echo
+	source /opt/PodcastTool/scripts/podcasttool.sh
+	create_app_shortcut
+	create_cmd_shortcut
+
+	echo 'Installazione completata'
+
 }
 
 function only_linux() {
