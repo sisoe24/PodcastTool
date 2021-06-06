@@ -69,8 +69,7 @@ function build_linux() {
 		--paths src \
 		-n "$APP_NAME" \
 		--add-data resources:resources \
-		--add-data scripts:scripts \
-		--add-data scripts/run.sh:. \
+		--add-data scripts:scripts
 
 	zip_app "$1"
 
@@ -98,7 +97,7 @@ function helper() {
 	exit 1
 }
 
-function main() {
+function __main() {
 	declare -a options
 	options=(
 		'Build Mac'
