@@ -26,16 +26,17 @@ CURRENT_DIR=$(abs_path)
 APP_PATH="$(dirname "$CURRENT_DIR")"
 
 function create_cmd_shortcut() {
-	local bashrc
-	bashrc="$HOME/.bashrc"
+	echo 'Creo comando per terminale...'
 
 	local current_file
 	current_file="$(basename "$BASH_SOURCE")"
 
 	local cmd
-	cmd="alias podcasttool='bash /opt/$APP_NAME/scripts/$current_file'"
+	# TODO: mac path will not be here
+	cmd="alias podcasttool='bash $CURRENT_DIR/scripts/$current_file'"
 
-	echo "cmd: $cmd"
+	local bashrc
+	bashrc="$HOME/.bashrc"
 
 	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
 		printf "\n%s" "$cmd" >>"$bashrc"
@@ -43,15 +44,13 @@ function create_cmd_shortcut() {
 		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' "$bashrc"
 	fi
 
-	echo "Done"
+	echo "Comando creato: $cmd"
+
 }
 
 # Create application shortcut
 function create_app_shortcut() {
-
-	if [[ $(/usr/bin/id -u) -ne 0 ]]; then
-		echo "This action requires Root access."
-	fi
+	echo 'Creo applicazione shortcut...'
 
 	local file
 	file="/usr/share/applications/$APP_NAME.desktop"
@@ -79,33 +78,53 @@ function create_app_shortcut() {
 function launch_ui() {
 
 	if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
+		"$APP_PATH/$APP_NAME"
 
-		declare -a files
+		# declare -a files
 
-		while IFS= read -r -d '' file; do
-			files+=("$file")
-		done < <(find "$HOME" -type f -name "PodcastTool" -print0 2>/dev/null)
+		# while IFS= read -r -d '' file; do
+		# 	files+=("$file")
+		# done < <(find "$HOME" -type f -name "PodcastTool" -print0 2>/dev/null)
 
-		if [[ ${#files[@]} -gt 1 ]]; then
-			select file in "${files[@]}"; do
-				case "$file" in
-				"Back")
-					launch_ui
-					;;
-				*)
-					if [[ -n $file ]]; then
-						"$file"
-					fi
-					;;
-				esac
-			done
-		else
-			"${files[0]}"
-		fi
+		# if [[ ${#files[@]} -gt 1 ]]; then
+		# 	select file in "${files[@]}"; do
+		# 		case "$file" in
+		# 		"Back")
+		# 			launch_ui
+		# 			;;
+		# 		*)
+		# 			if [[ -n $file ]]; then
+		# 				"$file"
+		# 			fi
+		# 			;;
+		# 		esac
+		# 	done
+		# else
+		# 	"${files[0]}"
+		# fi
 
 	elif [[ "$OSTYPE" == 'darwin'* ]]; then
 		/Application/PodcastTool.app/Contents/MacOS/PodcastTool
 	fi
+}
+
+function install() {
+	sudo -s -H <<-EOF
+		if [[ -f /opt/PodcastTool ]]; then
+			echo 'Trovata versione vecchia... cancello'
+			rm -rf /opt/PodcastTool
+		fi
+		echo 'Copia in corso...'
+		cp -r $APP_PATH /opt/
+		echo 'Fatto'.
+
+		source /opt/PodcastTool/scripts/podcasttool.sh
+		create_app_shortcut
+		create_cmd_shortcut
+
+	EOF
+
+	echo
 }
 
 function only_linux() {
@@ -113,19 +132,6 @@ function only_linux() {
 		echo 'Only for linux'
 		main
 	fi
-}
-
-function install() {
-	sudo -s -H <<-EOF
-		if [[ -f /opt/PodcastTool ]]; then
-			rm -rf /opt/PodcastTool
-		fi
-		cp -r $APP_PATH /opt/
-		create_app_shortcut
-		create_cmd_shortcut
-	EOF
-
-	echo
 }
 
 function main() {
@@ -166,5 +172,3 @@ function main() {
 		esac
 	done
 }
-
-main
