@@ -7,9 +7,13 @@ Usage:
     python setup.py py2app
 """
 
+import shutil
 from setuptools import setup
+
 from src import __version__
 
+for path in ['build', 'dist']:
+    shutil.rmtree(path, ignore_errors=True)
 
 APP = ['src/main.py']
 

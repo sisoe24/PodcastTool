@@ -3,10 +3,10 @@
 VERSION="2.3"
 APP_NAME="PodcastTool"
 
-SCRIPTS_DIR="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
+SCRIPTS_DIR="$(dirname "${BASH_SOURCE[0]}")"
 RESOURCES="$(dirname "$SCRIPTS_DIR")"
 
-function create_alias() {
+function create_cmd_shortcut() {
 	local bashrc
 	bashrc="$HOME/.bashrc"
 
@@ -14,18 +14,19 @@ function create_alias() {
 	current_file="$(basename "$BASH_SOURCE")"
 
 	local cmd
-	cmd="alias podcasttool='bash $RESOURCES/scripts/podcasttool.sh'"
+	cmd="alias podcasttool='bash $RESOURCES/scripts/$current_file'"
 
 	if ! grep "podcasttool" "$bashrc" 1>/dev/null; then
 		printf "\n%s" "$cmd" >>"$bashrc"
 	else
-		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' $bashrc
-		echo "Done"
+		sed -i -E 's|alias podcasttool.*|'"$cmd"'|' "$bashrc"
 	fi
+
+	echo "Done"
 }
 
 # Create application shortcut
-function create_shortcut() {
+function create_app_shortcut() {
 
 	if [[ $(/usr/bin/id -u) -ne 0 ]]; then
 		echo "This action requires Root access."
@@ -34,21 +35,24 @@ function create_shortcut() {
 	local file
 	file="/usr/share/applications/$APP_NAME.desktop"
 
-	sudo -s -H <<-EOF
-		cat >"$file"
-		[Desktop Entry]
-		Version=$VERSION
-		Name=$APP_NAME
-		Comment=app
-		Exec=$HOME/$APP_NAME/$APP_NAME
-		Icon=$RESOURCES/images/app.png
-		Terminal=false
-		Type=Application
-		Encoding=UTF-8
-		StartupNotify=true
-	EOF
+	if (
+		sudo -s -H <<-EOF
+			cat >"$file"
+			[Desktop Entry]
+			Version=$VERSION
+			Name=$APP_NAME
+			Comment=app
+			Exec=$HOME/$APP_NAME/$APP_NAME
+			Icon=$RESOURCES/images/app.png
+			Terminal=false
+			Type=Application
+			Encoding=UTF-8
+			StartupNotify=true
+		EOF
+	); then
+		echo "Shortcut creata in app launchpad!"
+	fi
 
-	echo "Shortcut creata in app launchpad!"
 }
 
 function launch_ui() {
@@ -83,15 +87,22 @@ function launch_ui() {
 	fi
 }
 
+function only_linux() {
+	if [[ "$OSTYPE" != 'linux-gnu'* ]]; then
+		echo 'Only for linux'
+		main
+	fi
+}
+
 function main() {
-	declare -a options
 
 	echo "PodcastTool $VERSION"
 
+	declare -a options
 	options=(
 		'Lancia PodcastTool'
-		'Crea App Shortcut'
 		'Crea CMD Shortcut'
+		'Crea App Shortcut'
 		'Exit'
 	)
 
@@ -101,10 +112,11 @@ function main() {
 			launch_ui
 			;;
 		"${options[1]}")
-			create_shortcut
+			create_app_shortcut
 			;;
 		"${options[2]}")
-			create_alias
+			only_linux
+			create_cmd_shortcut
 			;;
 		"Exit")
 			exit 0

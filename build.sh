@@ -17,9 +17,6 @@ function build_linux() {
 
 	echo "Creating Build..."
 
-	local package
-	package="$(dirname "$RESOURCES")"
-
 	for dir in 'dist' 'build'; do
 		if [[ -d $dir ]]; then
 			rm -rf "$dir"
