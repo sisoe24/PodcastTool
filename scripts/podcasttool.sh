@@ -32,8 +32,15 @@ function create_cmd_shortcut() {
 	current_file="$(basename "$BASH_SOURCE")"
 
 	local cmd
-	# TODO: mac path will not be here
-	cmd="alias podcasttool='bash $CURRENT_DIR/scripts/$current_file'"
+	local cmd_path
+
+	if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
+		cmd_path="/opt/$APP_NAME"
+	elif [[ "$OSTYPE" == 'darwin'* ]]; then
+		cmd_path="/Applications/$APP_NAME.app/Contents/Resources"
+	fi
+
+	cmd="alias podcasttool='bash $cmd_path/scripts/$current_file'"
 
 	local bashrc
 	bashrc="$HOME/.bashrc"
@@ -91,12 +98,12 @@ function install() {
 			rm -rf /opt/PodcastTool && echo 'Fatto'
 		fi
 
-		echo 'Installazione in corso in corso...'
-		cp -r $APP_PATH /opt/ && echo
+		echo 'Installazione in corso...'
+		cp -r $APP_PATH /opt/
 
 	EOF
 
-	source /opt/PodcastTool/scripts/podcasttool.sh
+	# source /opt/PodcastTool/scripts/podcasttool.sh
 	create_app_shortcut
 	create_cmd_shortcut
 
