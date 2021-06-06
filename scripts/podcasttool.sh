@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function abs_path() {
+function __abs_path() {
 	local current_dir
 	current_dir="$(dirname "${BASH_SOURCE[0]}")"
 
@@ -22,8 +22,11 @@ function abs_path() {
 VERSION="2.3"
 APP_NAME="PodcastTool"
 
-CURRENT_DIR=$(abs_path)
-APP_PATH="$(dirname "$CURRENT_DIR")"
+function current_dir() {
+	current_dir="$(readlink -m "$(dirname "${BASH_SOURCE[0]}")")"
+	app_path="$(dirname "$current_dir")"
+	echo "$app_path"
+}
 
 function create_cmd_shortcut() {
 	echo 'Creo comando per terminale...'
@@ -85,7 +88,7 @@ function create_app_shortcut() {
 function launch_ui() {
 
 	if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
-		"$APP_PATH/$APP_NAME"
+		"$(current_dir)/$APP_NAME"
 	elif [[ "$OSTYPE" == 'darwin'* ]]; then
 		/Application/PodcastTool.app/Contents/MacOS/PodcastTool
 	fi
@@ -99,11 +102,10 @@ function install() {
 		fi
 
 		echo 'Installazione in corso...'
-		cp -r $APP_PATH /opt/
+		cp -r $(current_dir) /opt/
 
 	EOF
 
-	# source /opt/PodcastTool/scripts/podcasttool.sh
 	create_app_shortcut
 	create_cmd_shortcut
 
@@ -156,3 +158,5 @@ function main() {
 		esac
 	done
 }
+
+main
