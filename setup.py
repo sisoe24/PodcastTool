@@ -17,7 +17,7 @@ OPTIONS = {
     "iconfile": "resources/images/app.icns",
     "emulate_shell_environment": 1,
     "excludes": ['textblob'],
-    "resources": ["resources"],
+    "resources": ["resources", "scripts"],
 }
 
 setup(

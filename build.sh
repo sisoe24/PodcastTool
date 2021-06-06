@@ -68,7 +68,8 @@ function build_linux() {
 		--noconfirm \
 		--paths src \
 		-n "$APP_NAME" \
-		--add-data resources:resources
+		--add-data resources:resources \
+		--add-data scripts:scripts \
 
 	zip_app "$1"
 

@@ -22,8 +22,8 @@ function abs_path() {
 VERSION="2.3"
 APP_NAME="PodcastTool"
 
-SCRIPTS_DIR=$(abs_path)
-RESOURCES="$(dirname "$SCRIPTS_DIR")"
+CURRENT_DIR=$(abs_path)
+APP_PATH="$(dirname "$CURRENT_DIR")"
 
 function create_cmd_shortcut() {
 	local bashrc
@@ -33,7 +33,7 @@ function create_cmd_shortcut() {
 	current_file="$(basename "$BASH_SOURCE")"
 
 	local cmd
-	cmd="alias podcasttool='bash $SCRIPTS_DIR/$current_file'"
+	cmd="alias podcasttool='bash /opt/$APP_NAME/scripts/$current_file'"
 
 	echo "cmd: $cmd"
 
@@ -63,8 +63,8 @@ function create_app_shortcut() {
 			Version=$VERSION
 			Name=$APP_NAME
 			Comment=app
-			Exec=$HOME/$APP_NAME/$APP_NAME
-			Icon=$RESOURCES/images/app.png
+			Exec=/opt/$APP_NAME/$APP_NAME
+			Icon=/opt/$APP_NAME/resources/images/app.png
 			Terminal=false
 			Type=Application
 			Encoding=UTF-8
@@ -115,6 +115,19 @@ function only_linux() {
 	fi
 }
 
+function install() {
+	sudo -s -H <<-EOF
+		if [[ -f /opt/PodcastTool ]]; then
+			rm -rf /opt/PodcastTool
+		fi
+		cp -r $APP_PATH /opt/
+		create_app_shortcut
+		create_cmd_shortcut
+	EOF
+
+	echo
+}
+
 function main() {
 
 	echo "PodcastTool $VERSION"
@@ -122,6 +135,7 @@ function main() {
 	declare -a options
 	options=(
 		'Lancia PodcastTool'
+		'Installa'
 		'Crea CMD Shortcut'
 		'Crea App Shortcut'
 		'Exit'
@@ -133,9 +147,13 @@ function main() {
 			launch_ui
 			;;
 		"${options[1]}")
-			create_cmd_shortcut
+			only_linux
+			install
 			;;
 		"${options[2]}")
+			create_cmd_shortcut
+			;;
+		"${options[3]}")
 			only_linux
 			create_app_shortcut
 			;;
