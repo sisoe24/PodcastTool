@@ -79,30 +79,6 @@ function launch_ui() {
 
 	if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
 		"$APP_PATH/$APP_NAME"
-
-		# declare -a files
-
-		# while IFS= read -r -d '' file; do
-		# 	files+=("$file")
-		# done < <(find "$HOME" -type f -name "PodcastTool" -print0 2>/dev/null)
-
-		# if [[ ${#files[@]} -gt 1 ]]; then
-		# 	select file in "${files[@]}"; do
-		# 		case "$file" in
-		# 		"Back")
-		# 			launch_ui
-		# 			;;
-		# 		*)
-		# 			if [[ -n $file ]]; then
-		# 				"$file"
-		# 			fi
-		# 			;;
-		# 		esac
-		# 	done
-		# else
-		# 	"${files[0]}"
-		# fi
-
 	elif [[ "$OSTYPE" == 'darwin'* ]]; then
 		/Application/PodcastTool.app/Contents/MacOS/PodcastTool
 	fi
@@ -110,13 +86,13 @@ function launch_ui() {
 
 function install() {
 	sudo -s -H <<-EOF
-		if [[ -f /opt/PodcastTool ]]; then
+		if [[ -d /opt/PodcastTool ]]; then
 			echo 'Trovata versione vecchia... cancello'
 			rm -rf /opt/PodcastTool
 		fi
 		echo 'Copia in corso...'
 		cp -r $APP_PATH /opt/
-		echo 'Fatto'.
+		echo 'Fatto.'
 
 		source /opt/PodcastTool/scripts/podcasttool.sh
 		create_app_shortcut
