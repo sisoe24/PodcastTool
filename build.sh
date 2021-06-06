@@ -70,7 +70,7 @@ function build_linux() {
 		-n "$APP_NAME" \
 		--add-data resources:resources \
 		--add-data scripts:scripts \
-		--add-data scripts/run.sh:run.sh \
+		--add-data scripts/run.sh:. \
 
 	zip_app "$1"
 
