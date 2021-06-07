@@ -5,28 +5,8 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
 	exit 1
 fi
 
-function abs_path() {
-	local current_dir
-	current_dir="$(dirname "${BASH_SOURCE[0]}")"
-
-	# clean pwd if calling it from root so we can avoid conditionals
-	current_dir=${current_dir##$(pwd)}
-
-	# this will create double slash in some occasions
-	current_dir="$(pwd)/$current_dir"
-	current_dir=${current_dir/\/\//\/}
-
-	if [[ -d $current_dir ]]; then
-		echo "$current_dir"
-	else
-		echo "$current_dir: not a valid path?"
-	fi
-
-}
-
 APP_NAME="PodcastTool"
 VERSION="2.3"
-PACKAGE=$(abs_path)
 
 function clean_dirs() {
 	for dir in 'dist' 'build'; do
@@ -42,17 +22,20 @@ function zip_app() {
 	if [[ -n $1 && $1 == 'z' ]]; then
 
 		local platform
-		local app
-		app='PodcastTool'
+		local to_zip
+		to_zip='PodcastTool'
 
 		if [[ "$OSTYPE" == 'linux-gnu'* ]]; then
-			platform='ubuntu1710'
+			platform=$(grep -oP '(?<=PRETTY_NAME=").+(?=")' /etc/os-release)
 		elif [[ "$OSTYPE" == 'darwin'* ]]; then
-			app="$app.app"
-			platform='macOS136'
+			to_zip="$to_zip.app"
+
+			platform="macOS $(sw_vers -productVersion)"
 		fi
 
-		(cd dist && zip -r PodcastTool_"$VERSION"_"$platform".zip "$app")
+		platform=${platform// /_}
+
+		(cd dist && zip -r PodcastTool_"$VERSION"_"$platform".zip "$to_zip")
 	fi
 }
 
@@ -64,7 +47,7 @@ function build_linux() {
 	clean_dirs
 
 	pyinstaller src/main.py \
-		--icon "$PACKAGE/resources/images/app.png" \
+		--icon "$(pwd)/resources/images/app.png" \
 		--noconfirm \
 		--paths src \
 		-n "$APP_NAME" \
