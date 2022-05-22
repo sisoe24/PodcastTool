@@ -63,9 +63,3 @@ A script (`include/scripts/setup_app.sh`) is be provided for a quick setup, but 
 - ``xsel``
         
 After launching the script, a new shortcut will be created on the Desktop.
-
-Note
-====
-
-This project has been set up using PyScaffold 3.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
