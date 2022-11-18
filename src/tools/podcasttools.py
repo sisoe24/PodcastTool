@@ -20,8 +20,8 @@ import logging
 import pydub
 import regex
 
-from startup import USER_AUDIO, critical
-from utils import util, UserConfig, catalog, audio_library
+from src.startup import USER_AUDIO, critical
+from src.utils import util, UserConfig, catalog, audio_library
 
 LOGGER = logging.getLogger('podcasttool.podcast')
 

@@ -2,7 +2,7 @@ import time
 import logging
 import datetime
 
-from startup import LOG_PATH
+from src.startup import LOG_PATH
 
 today = datetime.datetime.today().strftime('%m%d%Y_%H%M')
  

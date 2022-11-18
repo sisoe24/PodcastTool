@@ -6,8 +6,8 @@ import logging
 
 from tkinter import messagebox
 
-from startup import critical
-from utils import util, UserConfig
+from src.startup import critical
+from src.utils import util, UserConfig
 LOGGER = logging.getLogger('podcasttool.server')
 
 

@@ -4,8 +4,8 @@ import logging
 
 from datetime import datetime
 
-from startup import USER_ARCHIVE
-from utils import UserConfig
+from src.startup import USER_ARCHIVE
+from src.utils import UserConfig
 
 LOGGER = logging.getLogger('podcasttool.html')
 

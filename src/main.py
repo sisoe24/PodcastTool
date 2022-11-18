@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 from app.version import __version__
-from startup import (
+from src.startup import (
     RESOURCES_PATH,
     APP_GEOMETRY,
     COLORS,
@@ -16,9 +16,9 @@ from startup import (
     critical,
 )
 
-from utils import UserConfig, total_time
+from src.utils import UserConfig, total_time
 
-from widgets import (
+from src.widgets import (
     MenuBar,
     HtmlFrame,
     MainFrame,

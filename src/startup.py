@@ -11,10 +11,10 @@ from datetime import datetime
 from tkinter import messagebox, TkVersion
 
 
-import logger
+from . import logger
 
-from app.geometry import AppGeometry
-from app.colors import Colors
+from src.app.geometry import AppGeometry
+from src.app.colors import Colors
 
 
 LOGGER = logging.getLogger('podcasttool.startup')

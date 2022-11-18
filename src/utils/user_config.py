@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from startup import USER_CONFIG
+from src.startup import USER_CONFIG
 
 
 class UserConfig:
