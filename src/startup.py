@@ -11,7 +11,7 @@ from datetime import datetime
 from tkinter import messagebox, TkVersion
 
 
-from . import logger
+from src import logger
 
 from src.app.geometry import AppGeometry
 from src.app.colors import Colors
@@ -77,8 +77,8 @@ LOGGER.debug('Log path: %s', LOG_PATH)
 if PLATFORM == 'Windows':
     critical(msg='Currently not Windows supported')
 
-if TkVersion <= 8.5:
-    critical(msg=f"Tk {TkVersion}! Please update Tk to +8.6")
+# if TkVersion <= 8.5:
+#     critical(msg=f"Tk {TkVersion}! Please update Tk to +8.6")
 
 RESOURCES_PATH = get_resources()
 LOGGER.debug('Resources path: %s', RESOURCES_PATH)
