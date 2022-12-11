@@ -12,7 +12,7 @@
         {
             "label": "RunApp",
             "type": "shell",
-            "command": "${config:python.pythonPath} src/main.py",
+            "command": ".venv/bin/python src/main.py",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
