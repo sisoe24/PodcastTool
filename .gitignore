@@ -5,6 +5,7 @@ other/
 .env
 TODO
 *.spec
+*.lock
 
 # mac files
 .DS_Store
