@@ -12,12 +12,8 @@
         {
             "label": "RunApp",
             "type": "shell",
-            "command": ".venv/bin/python src/main.py",
+            "command": ".venv/bin/python -m entrypoint",
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
         },
         {
             "label": "Build macOS App",
