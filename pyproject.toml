@@ -6,13 +6,16 @@ authors = ["virgilsisoe <virgilsisoe@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "~3.7"
+python = "~3.9"
 pydub = "^0.25.1"
 regex = "^2022.10.31"
 gtts = "^2.2.4"
 py2app = "^0.28.4"
 pyinstaller = "^5.6.2"
 textblob = "^0.17.1"
+
+[tool.isort]
+length_sort = true
 
 
 [tool.poetry.group.dev.dependencies]
