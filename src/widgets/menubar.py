@@ -1,19 +1,19 @@
 import os
-import pathlib
+import sys
 import pickle
 import shutil
-import subprocess
-import sys
+import pathlib
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+import subprocess
+from tkinter import ttk, filedialog, messagebox
 
 from ..app import CustomDialog
-from ..startup import (LOG_PATH, RESOURCES_PATH, SYS_CONFIG_PATH, USER_AUDIO,
-                       open_path)
 from ..utils import UserConfig, util
-from ..utils.resources import _catalog_file, _system_catalog_path
-from .credentials import CredentialsEntry
+from ..startup import (LOG_PATH, USER_AUDIO, RESOURCES_PATH, SYS_CONFIG_PATH,
+                       open_path)
 from .html_frame import archive_files
+from .credentials import CredentialsEntry
+from ..utils.resources import _catalog_file, _system_catalog_path
 
 
 def _update_config(setting):

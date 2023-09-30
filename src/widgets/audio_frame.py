@@ -9,10 +9,10 @@ Default export options are:
 """
 import json
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk, messagebox
 
+from ..utils import util, catalog
 from ..startup import USER_AUDIO
-from ..utils import catalog, util
 from ..utils.resources import _catalog_file
 
 

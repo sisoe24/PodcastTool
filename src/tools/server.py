@@ -1,12 +1,12 @@
-import ftplib
-import logging
 import os
 import re
 import sys
+import ftplib
+import logging
 from tkinter import messagebox
 
-from ..startup import critical
 from ..utils import UserConfig, util
+from ..startup import critical
 
 LOGGER = logging.getLogger('podcasttool.server')
 

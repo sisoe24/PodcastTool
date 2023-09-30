@@ -12,8 +12,8 @@ The class also returns a dictionary with the date from the file that is used
 in the suggestion section of the gui when the date written by user is wrong.
 """
 
-import logging
 import os
+import logging
 import pathlib
 import platform
 from datetime import datetime

@@ -1,4 +1,4 @@
 from . import util
 from .profiling import total_time
-from .resources import audio_library, catalog
+from .resources import catalog, audio_library
 from .user_config import UserConfig

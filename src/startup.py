@@ -1,12 +1,12 @@
-import logging
 import os
+import re
+import sys
+import logging
 import pathlib
 import platform
-import re
 import subprocess
-import sys
-from datetime import datetime
 from tkinter import TkVersion, messagebox
+from datetime import datetime
 
 from src import logger
 from src.app.colors import Colors
@@ -16,6 +16,9 @@ LOGGER = logging.getLogger('podcasttool.startup')
 LOGGER.debug('\n\nSTART APPLICATION %s', datetime.now())
 
 PLATFORM = platform.system()
+
+
+os.environ['PATH'] += os.pathsep + os.path.join(os.getcwd(), 'bin')
 
 
 def open_path(link):

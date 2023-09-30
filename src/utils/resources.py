@@ -1,9 +1,9 @@
-import json
-import logging
 import os
+import json
 import shutil
+import logging
 
-from ..startup import RESOURCES_PATH, USER_AUDIO, USER_CATALOG, critical
+from ..startup import USER_AUDIO, USER_CATALOG, RESOURCES_PATH, critical
 
 LOGGER = logging.getLogger('podcasttool.resources')
 

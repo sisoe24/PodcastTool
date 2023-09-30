@@ -5,8 +5,8 @@ from tkinter import ttk
 
 import regex
 
-from ..startup import APP_GEOMETRY, COLORS, critical
 from ..utils import catalog
+from ..startup import COLORS, APP_GEOMETRY, critical
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
 

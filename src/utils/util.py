@@ -1,9 +1,9 @@
 """Reusable utility functions."""
-import datetime
-import logging
 import os
-import pathlib
 import re
+import logging
+import pathlib
+import datetime
 import urllib.request
 
 import gtts

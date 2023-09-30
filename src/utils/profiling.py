@@ -1,6 +1,6 @@
-import datetime
-import logging
 import time
+import logging
+import datetime
 
 from ..startup import LOG_PATH
 
@@ -13,9 +13,9 @@ def profile(func):
     # SortKey class is not present on the linux version
     # need to upgrade python to 3.7.4
     try:
-        import cProfile
         import io
         import pstats
+        import cProfile
         from pstats import SortKey
 
         def inner(*args, **kwargs):

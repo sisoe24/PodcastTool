@@ -1,8 +1,8 @@
-import concurrent.futures
 import os
 import pathlib
+import concurrent.futures
 
-from . import PodcastFile, check_server_path, generate_html, upload_to_server
+from . import PodcastFile, generate_html, upload_to_server, check_server_path
 
 
 def run_single_thread(path, test_env=False):
