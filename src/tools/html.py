@@ -1,11 +1,10 @@
-import re
-import os
 import logging
-
+import os
+import re
 from datetime import datetime
 
-from src.startup import USER_ARCHIVE
-from src.utils import UserConfig
+from ..startup import USER_ARCHIVE
+from ..utils import UserConfig
 
 LOGGER = logging.getLogger('podcasttool.html')
 

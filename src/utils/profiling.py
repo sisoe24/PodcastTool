@@ -1,8 +1,8 @@
-import time
-import logging
 import datetime
+import logging
+import time
 
-from src.startup import LOG_PATH
+from ..startup import LOG_PATH
 
 today = datetime.datetime.today().strftime('%m%d%Y_%H%M')
  
@@ -13,9 +13,9 @@ def profile(func):
     # SortKey class is not present on the linux version
     # need to upgrade python to 3.7.4
     try:
+        import cProfile
         import io
         import pstats
-        import cProfile
         from pstats import SortKey
 
         def inner(*args, **kwargs):

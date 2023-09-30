@@ -1,9 +1,8 @@
 """Logging module for podcasttools."""
-import os
-import sys
 import logging
+import os
 import pathlib
-
+import sys
 
 LOGGER = logging.getLogger('podcasttool')
 

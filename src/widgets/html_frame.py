@@ -7,17 +7,15 @@ an external module 'pyperclip'.
 """
 
 import os
-import time
 import pathlib
 import tempfile
-import webbrowser
-
+import time
 import tkinter as tk
+import webbrowser
 from tkinter import ttk
 
-
-from utils import UserConfig
-from startup import USER_ARCHIVE, APP_GEOMETRY, COLORS
+from ..startup import APP_GEOMETRY, COLORS, USER_ARCHIVE
+from ..utils import UserConfig
 
 
 def archive_files():

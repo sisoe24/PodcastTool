@@ -3,21 +3,18 @@
 From here you can modify the name catalog by adding and deleting other names.
 The module will create the audio files for the newly created names.
 """
-import os
-import re
 import json
 import logging
+import os
 import pathlib
-
+import re
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 
-
-from app import CustomDialog
-from utils import util, catalog
-from startup import USER_AUDIO, APP_GEOMETRY
-from utils.resources import _catalog_file
+from ..app import CustomDialog
+from ..startup import APP_GEOMETRY, USER_AUDIO
+from ..utils import catalog, util
+from ..utils.resources import _catalog_file
 
 LOGGER = logging.getLogger('podcasttool.widgets.catalogframe')
 

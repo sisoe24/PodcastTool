@@ -1,38 +1,17 @@
 """GUI interface of PodcastTool."""
-import os
 import logging
-
-from concurrent.futures import ThreadPoolExecutor
-
+import os
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from concurrent.futures import ThreadPoolExecutor
+from tkinter import filedialog, messagebox, ttk
 
-from app.version import __version__
-from src.startup import (
-    RESOURCES_PATH,
-    APP_GEOMETRY,
-    COLORS,
-    open_path,
-    critical,
-)
-
-from src.utils import UserConfig, total_time
-
-from src.widgets import (
-    MenuBar,
-    HtmlFrame,
-    MainFrame,
-    AudioFrame,
-    CatalogFrame,
-    SelectPodcast
-)
-
-from tools import (
-    PodcastFile,
-    check_server_path,
-    upload_to_server,
-    generate_html
-)
+from .app.version import __version__
+from .startup import APP_GEOMETRY, COLORS, RESOURCES_PATH, critical, open_path
+from .tools import (PodcastFile, check_server_path, generate_html,
+                    upload_to_server)
+from .utils import UserConfig, total_time
+from .widgets import (AudioFrame, CatalogFrame, HtmlFrame, MainFrame, MenuBar,
+                      SelectPodcast)
 
 LOGGER = logging.getLogger('podcasttool.gui')
 LOGGER.debug('main current directory: %s', os.path.dirname(__file__))

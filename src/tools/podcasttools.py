@@ -8,20 +8,19 @@ the lesson number, and the part number.
 The name of the file is always formatted like this:
     SEC6_20133201_E_Cosimi_Lezione_4_Parte_1.wav.
 """
-import os
-import math
-import wave
-
-import shutil
 import hashlib
-import pathlib
 import logging
+import math
+import os
+import pathlib
+import shutil
+import wave
 
 import pydub
 import regex
 
-from src.startup import USER_AUDIO, critical
-from src.utils import util, UserConfig, catalog, audio_library
+from ..startup import USER_AUDIO, critical
+from ..utils import UserConfig, audio_library, catalog, util
 
 LOGGER = logging.getLogger('podcasttool.podcast')
 

@@ -1,21 +1,16 @@
-import os
-import re
-import sys
-import pathlib
 import logging
+import os
+import pathlib
 import platform
+import re
 import subprocess
-
+import sys
 from datetime import datetime
-
-from tkinter import messagebox, TkVersion
-
+from tkinter import TkVersion, messagebox
 
 from src import logger
-
-from src.app.geometry import AppGeometry
 from src.app.colors import Colors
-
+from src.app.geometry import AppGeometry
 
 LOGGER = logging.getLogger('podcasttool.startup')
 LOGGER.debug('\n\nSTART APPLICATION %s', datetime.now())

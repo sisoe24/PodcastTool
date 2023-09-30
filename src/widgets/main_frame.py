@@ -1,14 +1,12 @@
 import logging
-
-from difflib import get_close_matches
-
 import tkinter as tk
+from difflib import get_close_matches
 from tkinter import ttk
 
 import regex
 
-from utils import catalog
-from startup import APP_GEOMETRY, COLORS, critical
+from ..startup import APP_GEOMETRY, COLORS, critical
+from ..utils import catalog
 
 LOGGER = logging.getLogger('podcasttool.widgets.main_frame')
 

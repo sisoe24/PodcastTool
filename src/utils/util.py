@@ -1,13 +1,12 @@
 """Reusable utility functions."""
-import os
-import re
-import logging
-import pathlib
 import datetime
+import logging
+import os
+import pathlib
+import re
 import urllib.request
 
 import gtts
-
 
 LOGGER = logging.getLogger('podcasttool.util')
 

@@ -2,8 +2,8 @@ import pickle
 import tkinter as tk
 from tkinter import ttk
 
-from app import CustomDialog
-from utils import UserConfig
+from ..app import CustomDialog
+from ..utils import UserConfig
 
 
 class CredentialsEntry(CustomDialog):
