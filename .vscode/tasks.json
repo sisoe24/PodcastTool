@@ -16,6 +16,17 @@
             "problemMatcher": [],
         },
         {
+            "label": "Build pyinstaller",
+            "type": "shell",
+            "command": "poetry",
+            "args": [
+                "run",
+                "pyinstaller",
+                "entrypoint.py",
+                "-y"
+            ],
+        },
+        {
             "label": "Build macOS App",
             "type": "shell",
             "command": "${config:python.pythonPath} setup.py py2app --emulate-shell-environment",

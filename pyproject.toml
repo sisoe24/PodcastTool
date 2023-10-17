@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "podcasttool"
-version = "0.1.0"
+version = "2.4.0"
 description = ""
 authors = ["virgilsisoe <virgilsisoe@gmail.com>"]
 readme = "README.md"

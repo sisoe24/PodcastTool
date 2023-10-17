@@ -18,8 +18,6 @@ LOGGER.debug('\n\nSTART APPLICATION %s', datetime.now())
 PLATFORM = platform.system()
 
 
-os.environ['PATH'] += os.pathsep + os.path.join(os.getcwd(), 'bin')
-
 
 def open_path(link):
     """Open a file path or a website link."""
