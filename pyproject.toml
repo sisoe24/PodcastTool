@@ -3,7 +3,10 @@ name = "podcasttool"
 version = "2.4.0"
 description = ""
 authors = ["virgilsisoe <virgilsisoe@gmail.com>"]
-readme = "README.md"
+readme = "README.rst"
+packages = [
+    { include = "src", from = "." },
+]
 
 [tool.poetry.dependencies]
 python = "~3.9"
