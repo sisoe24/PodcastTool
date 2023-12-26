@@ -4,19 +4,13 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Setup .env",
-            "type": "shell",
-            "command": "echo ROOT=\\\"${workspaceFolder}\\\" >> .env",
-            "problemMatcher": []
-        },
-        {
             "label": "RunApp",
             "type": "shell",
             "command": ".venv/bin/python -m entrypoint",
             "problemMatcher": [],
         },
         {
-            "label": "Build pyinstaller",
+            "label": "Build",
             "type": "shell",
             "command": "poetry",
             "args": [
@@ -26,51 +20,5 @@
                 "-y"
             ],
         },
-        {
-            "label": "Build macOS App",
-            "type": "shell",
-            "command": "${config:python.pythonPath} setup.py py2app --emulate-shell-environment",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-            },
-            "dependsOn": [
-                "Clean App"
-            ]
-        },
-        {
-            "label": "Build Linux App",
-            "type": "shell",
-            "command": "bash ${workspaceFolder}/resources/scripts/build_linux.sh",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-            },
-            "dependsOn": [
-                "Clean App"
-            ]
-        },
-        {
-            "label": "Clean App",
-            "type": "shell",
-            "command": "cd ${workspaceFolder} && rm -rf build dist",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "label": "clean mp3",
-            "type": "shell",
-            "command": "rm -f $HOME/.podcasttool/audio/*.mp3",
-            "problemMatcher": []
-        },
-        {
-            "label": "Run CLI macOS app",
-            "type": "shell",
-            "command": "${workspaceFolder}/dist/PodcastTool.app/Contents/MacOS/PodcastTool",
-            "problemMatcher": []
-        }
     ]
 }
